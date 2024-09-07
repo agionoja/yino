@@ -16,6 +16,8 @@ export default {
     const maxRetries = options?.maxRetries || 3;
     let retries = 0;
 
+    console.log({ appConfig });
+
     while (retries < maxRetries) {
       try {
         await mongoose.connect(dbUrl);

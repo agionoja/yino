@@ -4,6 +4,7 @@ import * as process from "node:process";
 
 type DbOptions = {
   localDb?: boolean;
+  delay?: number;
   maxRetries?: number;
 };
 
@@ -29,7 +30,7 @@ export default {
           );
           process.exit(1); // Exit with a failure code
         }
-        await new Promise((res) => setTimeout(res, 5000)); // Wait before retrying
+        await new Promise((res) => setTimeout(res, options?.delay || 5000)); // Wait before retrying
       }
     }
   },

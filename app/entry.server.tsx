@@ -13,7 +13,7 @@ import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import db from "./db";
 
-(async () => await db.connectDb())();
+(async () => await db.connectDb({ maxRetries: 12 }))();
 
 const ABORT_DELAY = 5_000;
 

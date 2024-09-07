@@ -27,6 +27,7 @@ export default {
         if (retries >= maxRetries) {
           console.error(
             "Max retries reached. Unable to connect to the database.",
+            err,
           );
           process.exit(1); // Exit with a failure code
         }

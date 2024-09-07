@@ -9,14 +9,12 @@ type DbOptions = {
 };
 
 export default {
-  connectDb: async (options?: DbOptions) => {
+  connect: async (options?: DbOptions) => {
     const env = appConfig.nodeEnv;
     const isOnline = env === "production" ? true : !options?.localDb;
     const dbUrl = isOnline ? appConfig.databaseUrl : appConfig.localDatabaseUrl;
     const maxRetries = options?.maxRetries || 3;
     let retries = 0;
-
-    console.log({ appConfig });
 
     while (retries < maxRetries) {
       try {

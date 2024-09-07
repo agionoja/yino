@@ -1,11 +1,24 @@
-import "dotenv/config.js";
 import { createServer } from "node:http";
+import "dotenv/config.js";
+import crone from "node-cron";
 import { createRequestHandler } from "@remix-run/express";
 import compression from "compression";
 import express from "express";
 import morgan from "morgan";
 import socket from "./socket/socket.js";
 import appConfig from "./app.config.js";
+
+crone.schedule("* * * * * *", async () => {
+  try {
+    const res = await fetch("https://yino.onrender.com/api/spin", {
+      method: "GET",
+    });
+    const awaitedJson = await res.json();
+    console.log(awaitedJson);
+  } catch (err) {
+    console.error(`There was an error with the crone job: ${err}`);
+  }
+});
 
 const viteDevServer =
   process.env.NODE_ENV === "production"

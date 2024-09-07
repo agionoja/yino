@@ -5,7 +5,7 @@ export default function useSocketIo() {
   const [socket, setSocket] = useState<Socket>();
 
   useEffect(() => {
-    const socket = io("http://localhost:3000");
+    const socket = io();
     setSocket(socket);
 
     return () => {

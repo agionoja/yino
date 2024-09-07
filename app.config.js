@@ -1,5 +1,4 @@
 import * as process from "node:process";
-import "dotenv/config.js";
 
 const appConfig = {
   corsOrigin: JSON.parse(process.env.CORS_ORIGIN || "[]"),

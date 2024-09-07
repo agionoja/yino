@@ -1,3 +1,4 @@
+import "dotenv/config.js";
 import { createServer } from "node:http";
 import { createRequestHandler } from "@remix-run/express";
 import compression from "compression";

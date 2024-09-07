@@ -11,26 +11,10 @@ import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import config from "../app.config";
-import mongoose from "mongoose";
+import db from "./db";
 
-const CONNECTION_URL = `mongodb://${config.localDatabaseUrl}/${config.databaseName}`;
+(async () => await db.connectDb())();
 
-mongoose.connect(CONNECTION_URL);
-
-mongoose.connection.on("connected", () => {
-  console.log("Mongo has connected successfully");
-});
-mongoose.connection.on("reconnected", () => {
-  console.log("Mongo has reconnected");
-});
-mongoose.connection.on("error", async (error) => {
-  console.log("Mongo connection has an error", error);
-  await mongoose.disconnect();
-});
-mongoose.connection.on("disconnected", () => {
-  console.log("Mongo connection is disconnected");
-});
 const ABORT_DELAY = 5_000;
 
 export default function handleRequest(

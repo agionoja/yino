@@ -21,3 +21,7 @@ mongoose.connection.on("error", async (error) => {
 mongoose.connection.on("disconnected", () => {
   console.log("Mongo connection is disconnected");
 });
+
+export default {
+  connectDb: async () => {},
+};

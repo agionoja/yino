@@ -1,10 +1,21 @@
 import { Model, model, Schema, Types } from "mongoose";
 
+type Delete =
+  | {
+      isDeleted: boolean;
+      forEveryone: true;
+    }
+  | {
+      isDeleted: boolean;
+      forOnlyMe: true;
+    };
+
 export interface IChat {
   sender: Types.ObjectId;
   receiver: Types.ObjectId;
   message: string;
   isReceived: boolean;
+  delete: Delete;
   isRead: boolean;
 }
 

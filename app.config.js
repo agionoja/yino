@@ -3,7 +3,6 @@ import "dotenv/config.js";
 
 const appConfig = {
   corsOrigin: JSON.parse(process.env.CORS_ORIGIN || "[]"),
-  databaseName: process.env.DATABASE_NAME || "empty",
   databaseUrl: process.env.DATABASE_URL || "empty",
   jwtExpires: process.env.JWT_EXPIRES || "1d",
   jwtSecret: process.env.JWT_SECRET || "",

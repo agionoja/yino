@@ -30,6 +30,8 @@ export default function ChatRoute() {
   const inputRef = useRef<HTMLInputElement>(null);
   const activityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [activity, setActivity] = useState("");
+  const [welcome, setWelcome] = useState("");
+  const [connectedMsg, setConnectedMsg] = useState("");
   const [messages, setMessages] = useState(loaderData?.messages || []);
   const isSubmitting = fetcher.state === "submitting";
 
@@ -62,22 +64,39 @@ export default function ChatRoute() {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("message", (newMessage) => {
-      typeof newMessage === "object" &&
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+    socket.on("welcome", (welcomeMessage) => {
+      console.log(welcomeMessage);
+      setWelcome(welcomeMessage);
     });
 
-    if (fetcher.data?.message) {
-      socket.emit("message", fetcher.data.message);
-    }
+    socket.on("message", (newMessage) => {
+      console.log({ newMessage }); // Check what is being received
 
+      if (newMessage.welcome) {
+        setWelcome(newMessage.welcome);
+      }
+
+      if (newMessage.connectedMsg) {
+        setConnectedMsg(newMessage.connectedMsg);
+      }
+
+      if (newMessage.message) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
+    });
+
+    // Clean up the event listener when the component unmounts
     return () => {
       socket.off("message");
+      socket.off("welcome");
+      socket.off("");
     };
-  }, [fetcher.data?.message, socket]);
+  }, [socket]);
 
   return (
     <>
+      <h1>{welcome}</h1>
+      <h2>{connectedMsg}</h2>
       <fetcher.Form
         ref={formRef}
         method="post"

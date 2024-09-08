@@ -12,14 +12,14 @@ export default function useSocketIo() {
       socket.disconnect();
     };
   }, []);
-
-  useEffect(() => {
-    if (!socket) return;
-
-    socket.on("message", (data) => {
-      console.log({ data });
-    });
-  }, [socket]);
+  //
+  // useEffect(() => {
+  //   if (!socket) return;
+  //
+  //   socket.on("message", (data) => {
+  //     console.log({ data });
+  //   });
+  // }, [socket]);
 
   return { socket };
 }

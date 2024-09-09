@@ -12,7 +12,7 @@ function isJwtPayload(decoded: any): decoded is jsonwebtoken.JwtPayload {
 }
 
 const jwt = {
-  sign: (id: string) => {
+  sign: (id: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       jsonwebtoken.sign(
         { id },

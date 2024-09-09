@@ -1,3 +1,5 @@
+import { createHash, randomBytes } from "node:crypto";
+import { promisify } from "node:util";
 import { model, Model, Query, Schema } from "mongoose";
 import { isEmail } from "validator";
 import scrypt from "~/utils/scrypt";
@@ -38,6 +40,10 @@ interface IUser {
   phoneNumber?: string;
   address?: Address;
   notificationOptions: NotificationOptions;
+  otp?: string;
+  otpExpires?: Date;
+  verificationToken?: string;
+  verificationTokenExpires?: Date;
   passwordResetToken?: string;
   passwordResetTokenExpires?: Date;
   passwordChangedAt?: Date;
@@ -46,7 +52,14 @@ interface IUser {
 interface IUserMethods {
   comparePassword(plainPassword: string, password: string): Promise<boolean>;
   passwordChangedAfterJwt(jwtIat: number, passwordChangedAt: Date): boolean;
-  generateAndSavePasswordResetToken(): string;
+  generateAndSaveOtp(): Promise<string>;
+  generateAndSaveToken(
+    fieldName: "passwordResetToken" | "verificationToken",
+  ): Promise<string>;
+  compareToken(
+    fieldName: "otp" | "passwordResetToken" | "verificationToken",
+    token: string,
+  ): boolean;
 }
 
 type UserModel = Model<IUser, IUserMethods>;
@@ -103,6 +116,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     },
     phoneNumber: String,
     address: String,
+    otp: String,
+    otpExpires: Date,
+    verificationToken: String,
+    verificationTokenExpires: Date,
     profilePhoto: photoSchema,
     passwordChangedAt: Date,
     passwordResetToken: String,
@@ -121,7 +138,7 @@ userSchema.pre("save", async function (next) {
 
 userSchema.pre("save", async function (next) {
   if (!this.isNew && this.isModified("password")) {
-    // 1 min. is deducted because of db write time
+    // 1 min. is deducted because of db latency time
     this.passwordChangedAt = new Date(createTimeStamp({ m: -1 }));
   }
   next();
@@ -141,6 +158,51 @@ userSchema.methods.passwordChangedAfterJwt = function (
   return jwtIat < passwordChangedAt.getTime() / 1000;
 };
 
+userSchema.methods.generateAndSaveToken = async function (fieldName) {
+  const token = (await promisify(randomBytes)(32)).toString("hex");
+
+  this[fieldName] = hash(token);
+  if (fieldName === "verificationToken") {
+    this.verificationTokenExpires = new Date(createTimeStamp({ m: 10 }));
+  } else if (fieldName === "passwordResetToken") {
+    this.passwordResetTokenExpires = new Date(createTimeStamp({ m: 10 }));
+  }
+  await this.save({ validateBeforeSave: false });
+
+  return token;
+};
+
+userSchema.methods.compareToken = function (fieldName, token) {
+  switch (fieldName) {
+    case "verificationToken": {
+      return hash(token) === this.verificationToken;
+    }
+    case "passwordResetToken": {
+      return hash(token) === this.passwordResetToken;
+    }
+    case "otp": {
+      return hash(token) === this.otp;
+    }
+    default: {
+      return false;
+    }
+  }
+};
+
+userSchema.methods.generateAndSaveOtp = async function () {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+
+  this.otp = hash(otp);
+  this.otpExpires = new Date(createTimeStamp({ m: 10 }));
+  await this.save({ validateBeforeSave: false });
+
+  return otp;
+};
+
 const User = model<IUser, UserModel>("User", userSchema);
 
 export default User;
+
+function hash(payload: string) {
+  return createHash("sha256").update(payload).digest("hex");
+}

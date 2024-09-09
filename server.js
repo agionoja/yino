@@ -8,7 +8,7 @@ import morgan from "morgan";
 import socket from "./socket/socket.js";
 import appConfig from "./app.config.js";
 
-crone.schedule("8 * * * *", async () => {
+crone.schedule("5 * * * *", async () => {
   try {
     const res = await fetch("https://yino.onrender.com/api/spin", {
       method: "GET",

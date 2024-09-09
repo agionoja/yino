@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 import { promisify } from "node:util";
-import { model, Model, Query, Schema } from "mongoose";
-import { isEmail } from "validator";
+import { model, Model, Query, Schema, Types } from "mongoose";
+import validator from "validator";
 import scrypt from "~/utils/scrypt";
 import createTimeStamp from "~/utils/timestamp";
 import photoSchema, { IPhoto } from "~/models/schamas/photo.schema";
@@ -27,17 +27,18 @@ interface IUserWithGet extends IUser {
   get: Query<IUser, never>["get"];
 }
 
-interface IUser {
+export interface IUser {
+  _id: Types.ObjectId;
   name: string;
   email: string;
-  username: string;
   password: string;
   passwordConfirm: string | undefined;
+  phoneNumber: string;
   isActive: boolean;
   role: Role;
   is2fa: boolean;
   profilePhoto?: IPhoto;
-  phoneNumber?: string;
+  username?: string;
   address?: Address;
   notificationOptions: NotificationOptions;
   otp?: string;
@@ -51,7 +52,7 @@ interface IUser {
 
 interface IUserMethods {
   comparePassword(plainPassword: string, password: string): Promise<boolean>;
-  passwordChangedAfterJwt(jwtIat: number, passwordChangedAt: Date): boolean;
+  passwordChangedAfterJwt(jwtIat: number, passwordChangedAt?: Date): boolean;
   generateAndSaveOtp(): Promise<string>;
   generateAndSaveToken(
     fieldName: "passwordResetToken" | "verificationToken",
@@ -62,7 +63,7 @@ interface IUserMethods {
   ): boolean;
 }
 
-type UserModel = Model<IUser, IUserMethods>;
+type UserModel = Model<IUser, NonNullable<unknown>, IUserMethods>;
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
@@ -78,7 +79,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       type: String,
       required: [true, "email is required"],
       set: (v: string) => v.toLowerCase(),
-      validate: [isEmail, "invalid email address"],
+      validate: [validator.isEmail, "invalid email address"],
     },
     role: {
       type: String,
@@ -153,9 +154,11 @@ userSchema.methods.comparePassword = async function (
 
 userSchema.methods.passwordChangedAfterJwt = function (
   jwtIat: number,
-  passwordChangedAt: Date,
+  passwordChangedAt?: Date,
 ) {
-  return jwtIat < passwordChangedAt.getTime() / 1000;
+  if (!passwordChangedAt) return false;
+
+  return passwordChangedAt.getTime() / 1000 > jwtIat;
 };
 
 userSchema.methods.generateAndSaveToken = async function (fieldName) {

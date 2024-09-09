@@ -1,5 +1,7 @@
 import jsonwebtoken from "jsonwebtoken";
 import appConfig from "../../app.config";
+import { Role } from "~/models/user.model";
+import { Types } from "mongoose";
 
 function isJwtPayload(decoded: any): decoded is jsonwebtoken.JwtPayload {
   return (
@@ -12,10 +14,10 @@ function isJwtPayload(decoded: any): decoded is jsonwebtoken.JwtPayload {
 }
 
 const jwt = {
-  sign: (id: string): Promise<string> => {
+  sign: ({ id, role }: { id: Types.ObjectId; role: Role }): Promise<string> => {
     return new Promise((resolve, reject) => {
       jsonwebtoken.sign(
-        { id },
+        { id, role },
         appConfig.jwtSecret,
         { expiresIn: appConfig.jwtExpires },
         (err, token) => {

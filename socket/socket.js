@@ -13,13 +13,12 @@ const socket = (server) => {
     console.log(socket.id, "connected");
 
     // Upon connection - only to user
-    socket.emit("message", "Welcome to Chat App!");
+    socket.emit("welcome", { welcome: "Welcome to Chat App!" });
 
     // Upon connection - to all others
-    socket.broadcast.emit(
-      "message",
-      `${socket.id.substring(0, 5)} is connected`,
-    );
+    socket.broadcast.emit("message", {
+      connectedMsg: `${socket.id.substring(0, 5)} is connected`,
+    });
 
     // listening for a message event
     socket.on("message", (message) => {

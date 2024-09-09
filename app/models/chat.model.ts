@@ -1,14 +1,6 @@
 import { Model, model, Schema, Types } from "mongoose";
 
-type Delete =
-  | {
-      isDeleted: boolean;
-      forEveryone: true;
-    }
-  | {
-      isDeleted: boolean;
-      forOnlyMe: true;
-    };
+type Delete = { forEveryone: true } | { forOnlyMe: true };
 
 export interface IChat {
   sender: Types.ObjectId;

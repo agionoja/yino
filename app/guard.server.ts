@@ -1,21 +1,22 @@
 import { redirect } from "@remix-run/node";
-import { getTokenFromSession } from "~/session.server";
+import { getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
 import User, { Role } from "~/models/user.model";
 
 export async function requireUser(request: Request) {
-  const token = await getTokenFromSession(request);
+  const session = await getTokenSession(request);
+  const token = session.get("token");
   let decoded;
 
   if (!token) {
-    throw redirect("/login");
+    throw redirect("/auth/login");
   }
 
   // Gracefully decode the jwt token
   try {
     decoded = await jwt.verify(token);
   } catch (err) {
-    throw redirect("/login");
+    throw redirect("/auth/login");
   }
 
   // check if the user still exits
@@ -23,7 +24,7 @@ export async function requireUser(request: Request) {
     .select("+passwordChangedAt")
     .exec();
 
-  if (!user) throw redirect("/login");
+  if (!user) throw redirect("/auth/login");
 
   // check if user recently changed password
   const passwordChanged = user.passwordChangedAfterJwt(
@@ -32,8 +33,10 @@ export async function requireUser(request: Request) {
   );
 
   if (passwordChanged) {
-    throw redirect("/login");
+    throw redirect("/auth/login");
   }
+
+  console.log({ token });
 }
 
 // Define a type that ensures the string starts with "/"
@@ -46,15 +49,17 @@ export async function restrictTo(
   redirectTo: RestrictTo<string>, // Use the new type here to enforce "/"
   ...roles: Role[]
 ) {
-  const token = await getTokenFromSession(request);
-  if (!token) throw redirect("/login");
+  const session = await getTokenSession(request);
+  const token = session.get("token");
+
+  if (!token) throw redirect("/auth/login");
 
   let decoded;
   try {
     decoded = await jwt.verify(token);
   } catch (err) {
     // Handle verification error by redirecting to login if the token is invalid
-    throw redirect("/login");
+    throw redirect("/auth/login");
   }
 
   const role = decoded.role;

@@ -5,6 +5,12 @@ export default {
   theme: {
     extend: {
       backgroundImage: {},
+      colors: {
+        blue: "#2776ea",
+        "payne-gray": "#4b5768",
+        "french-gray": "#d0d5dd",
+        "anti-flash-white": "#e4e7eb",
+      },
     },
   },
   plugins: [],

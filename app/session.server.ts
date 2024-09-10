@@ -16,10 +16,10 @@ export const { getSession, commitSession, destroySession } =
   createCookieSessionStorage<SessionData, SessionFlashData>({
     cookie: {
       name: "__session",
-      domain: "yino.onrender.com",
+      // domain: "yino.onrender.com",
       httpOnly: true,
       maxAge: createTimeStamp(appConfig.sessionExpires),
-      path: "/",
+      // path: "/",
       sameSite: "lax",
       secure: appConfig.nodeEnv === "production",
       secrets: appConfig.sessionSecret,
@@ -32,7 +32,6 @@ export async function storeTokenInSession(user: Pick<IUser, "_id" | "role">) {
   return await commitSession(session);
 }
 
-export async function getTokenFromSession(request: Request) {
-  const session = await getSession(request.headers.get("Cookie"));
-  return session.get("token");
+export async function getTokenSession(request: Request) {
+  return await getSession(request.headers.get("Cookie"));
 }

@@ -43,6 +43,7 @@ export interface IUser {
   notificationOptions: NotificationOptions;
   otp?: string;
   otpExpires?: Date;
+  isVerified?: boolean;
   verificationToken?: string;
   verificationTokenExpires?: Date;
   passwordResetToken?: string;
@@ -119,6 +120,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     address: String,
     otp: String,
     otpExpires: Date,
+    isVerified: Boolean,
     verificationToken: String,
     verificationTokenExpires: Date,
     profilePhoto: photoSchema,

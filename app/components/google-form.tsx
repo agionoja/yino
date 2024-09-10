@@ -1,13 +1,12 @@
-import { Form } from "@remix-run/react";
+import { Form, FormProps } from "@remix-run/react";
 import { Button } from "~/components/button";
 import googleIcon from "~/assets/icons/google.svg";
-import React from "react";
 
-interface Props extends React.FormHTMLAttributes<HTMLFormElement> {
+interface Props extends FormProps {
   isRegister: boolean;
 }
 
-export function GoogleForm({ isRegister }: Props) {
+export function GoogleForm({ isRegister, ...props }: Props) {
   return (
     <>
       <div className="my-4 flex items-center px-6 md:px-10">
@@ -18,13 +17,13 @@ export function GoogleForm({ isRegister }: Props) {
         <div className="flex-grow border-t border-french-gray"></div>
       </div>
 
-      <Form method={"POST"}>
+      <Form {...props} method={"POST"}>
         <Button
           aria-label={"register with google"}
           type={"submit"}
           name={"_action"}
           value={"google-register"}
-          className={"bg-anti-flash-white"}
+          className={"bg-anti-flash-white !text-gray-500"}
         >
           <div className={"flex justify-center gap-3"}>
             <img src={googleIcon} alt="google icon" />

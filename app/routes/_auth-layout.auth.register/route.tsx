@@ -13,27 +13,6 @@ import { Button } from "~/components/button";
 import { GoogleForm } from "~/components/google-form";
 import { AuthLink } from "~/components/auth-link";
 
-export async function action({ request }: ActionFunctionArgs) {
-  const session = await getTokenSession(request);
-
-  if (session.has("token")) {
-    return redirect("/");
-  }
-
-  const { data: user, error } = await createUser(await request.formData());
-  if (user) {
-    console.log(`User form the register route: ${user}`);
-
-    const cookie = await storeTokenInSession(user);
-
-    console.log({ cookie: cookie });
-    return null;
-    // return redirect("/");
-  } else {
-    return json({ error }, { status: error?.statusCode });
-  }
-}
-
 export const meta: MetaFunction = () => {
   return [
     { title: "Register Account" },
@@ -41,10 +20,40 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function Route() {
+export async function action({ request }: ActionFunctionArgs) {
+  const session = await getTokenSession(request);
+
+  if (session.has("token")) return redirect("/");
+
+  const { _action, ...values } = Object.fromEntries(await request.formData());
+
+  switch (_action) {
+    case "default-register": {
+      const { error, data: user } = await createUser(values);
+
+      if (user) {
+        console.log(`User form the register route: `, user);
+
+        const cookie = await storeTokenInSession(user);
+
+        console.log({ cookie: cookie });
+        return null;
+        // return redirect("/");
+      } else {
+        return json({ error }, { status: error?.statusCode });
+      }
+    }
+
+    case "google-register": {
+      return null;
+    }
+  }
+}
+
+export default function RouteComponent() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
-  const isSubmitting =
+  const isDefaultRegisterSubmitting =
     navigation.state === "submitting" &&
     navigation.formData?.get("_action") === "normal-register";
 
@@ -108,14 +117,14 @@ export default function Route() {
             .
           </span>
           <Button
-            disabled={isSubmitting}
+            disabled={isDefaultRegisterSubmitting}
             name={"_action"}
             aria-label={"register account"}
             type={"submit"}
-            value={"normal-register"}
+            value={"default-register"}
             className={"shrink-0 bg-blue capitalize text-white"}
           >
-            {isSubmitting ? "registering" : "register"}
+            {isDefaultRegisterSubmitting ? "registering" : "register"}
           </Button>
         </div>
       </Form>

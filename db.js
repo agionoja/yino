@@ -1,15 +1,9 @@
 import mongoose from "mongoose";
-import appConfig from "../app.config";
+import appConfig from "./app.config.js";
 import * as process from "node:process";
 
-type DbOptions = {
-  localDb?: boolean;
-  delay?: number;
-  maxRetries?: number;
-};
-
 export default {
-  connect: async (options?: DbOptions) => {
+  connect: async (options = {}) => {
     const env = appConfig.nodeEnv;
     const isOnline = env === "production" ? true : !options?.localDb;
     const dbUrl = isOnline ? appConfig.databaseUrl : appConfig.localDatabaseUrl;

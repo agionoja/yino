@@ -5,32 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.prettierrc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/assets/icons/google.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/components/auth-link.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/components/button.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/components/google-form.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/components/icons.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/components/label.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/utils/email.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/components/input.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/input.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/google-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/google-form.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/db.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/entry.server.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/entry.server.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/guard.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/guard.server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth.2fa/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth.fogot-password/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth.login/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth.register/queries.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth.register/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth.reset-password/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth.verify/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_aLayout.auth/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/session.server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/tailwind.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,9 +22,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -87,27 +69,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.16.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.16.5&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/agionoja/code/yino/app/routes/_aLayout.auth.2fa&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/agionoja/.nvm/versions/node/v20.16.0/lib/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/agionoja/code/yino/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "dev",
+    "javascript.nodejs.core.library.configured.version": "20.16.0",
+    "javascript.nodejs.core.library.typings.version": "20.16.5",
+    "last_opened_file_path": "/home/agionoja/code/yino/app/routes/_aLayout.auth.2fa",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "npm.dev.executor": "Run",
+    "npm.lint.executor": "Run",
+    "npm.start.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "/home/agionoja/.nvm/versions/node/v20.16.0/lib/node_modules/prettier",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/home/agionoja/code/yino/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/routes/_aLayout.auth.2fa" />
@@ -136,6 +119,16 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="lint" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="lint" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -151,6 +144,7 @@
         <item itemvalue="npm.dev" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.build" />
+        <item itemvalue="npm.lint" />
       </list>
     </recent_temporary>
   </component>
@@ -173,7 +167,7 @@
       <workItem from="1725816025824" duration="14838000" />
       <workItem from="1725832110724" duration="34698000" />
       <workItem from="1725909403066" duration="12200000" />
-      <workItem from="1725959867650" duration="12852000" />
+      <workItem from="1725959867650" duration="21962000" />
     </task>
     <servers />
   </component>

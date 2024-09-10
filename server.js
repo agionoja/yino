@@ -7,6 +7,7 @@ import express from "express";
 import morgan from "morgan";
 import socket from "./socket/socket.js";
 import appConfig from "./app.config.js";
+import db from "./db.js";
 
 crone.schedule("5 * * * *", async () => {
   try {
@@ -67,6 +68,7 @@ app.use(morgan("tiny"));
 // handle SSR requests
 app.all("*", remixHandler);
 
-httpServer.listen(appConfig.port, () =>
-  console.log(`Express server listening at http://localhost:${appConfig.port}`),
-);
+httpServer.listen(appConfig.port, () => {
+  (async () => await db.connect({ maxRetries: 5, localDb: false }))();
+  console.log(`Express server listening at http://localhost:${appConfig.port}`);
+});

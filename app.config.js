@@ -9,7 +9,7 @@ const appConfig = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: process.env.PORT || 5000,
   sessionExpires: JSON.parse(process.env.SESSION_EXPIRES || {}),
-  sessionSecret: JSON.parse(process.env.SESSION_SECRET || []),
+  sessionSecret: JSON.parse(`${process.env.SESSION_SECRET}` || []),
 };
 
 export default appConfig;

@@ -4,6 +4,7 @@ import {
   json,
   LoaderFunctionArgs,
   type MetaFunction,
+  redirect,
 } from "@remix-run/node";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
@@ -21,6 +22,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const { error, data: user } = await getUser(values);
 
       if (user) {
+        if (user.is2fa) return redirect("/auth/2fa");
         await storeTokenInSession(user);
         break;
       } else {
@@ -37,7 +39,9 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await hasTokenSession(request);
+  await hasTokenSession(request);
+
+  return null;
 }
 
 export const meta: MetaFunction = () => {

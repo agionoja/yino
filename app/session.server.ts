@@ -2,6 +2,7 @@ import { createCookieSessionStorage, json, redirect } from "@remix-run/node";
 import appConfig from "../app.config";
 import jwt from "~/utils/jwt";
 import { IUser } from "~/models/user.model";
+import { cookieDefaultOptions } from "~/cookies";
 
 type SessionData = {
   token: string;
@@ -15,14 +16,8 @@ export const { getSession, commitSession, destroySession } =
   createCookieSessionStorage<SessionData, SessionFlashData>({
     cookie: {
       name: "__session",
-      domain:
-        appConfig.nodeEnv === "production" ? "yino.onrender.com" : "localhost",
-      httpOnly: true,
       maxAge: Number(appConfig.sessionExpires),
-      path: "/",
-      sameSite: "lax",
-      secure: appConfig.nodeEnv === "production",
-      secrets: appConfig.sessionSecret,
+      ...cookieDefaultOptions,
     },
   });
 

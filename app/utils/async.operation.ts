@@ -15,7 +15,7 @@ type AsyncResult<T> =
     };
 
 export default async function asyncOperationHandler<T>(
-  fn: () => Promise<T>,
+  fn: () => Promise<NonNullable<T>>,
 ): Promise<AsyncResult<T>> {
   try {
     const data = await fn();

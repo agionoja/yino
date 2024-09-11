@@ -8,7 +8,7 @@ const appConfig = {
   localDatabaseUrl: process.env.LOCAL_DATABASE_URL || "",
   nodeEnv: process.env.NODE_ENV || "development",
   port: process.env.PORT || 5000,
-  sessionExpires: JSON.parse(process.env.SESSION_EXPIRES || {}),
+  sessionExpires: process.env.SESSION_EXPIRES,
   sessionSecret: JSON.parse(`${process.env.SESSION_SECRET}` || []),
 };
 

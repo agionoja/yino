@@ -11,13 +11,14 @@ import db from "./db.js";
 
 crone.schedule("5 * * * *", async () => {
   try {
-    const res = await fetch("https://yino.onrender.com/api/spin", {
-      method: "GET",
-    });
-    const awaitedJson = await res.json();
-    console.log(awaitedJson);
+    const res = await (
+      await fetch("https://yino.onrender.com/api/spin", {
+        method: "GET",
+      })
+    ).json();
+    console.log(res);
   } catch (err) {
-    console.error(`There was an error with the crone job: ${err}`);
+    console.error(`There was an error spinning the server: ${err}`);
   }
 });
 
@@ -68,7 +69,12 @@ app.use(morgan("tiny"));
 // handle SSR requests
 app.all("*", remixHandler);
 
-httpServer.listen(appConfig.port, () => {
-  (async () => await db.connect({ maxRetries: 5, localDb: false }))();
-  console.log(`Express server listening at http://localhost:${appConfig.port}`);
-});
+(async () => {
+  await db.connect({ maxRetries: 5, localDb: false });
+
+  httpServer.listen(appConfig.port, () => {
+    console.log(
+      `Express server listening at http://localhost:${appConfig.port}`,
+    );
+  });
+})();

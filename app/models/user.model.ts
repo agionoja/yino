@@ -64,7 +64,9 @@ interface IUserMethods {
   ): boolean;
 }
 
-type UserModel = Model<IUser, NonNullable<unknown>, IUserMethods>;
+interface UserModel extends Model<IUser, NonNullable<unknown>, IUserMethods> {
+  findUserByOtp(otp: string): ReturnType<typeof User.findOne>;
+}
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
@@ -195,7 +197,7 @@ userSchema.methods.compareToken = function (fieldName, token) {
 };
 
 userSchema.methods.generateAndSaveOtp = async function () {
-  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+  const otp = generateOTP(6);
 
   this.otp = hash(otp);
   this.otpExpires = new Date(createTimeStamp({ m: 10 }));
@@ -210,4 +212,19 @@ export default User;
 
 function hash(payload: string) {
   return createHash("sha256").update(payload).digest("hex");
+}
+
+userSchema.static("findUserByOtp", function findUserByOtp(otp: string) {
+  return User.findOne({ otp: hash(otp), otpExpires: { $gt: new Date() } });
+});
+
+function generateOTP(length: number) {
+  const digits = "0123456789";
+  let OTP = "";
+  const len = digits.length;
+  for (let i = 0; i < length; i++) {
+    OTP += digits[Math.floor(Math.random() * len)];
+  }
+
+  return OTP;
 }

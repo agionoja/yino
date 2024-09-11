@@ -5,18 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.login/queries.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/cookies.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/cookies/otp.cookie.server.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/components/google-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/google-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/guard.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/guard.server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/input.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/input.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/route.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.login/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.login/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_landing._index/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_landing._index/route.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/session.server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/app.error.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/app.error.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/utils/async.operation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/async.operation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +170,7 @@
       <workItem from="1725816025824" duration="14838000" />
       <workItem from="1725832110724" duration="34698000" />
       <workItem from="1725909403066" duration="12200000" />
-      <workItem from="1725959867650" duration="36555000" />
+      <workItem from="1725959867650" duration="56484000" />
     </task>
     <servers />
   </component>

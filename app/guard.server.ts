@@ -1,7 +1,16 @@
-import { redirect } from "@remix-run/node";
-import { getTokenSession } from "~/session.server";
+import { redirect, Session } from "@remix-run/node";
+import { commitSession, getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
 import User, { Role } from "~/models/user.model";
+import globalErrorHandler from "~/utils/global.error";
+
+async function redirectToLogin(request: Request, session: Session) {
+  return redirect("/auth/login", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+}
 
 export async function requireUser(request: Request) {
   const session = await getTokenSession(request);
@@ -9,34 +18,40 @@ export async function requireUser(request: Request) {
   let decoded;
 
   if (!token) {
-    throw redirect("/auth/login");
+    session.flash("error", "You are not logged in. Login to gain access");
+
+    throw await redirectToLogin(request, session);
   }
 
-  // Gracefully decode the jwt token
   try {
     decoded = await jwt.verify(token);
   } catch (err) {
-    throw redirect("/auth/login");
+    const error = globalErrorHandler(err as Error);
+    session.flash("error", error.message);
+
+    throw await redirectToLogin(request, session);
   }
 
-  // check if the user still exits
   const user = await User.findById(decoded.id)
     .select("+passwordChangedAt")
     .exec();
 
-  if (!user) throw redirect("/auth/login");
+  if (!user) {
+    session.flash("error", "User no longer exists");
+    throw await redirectToLogin(request, session);
+  }
 
-  // check if user recently changed password
   const passwordChanged = user.passwordChangedAfterJwt(
     decoded.iat || 0,
     user?.passwordChangedAt,
   );
 
   if (passwordChanged) {
-    throw redirect("/auth/login");
+    session.flash("error", "You recently changed password. Login again");
+    throw await redirectToLogin(request, session);
   }
 
-  console.log({ token });
+  return user;
 }
 
 // Define a type that ensures the string starts with "/"

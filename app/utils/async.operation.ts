@@ -14,7 +14,7 @@ type AsyncResult<T> =
       error: ProdError | AppError;
     };
 
-export default async function AsyncOperationHandler<T>(
+export default async function asyncOperationHandler<T>(
   fn: () => Promise<T>,
 ): Promise<AsyncResult<T>> {
   try {

@@ -2,11 +2,11 @@ import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
 import {
   ActionFunctionArgs,
   json,
+  LoaderFunctionArgs,
   type MetaFunction,
-  redirect,
 } from "@remix-run/node";
 import { createUser } from "~/routes/_auth-layout.auth.register/queries";
-import { getTokenSession, storeTokenInSession } from "~/session.server";
+import { hasTokenSession, storeTokenInSession } from "~/session.server";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
 import { Button } from "~/components/button";
@@ -21,10 +21,6 @@ export const meta: MetaFunction = () => {
 };
 
 export async function action({ request }: ActionFunctionArgs) {
-  const session = await getTokenSession(request);
-
-  if (session.has("token")) return redirect("/");
-
   const { _action, ...values } = Object.fromEntries(await request.formData());
 
   switch (_action) {
@@ -32,13 +28,7 @@ export async function action({ request }: ActionFunctionArgs) {
       const { error, data: user } = await createUser(values);
 
       if (user) {
-        console.log(`User form the register route: `, user);
-
-        const cookie = await storeTokenInSession(user);
-
-        console.log({ cookie: cookie });
-        return null;
-        // return redirect("/");
+        return await storeTokenInSession(user);
       } else {
         return json({ error }, { status: error?.statusCode });
       }
@@ -50,14 +40,16 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  return await hasTokenSession(request);
+}
+
 export default function RouteComponent() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const isDefaultRegisterSubmitting =
     navigation.state === "submitting" &&
     navigation.formData?.get("_action") === "normal-register";
-
-  console.log(`Action data is ${actionData}`);
 
   return (
     <>

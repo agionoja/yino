@@ -7,7 +7,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user = await requireUser(request);
   console.log({ user });
 
-  await restrictTo(user, request, "company");
+  await restrictTo(user, request, "client");
   return null;
 }
 

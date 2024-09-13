@@ -3,7 +3,6 @@ import appConfig from "../app.config";
 import jwt from "~/utils/jwt";
 import { IUser } from "~/models/user.model";
 import { cookieDefaultOptions } from "~/cookies";
-import { createToastUtilsWithCustomSession } from "remix-toast";
 
 type SessionData = {
   token: string;
@@ -23,9 +22,9 @@ const session = createCookieSessionStorage<SessionData, SessionFlashData>({
 
 export const { getSession, commitSession, destroySession } = session;
 
-export async function storeTokenInSession(user: Pick<IUser, "_id" | "role">) {
+export async function storeTokenInSession(user: Pick<IUser, "_id">) {
   const session = await getSession();
-  session.set("token", await jwt.sign({ id: user._id, role: user.role }));
+  session.set("token", await jwt.sign({ id: user._id }));
 
   throw redirect("/", {
     headers: {
@@ -51,16 +50,3 @@ export async function redirectIfHasToken(request: Request, url: string = "/") {
     },
   });
 }
-
-export const {
-  getToast,
-  redirectWithToast,
-  redirectWithSuccess,
-  redirectWithError,
-  redirectWithInfo,
-  redirectWithWarning,
-  jsonWithSuccess,
-  jsonWithError,
-  jsonWithInfo,
-  jsonWithWarning,
-} = createToastUtilsWithCustomSession(session);

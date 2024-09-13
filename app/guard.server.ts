@@ -1,11 +1,24 @@
-import { getTokenSession } from "~/session.server";
+import { destroySession, getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
 import User, { IUser, Role } from "~/models/user.model";
 import globalErrorHandler from "~/utils/global.error";
-import { redirectWithErrorToast } from "~/utils/toast/flash.session.server";
+import {
+  redirectWithErrorToast,
+  redirectWithToastAndDestroyExistingSession,
+} from "~/utils/toast/flash.session.server";
+import { Session } from "@remix-run/node";
 
-async function redirectToLogin(message: string) {
-  return redirectWithErrorToast("/auth/login", message);
+async function redirectTo(
+  message: string,
+  session: Session,
+  url = "/auth/login",
+) {
+  // return redirectWithErrorToast("/auth/login", message);
+  return redirectWithToastAndDestroyExistingSession(
+    url,
+    { type: "error", text: message },
+    session,
+  );
 }
 
 export async function requireUser(request: Request) {
@@ -14,14 +27,14 @@ export async function requireUser(request: Request) {
   let decoded;
 
   if (!token) {
-    throw await redirectToLogin("Login to gain access.");
+    throw await redirectTo("Login to gain access.", session);
   }
 
   try {
     decoded = await jwt.verify(token);
   } catch (err) {
     const error = globalErrorHandler(err as Error);
-    throw await redirectToLogin(error[0].message);
+    throw await redirectTo(error[0].message, session);
   }
 
   const user = await User.findById(decoded.id)
@@ -29,7 +42,7 @@ export async function requireUser(request: Request) {
     .exec();
 
   if (!user) {
-    throw await redirectToLogin("User no longer exists");
+    throw await redirectTo("User no longer exists", session, "/auth/register");
   }
 
   const passwordChanged = user.passwordChangedAfterJwt(
@@ -38,14 +51,18 @@ export async function requireUser(request: Request) {
   );
 
   if (passwordChanged) {
-    throw await redirectToLogin("You recently changed password. Login again");
+    await destroySession(session);
+    throw await redirectTo(
+      "You recently changed password. Login again",
+      session,
+    );
   }
 
   return user;
 }
 
 export async function restrictTo(
-  user: Pick<IUser, "role" | "_id">,
+  user: Pick<IUser, "role">,
   request: Request,
   ...roles: Role[]
 ) {

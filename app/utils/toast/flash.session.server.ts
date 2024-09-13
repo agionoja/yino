@@ -1,10 +1,11 @@
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { createCookieSessionStorage, redirect, Session } from "@remix-run/node";
 import { cookieDefaultOptions } from "~/cookies";
 import {
   FlashSessionValue,
   flashSessionValuesSchema,
   ToastMessage,
 } from "~/utils/toast/schema";
+import { destroySession } from "~/session.server";
 
 const FLASH_SESSION = "__flash";
 
@@ -74,4 +75,22 @@ export async function redirectWithErrorToast(
   init?: ResponseInit,
 ) {
   return redirectWithToast(url, { text: text, type: "error" }, init);
+}
+
+export async function redirectWithToastAndDestroyExistingSession(
+  url: string,
+  toast: ToastMessage,
+  session: Session,
+  init?: ResponseInit,
+) {
+  const destroyedSessionHeader = await destroySession(session);
+  const toastHeader = await redirectWithToast(url, toast, init);
+  const headers = new Headers(toastHeader.headers);
+
+  headers.append("Set-Cookie", destroyedSessionHeader);
+
+  return redirect(url, {
+    ...init,
+    headers,
+  });
 }

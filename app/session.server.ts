@@ -3,6 +3,7 @@ import appConfig from "../app.config";
 import jwt from "~/utils/jwt";
 import { IUser } from "~/models/user.model";
 import { cookieDefaultOptions } from "~/cookies";
+import { createToastUtilsWithCustomSession } from "remix-toast";
 
 type SessionData = {
   token: string;
@@ -12,14 +13,15 @@ type SessionFlashData = {
   error: string;
 };
 
-export const { getSession, commitSession, destroySession } =
-  createCookieSessionStorage<SessionData, SessionFlashData>({
-    cookie: {
-      name: "__session",
-      maxAge: Number(appConfig.sessionExpires),
-      ...cookieDefaultOptions,
-    },
-  });
+const session = createCookieSessionStorage<SessionData, SessionFlashData>({
+  cookie: {
+    name: "__session",
+    maxAge: Number(appConfig.sessionExpires),
+    ...cookieDefaultOptions,
+  },
+});
+
+export const { getSession, commitSession, destroySession } = session;
 
 export async function storeTokenInSession(user: Pick<IUser, "_id" | "role">) {
   const session = await getSession();
@@ -36,10 +38,10 @@ export async function getTokenSession(request: Request) {
   return await getSession(request.headers.get("Cookie"));
 }
 
-export async function hasTokenSession(request: Request) {
+export async function redirectIfHasToken(request: Request, url: string = "/") {
   const session = await getTokenSession(request);
 
-  if (session.has("token")) throw redirect("/");
+  if (session.has("token")) throw redirect(url);
 
   const data = { error: session.get("error") };
 
@@ -49,3 +51,16 @@ export async function hasTokenSession(request: Request) {
     },
   });
 }
+
+export const {
+  getToast,
+  redirectWithToast,
+  redirectWithSuccess,
+  redirectWithError,
+  redirectWithInfo,
+  redirectWithWarning,
+  jsonWithSuccess,
+  jsonWithError,
+  jsonWithInfo,
+  jsonWithWarning,
+} = createToastUtilsWithCustomSession(session);

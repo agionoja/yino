@@ -4,7 +4,7 @@ import { AppError } from "~/utils/app.error";
 
 export async function getUser(formData: { [key: string]: FormDataEntryValue }) {
   return asyncOperationHandler(async () => {
-    const { email, password } = Object.freeze(formData);
+    const { email, password } = formData;
 
     if (!email || !password) {
       throw new AppError("Email and password are required", 400);

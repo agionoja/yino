@@ -1,12 +1,4 @@
-import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
-import { requireUser } from "~/guard.server";
-
-export async function loader({ request }: LoaderFunctionArgs) {
-  const user = await requireUser(request);
-
-  console.log(user);
-  return json({ user });
-}
+import { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
   return [

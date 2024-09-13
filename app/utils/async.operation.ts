@@ -11,7 +11,7 @@ type AsyncResult<T> =
     }
   | {
       data: null;
-      error: ProdError | AppError;
+      error: Array<ProdError | AppError>;
     };
 
 export default async function asyncOperationHandler<T>(

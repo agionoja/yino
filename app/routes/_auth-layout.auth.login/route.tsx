@@ -1,4 +1,4 @@
-import { Form, useNavigation } from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 import {
   ActionFunctionArgs,
   json,
@@ -10,9 +10,12 @@ import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
 import { GoogleForm } from "~/components/google-form";
 import { AuthLink } from "~/components/auth-link";
-import { hasTokenSession, storeTokenInSession } from "~/session.server";
+import { redirectIfHasToken, storeTokenInSession } from "~/session.server";
 import { getUser } from "~/routes/_auth-layout.auth.login/queries";
 import { Button } from "~/components/button";
+import { ErrorMessage } from "~/components/error";
+import { useEffect, useRef } from "react";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
@@ -22,11 +25,12 @@ export async function action({ request }: ActionFunctionArgs) {
       const { error, data: user } = await getUser(values);
 
       if (user) {
+        console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
         if (user.is2fa) return redirect("/auth/2fa");
         await storeTokenInSession(user);
         break;
       } else {
-        return json({ error }, { status: error?.statusCode });
+        return json({ error }, { status: error[0]?.statusCode });
       }
     }
 
@@ -39,9 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await hasTokenSession(request);
-
-  return null;
+  return await redirectIfHasToken(request);
 }
 
 export const meta: MetaFunction = () => {
@@ -53,15 +55,26 @@ export const meta: MetaFunction = () => {
 
 export default function RouteComponent() {
   const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
+  const emailRef = useRef<HTMLInputElement>(null);
+  const state = actionData?.error ? "error" : "idle";
   const isDefaultLoginSubmitting =
     navigation.state === "submitting" &&
     navigation.formData?.get("_action") === "default-login";
+
+  useEffect(() => {
+    if (state === "error" && !isDefaultLoginSubmitting) {
+      emailRef.current?.focus();
+      emailRef.current?.select();
+    }
+  }, [isDefaultLoginSubmitting, state]);
 
   return (
     <>
       <Form method="POST" className={"auth-form"}>
         <Label label={"email"}>
           <Input
+            ref={emailRef}
             name={"email"}
             type={"email"}
             placeholder={"hello@example.com"}
@@ -74,6 +87,9 @@ export default function RouteComponent() {
             name={"password"}
             aria-label={"register password"}
             placeholder={"Your Password"}
+            minLength={8}
+            maxLength={80}
+            required
           />
         </Label>
 
@@ -88,6 +104,12 @@ export default function RouteComponent() {
           {isDefaultLoginSubmitting ? "Login in..." : "Login"}
         </Button>
       </Form>
+
+      <ErrorMessage
+        autoClose={true}
+        showError={state === "error" && !isDefaultLoginSubmitting}
+        message={actionData?.error[0].message}
+      />
 
       <GoogleForm
         buttonName={"_action"}

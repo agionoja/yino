@@ -6,12 +6,13 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import { createUser } from "~/routes/_auth-layout.auth.register/queries";
-import { hasTokenSession, storeTokenInSession } from "~/session.server";
+import { redirectIfHasToken, storeTokenInSession } from "~/session.server";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
 import { Button } from "~/components/button";
 import { GoogleForm } from "~/components/google-form";
 import { AuthLink } from "~/components/auth-link";
+import { ErrorMessage } from "~/components/error";
 
 export const meta: MetaFunction = () => {
   return [
@@ -30,7 +31,7 @@ export async function action({ request }: ActionFunctionArgs) {
       if (user) {
         return await storeTokenInSession(user);
       } else {
-        return json({ error }, { status: error?.statusCode });
+        return json({ error }, { status: error[0]?.statusCode });
       }
     }
 
@@ -41,15 +42,16 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await hasTokenSession(request);
+  return await redirectIfHasToken(request);
 }
 
 export default function RouteComponent() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
+  const state = actionData?.error ? "error" : "idle";
   const isDefaultRegisterSubmitting =
     navigation.state === "submitting" &&
-    navigation.formData?.get("_action") === "normal-register";
+    navigation.formData?.get("_action") === "default-register";
 
   return (
     <>
@@ -116,10 +118,16 @@ export default function RouteComponent() {
             value={"default-register"}
             className={"shrink-0 bg-blue capitalize text-white"}
           >
-            {isDefaultRegisterSubmitting ? "registering" : "register"}
+            {isDefaultRegisterSubmitting ? "registering..." : "register"}
           </Button>
         </div>
       </Form>
+
+      <ErrorMessage
+        autoClose={true}
+        showError={state === "error" && !isDefaultRegisterSubmitting}
+        message={actionData?.error[0].message}
+      />
 
       <GoogleForm isRegister={true} />
 

@@ -1,15 +1,11 @@
-import { redirect, Session } from "@remix-run/node";
-import { commitSession, getTokenSession } from "~/session.server";
+import { getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
-import User, { Role } from "~/models/user.model";
+import User, { IUser, Role } from "~/models/user.model";
 import globalErrorHandler from "~/utils/global.error";
+import { redirectWithErrorToast } from "~/utils/toast/flash.session.server";
 
-async function redirectToLogin(request: Request, session: Session) {
-  return redirect("/auth/login", {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-  });
+async function redirectToLogin(message: string) {
+  return redirectWithErrorToast("/auth/login", message);
 }
 
 export async function requireUser(request: Request) {
@@ -18,18 +14,14 @@ export async function requireUser(request: Request) {
   let decoded;
 
   if (!token) {
-    session.flash("error", "You are not logged in. Login to gain access");
-
-    throw await redirectToLogin(request, session);
+    throw await redirectToLogin("Login to gain access.");
   }
 
   try {
     decoded = await jwt.verify(token);
   } catch (err) {
     const error = globalErrorHandler(err as Error);
-    session.flash("error", error.message);
-
-    throw await redirectToLogin(request, session);
+    throw await redirectToLogin(error[0].message);
   }
 
   const user = await User.findById(decoded.id)
@@ -37,8 +29,7 @@ export async function requireUser(request: Request) {
     .exec();
 
   if (!user) {
-    session.flash("error", "User no longer exists");
-    throw await redirectToLogin(request, session);
+    throw await redirectToLogin("User no longer exists");
   }
 
   const passwordChanged = user.passwordChangedAfterJwt(
@@ -47,39 +38,20 @@ export async function requireUser(request: Request) {
   );
 
   if (passwordChanged) {
-    session.flash("error", "You recently changed password. Login again");
-    throw await redirectToLogin(request, session);
+    throw await redirectToLogin("You recently changed password. Login again");
   }
 
   return user;
 }
 
-// Define a type that ensures the string starts with "/"
-type RestrictTo<Prefix extends string> = Prefix extends `/${string}`
-  ? Prefix
-  : never;
-
 export async function restrictTo(
+  user: Pick<IUser, "role" | "_id">,
   request: Request,
-  redirectTo: RestrictTo<string>, // Use the new type here to enforce "/"
   ...roles: Role[]
 ) {
-  const session = await getTokenSession(request);
-  const token = session.get("token");
-
-  if (!token) throw redirect("/auth/login");
-
-  let decoded;
-  try {
-    decoded = await jwt.verify(token);
-  } catch (err) {
-    // Handle verification error by redirecting to login if the token is invalid
-    throw redirect("/auth/login");
-  }
-
-  const role = decoded.role;
-
-  if (!roles.includes(role)) {
-    throw redirect(redirectTo);
-  }
+  if (!roles.includes(user.role))
+    throw await redirectWithErrorToast(
+      request.headers.get("referer") || "/",
+      "You are not authorized",
+    );
 }

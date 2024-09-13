@@ -1,11 +1,12 @@
-import { Form, useNavigation } from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
-import { ActionFunctionArgs, json } from "@remix-run/node";
+import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
 import React, { useEffect, useRef, useState } from "react";
 import { validateOtp } from "~/routes/_auth-layout.auth.2fa/queries";
-import { storeTokenInSession } from "~/session.server";
+import { redirectIfHasToken, storeTokenInSession } from "~/session.server";
 import { AuthLink } from "~/components/auth-link";
+import { ErrorMessage } from "~/components/error";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -19,17 +20,22 @@ export async function action({ request }: ActionFunctionArgs) {
     return json(
       { error },
       {
-        status: error?.statusCode,
+        status: error[0]?.statusCode,
       },
     );
   }
 }
 
 export default function RouteComponent() {
-  const [inputValue, setInputValue] = useState("");
   const navigation = useNavigation();
+  const actionData = useActionData<typeof action>(); // Get action data, including errors
   const inputRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState("");
   const isSubmitting = navigation.state === "submitting";
+  const errorMessage = actionData?.error ? actionData.error[0].message : null;
+  const errorPath = actionData?.error ? actionData.error[0].path : null;
+
+  const state = actionData?.error ? "error" : "idle";
 
   useEffect(() => {
     if (!isSubmitting) {
@@ -37,25 +43,26 @@ export default function RouteComponent() {
       inputRef.current?.select();
     }
   }, [isSubmitting]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-
-    // Allow only digits and restrict length to 6
     if (/^\d*$/.test(value) && value.length <= 6) {
       setInputValue(value);
     }
   };
-
   const handleInvalid = (e: React.FormEvent<HTMLInputElement>) => {
-    // Customize the browser's default validation message
     e.currentTarget.setCustomValidity("Please enter a 6-digit numeric code.");
   };
-
   const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-    // Reset custom validation message if input becomes valid
     e.currentTarget.setCustomValidity("");
   };
+
+  // If the error path matches "otp", you can focus on the input field
+  useEffect(() => {
+    if (errorPath === "otp" && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [errorPath]);
 
   return (
     <>
@@ -80,9 +87,16 @@ export default function RouteComponent() {
           disabled={isSubmitting}
           className={"bg-blue"}
         >
-          {isSubmitting ? "Login in..." : "Login"}
+          {isSubmitting ? "Logging in..." : "Login"}
         </Button>
       </Form>
+
+      {errorMessage && (
+        <ErrorMessage
+          showError={state === "error" && !isSubmitting}
+          message={errorMessage}
+        />
+      )}
 
       <AuthLink to={"/auth/login"}>Back to login</AuthLink>
     </>

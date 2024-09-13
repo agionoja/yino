@@ -74,12 +74,16 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       type: String,
       required: [true, "name is required"],
       minlength: [4, "name cannot be less than 4"],
+      unique: true,
     },
     username: {
       type: String,
+      unique: true,
+      sparse: true,
     },
     email: {
       type: String,
+      unique: true,
       required: [true, "email is required"],
       set: (v: string) => v.toLowerCase(),
       validate: [validator.isEmail, "invalid email address"],
@@ -200,7 +204,7 @@ userSchema.methods.generateAndSaveOtp = async function () {
   const otp = generateOTP(6);
 
   this.otp = hash(otp);
-  this.otpExpires = new Date(createTimeStamp({ m: 10 }));
+  this.otpExpires = new Date(createTimeStamp({ m: 2 }));
   await this.save({ validateBeforeSave: false });
 
   return otp;

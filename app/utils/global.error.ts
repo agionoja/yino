@@ -10,77 +10,91 @@ export type ProdError = {
   message: string;
   statusCode: number;
   status: AppError["status"];
+  path?: string;
 };
 
-function handleDevError(err: DevProdArgs): AppError {
-  if (err instanceof AppError) {
-    return {
-      name: err.name,
-      message: err.message,
-      statusCode: err.statusCode,
-      status: err.status,
-      stack: err.stack,
-      isOperational: err.isOperational,
-    };
-  } else {
-    return {
-      name: err.name,
-      message: err.message,
-      statusCode: 500,
-      status: "error",
-      stack: err.stack,
-      isOperational: false,
-    };
-  }
-}
-
-function handleProdError(err: DevProdArgs): ProdError {
-  return err instanceof AppError && err.isOperational
-    ? {
-        message: err.message,
-        statusCode: err.statusCode,
-        status: err.status,
-      }
-    : {
-        message: "Something went very wrong💥💥",
+function handleDevError(err: DevProdArgs[]): AppError[] {
+  return err.map((e) => {
+    if (e instanceof AppError) {
+      return {
+        name: e.name,
+        message: e.message,
+        statusCode: e.statusCode,
+        status: e.status,
+        stack: e.stack,
+        path: e?.path,
+        isOperational: e.isOperational,
+      };
+    } else {
+      return {
+        name: e.name,
+        message: e.message,
+        stack: e.stack,
         statusCode: 500,
         status: "error",
+        isOperational: false,
       };
+    }
+  });
+}
+
+function handleProdError(err: DevProdArgs[]): ProdError[] {
+  return err.map((e) => {
+    return e instanceof AppError && e.isOperational
+      ? {
+          message: e.message,
+          statusCode: e.statusCode,
+          status: e.status,
+          path: e?.path,
+        }
+      : {
+          message: "Something went very wrong💥💥",
+          statusCode: 500,
+          status: "error",
+        };
+  });
 }
 
 function handleDbDuplicateError(err: MongoServerError) {
   const [key, value] = Object.entries(err.keyValue);
-  return new AppError(
-    `The ${key} ${value} is already in use. Please use a different ${key}`,
-    409,
-  );
+  return [
+    new AppError(
+      `The ${key} ${value} is already in use. Please use a different ${key}`,
+      409,
+    ),
+  ];
 }
 
 function handleDbValidationError(err: MongoServerError) {
-  const message = Object.keys(err.errors)
-    .map((key) => err.erros[key].message)
-    .join(". ");
-  return new AppError(message, 400);
+  return Object.keys(err.errors).map((key) => {
+    return new AppError(err.errors[key].message, 400, key);
+  });
+
+  // const message = Object.keys(err.errors)
+  //   .map((key) => err.errors[key].message)
+  //   .join(". ");
+  // return new AppError(message, 400);
 }
 
 export function handleDbCastError(err: CastError) {
-  return new AppError(`Invalid ${err.path}: ${err.value}`, 400);
+  return [new AppError(`Invalid ${err.path}: ${err.value}`, 400)];
 }
 
 export default function globalErrorHandler(err: DevProdArgs) {
   if (appConfig.nodeEnv === "production") {
-    let errorCopy = clonedeep(err);
+    const errorCopy = clonedeep(err);
+    const errorArray = [];
 
     if ((err as MongoServerError).code === 1100) {
-      errorCopy = handleDbDuplicateError(err as MongoServerError);
+      errorArray.push(handleDbDuplicateError(errorCopy as MongoServerError));
     } else if (err.name === "ValidationError") {
-      errorCopy = handleDbValidationError(err as MongoServerError);
+      errorArray.push(handleDbValidationError(errorCopy as MongoServerError));
     } else if (err.name === "CastError") {
-      errorCopy = handleDbCastError(err as CastError);
+      errorArray.push(handleDbCastError(errorCopy as CastError));
     }
 
-    return handleProdError(errorCopy);
+    return handleProdError([errorCopy]);
   } else {
-    return handleDevError(err);
+    return handleDevError([err]);
   }
 }

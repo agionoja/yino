@@ -74,7 +74,6 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       type: String,
       required: [true, "name is required"],
       minlength: [4, "name cannot be less than 4"],
-      unique: true,
     },
     username: {
       type: String,

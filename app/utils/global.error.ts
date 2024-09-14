@@ -40,6 +40,7 @@ function handleDevError(err: DevProdArgs[]): AppError[] {
 
 function handleProdError(err: DevProdArgs[]): ProdError[] {
   return err.map((e) => {
+    console.log(e);
     return e instanceof AppError && e.isOperational
       ? {
           message: e.message,
@@ -56,11 +57,12 @@ function handleProdError(err: DevProdArgs[]): ProdError[] {
 }
 
 function handleDbDuplicateError(err: MongoServerError) {
-  const [key, value] = Object.entries(err.keyValue);
+  const [key, value] = Object.entries(err.keyValue)[0];
   return [
     new AppError(
       `The ${key} ${value} is already in use. Please use a different ${key}`,
       409,
+      String(key),
     ),
   ];
 }
@@ -76,24 +78,37 @@ function handleDbValidationError(err: MongoServerError) {
   // return new AppError(message, 400);
 }
 
-export function handleDbCastError(err: CastError) {
-  return [new AppError(`Invalid ${err.path}: ${err.value}`, 400)];
+function handleJwtTokenExpiredError() {
+  return [new AppError("Your session has expired", 401)];
 }
 
+export function handleJwtJsonWebTokenError() {
+  return [new AppError("Your session is malformed", 401)];
+}
+
+export function handleDbCastError(err: CastError) {
+  return [new AppError(`Invalid ${err.path}: ${err.value}`, 400, err.path)];
+}
 export default function globalErrorHandler(err: DevProdArgs) {
   if (appConfig.nodeEnv === "production") {
     const errorCopy = clonedeep(err);
-    const errorArray = [];
+    let errorArray;
 
-    if ((err as MongoServerError).code === 1100) {
-      errorArray.push(handleDbDuplicateError(errorCopy as MongoServerError));
+    if ((err as MongoServerError).code === 11000) {
+      console.log("This is a duplicate key error 🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨");
+      errorArray = [...handleDbDuplicateError(errorCopy as MongoServerError)];
     } else if (err.name === "ValidationError") {
-      errorArray.push(handleDbValidationError(errorCopy as MongoServerError));
+      errorArray = [...handleDbValidationError(errorCopy as MongoServerError)];
     } else if (err.name === "CastError") {
-      errorArray.push(handleDbCastError(errorCopy as CastError));
+      errorArray = [...handleDbCastError(errorCopy as CastError)];
+    } else if (err.name === "TokenExpiredError") {
+      errorArray = [...handleJwtTokenExpiredError()];
+    } else if (err.name === "JsonWebTokenError") {
+      errorArray = [...handleJwtJsonWebTokenError()];
+    } else {
+      errorArray = [errorCopy];
     }
-
-    return handleProdError([errorCopy]);
+    return handleProdError(errorArray);
   } else {
     return handleDevError([err]);
   }

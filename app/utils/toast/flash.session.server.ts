@@ -94,3 +94,19 @@ export async function redirectWithToastAndDestroyExistingSession(
     headers,
   });
 }
+
+export async function redirectWithErrorAndEncodeUrl(
+  message: string,
+  session: Session,
+  request: Request,
+  url = "/auth/login",
+) {
+  const urlToEncode = new URL(request.url).pathname;
+  const encodedUrl = `${url}?redirect=${encodeURIComponent(urlToEncode)}`;
+
+  return redirectWithToastAndDestroyExistingSession(
+    encodedUrl,
+    { type: "error", text: message },
+    session,
+  );
+}

@@ -26,11 +26,7 @@ export async function storeTokenInSession(user: Pick<IUser, "_id">) {
   const session = await getSession();
   session.set("token", await jwt.sign({ id: user._id }));
 
-  throw redirect("/", {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-  });
+  return session;
 }
 
 export async function getTokenSession(request: Request) {

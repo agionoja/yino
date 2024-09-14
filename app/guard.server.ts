@@ -1,25 +1,12 @@
-import { destroySession, getTokenSession } from "~/session.server";
+import { getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
 import User, { IUser, Role } from "~/models/user.model";
 import globalErrorHandler from "~/utils/global.error";
 import {
+  redirectWithErrorAndEncodeUrl,
   redirectWithErrorToast,
-  redirectWithToastAndDestroyExistingSession,
 } from "~/utils/toast/flash.session.server";
-import { Session } from "@remix-run/node";
-
-async function redirectTo(
-  message: string,
-  session: Session,
-  url = "/auth/login",
-) {
-  // return redirectWithErrorToast("/auth/login", message);
-  return redirectWithToastAndDestroyExistingSession(
-    url,
-    { type: "error", text: message },
-    session,
-  );
-}
+import appConfig from "../app.config";
 
 export async function requireUser(request: Request) {
   const session = await getTokenSession(request);
@@ -27,14 +14,22 @@ export async function requireUser(request: Request) {
   let decoded;
 
   if (!token) {
-    throw await redirectTo("Login to gain access.", session);
+    throw await redirectWithErrorAndEncodeUrl(
+      "Login to gain access.",
+      session,
+      request,
+    );
   }
 
   try {
     decoded = await jwt.verify(token);
   } catch (err) {
     const error = globalErrorHandler(err as Error);
-    throw await redirectTo(error[0].message, session);
+    throw await redirectWithErrorAndEncodeUrl(
+      error[0].message,
+      session,
+      request,
+    );
   }
 
   const user = await User.findById(decoded.id)
@@ -42,7 +37,12 @@ export async function requireUser(request: Request) {
     .exec();
 
   if (!user) {
-    throw await redirectTo("User no longer exists", session, "/auth/register");
+    throw await redirectWithErrorAndEncodeUrl(
+      "User no longer exists",
+      session,
+      request,
+      "/auth/register",
+    );
   }
 
   const passwordChanged = user.passwordChangedAfterJwt(
@@ -51,10 +51,10 @@ export async function requireUser(request: Request) {
   );
 
   if (passwordChanged) {
-    await destroySession(session);
-    throw await redirectTo(
+    throw await redirectWithErrorAndEncodeUrl(
       "You recently changed password. Login again",
       session,
+      request,
     );
   }
 
@@ -66,9 +66,15 @@ export async function restrictTo(
   request: Request,
   ...roles: Role[]
 ) {
-  if (!roles.includes(user.role))
-    throw await redirectWithErrorToast(
-      request.headers.get("referer") || "/",
-      "You are not authorized",
-    );
+  if (!roles.includes(user.role)) {
+    const referer = request.headers.get("referer");
+    const redirectLink =
+      referer?.includes(appConfig.localHost) || // host eg localhost:3000
+      referer?.includes(appConfig.onlineHost)
+        ? referer
+        : "/";
+
+    // console.log({ redirectLink });
+    throw await redirectWithErrorToast(redirectLink, "You are not authorized");
+  }
 }

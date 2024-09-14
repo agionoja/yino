@@ -5,17 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/routes/_landing.about/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/_landing.about/route.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/guard.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/guard.server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_landing/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_landing/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.login/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.login/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_landing.about/route.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/account.support.conversations/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/account.support.conversations/route.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/session.server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/jwt.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/jwt.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/global.error.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/global.error.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/utils/toast/flash.session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/toast/flash.session.server.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +108,7 @@
       <recent name="$PROJECT_DIR$/app/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.build">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -176,7 +178,7 @@
       <workItem from="1725832110724" duration="34698000" />
       <workItem from="1725909403066" duration="12200000" />
       <workItem from="1725959867650" duration="63433000" />
-      <workItem from="1726085281597" duration="51977000" />
+      <workItem from="1726085281597" duration="67203000" />
     </task>
     <servers />
   </component>

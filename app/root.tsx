@@ -18,7 +18,7 @@ import { getFlashSession } from "~/utils/toast/flash.session.server";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { flash, headers } = await getFlashSession(request);
 
-  console.log({ flash, headers });
+  // console.log({ flash, headers });
 
   return json({ flash }, { headers });
 };
@@ -34,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ToastContainer
-          // autoClose={5000}
+          autoClose={5000}
           hideProgressBar={false}
           closeOnClick={true}
           pauseOnHover={true}
@@ -58,6 +58,7 @@ export default function App() {
     if (flash?.toast) {
       toast(flash.toast.text, {
         type: flash.toast.type,
+        autoClose: 15000,
       });
     }
   }, [flash]);

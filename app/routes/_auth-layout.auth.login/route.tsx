@@ -10,7 +10,11 @@ import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
 import { GoogleForm } from "~/components/google-form";
 import { AuthLink } from "~/components/auth-link";
-import { redirectIfHasToken, storeTokenInSession } from "~/session.server";
+import {
+  commitSession,
+  redirectIfHasToken,
+  storeTokenInSession,
+} from "~/session.server";
 import { getUser } from "~/routes/_auth-layout.auth.login/queries";
 import { Button } from "~/components/button";
 import { ErrorMessage } from "~/components/error";
@@ -24,10 +28,19 @@ export async function action({ request }: ActionFunctionArgs) {
       const { error, data: user } = await getUser(values);
 
       if (user) {
-        console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
-        if (user.is2fa) return redirect("/auth/2fa");
-        await storeTokenInSession(user);
-        break;
+        if (user.is2fa) {
+          console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
+          return redirect("/auth/2fa");
+        }
+        const url = new URL(request.url);
+        const redirectUrl = url.searchParams.get("redirect") || "/";
+        const session = await storeTokenInSession(user);
+
+        return redirect(redirectUrl, {
+          headers: {
+            "Set-Cookie": await commitSession(session),
+          },
+        });
       } else {
         return json({ error }, { status: error[0]?.statusCode });
       }

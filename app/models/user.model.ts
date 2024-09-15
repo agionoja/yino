@@ -6,7 +6,7 @@ import scrypt from "~/utils/scrypt";
 import createTimeStamp from "~/utils/timestamp";
 import photoSchema, { IPhoto } from "~/models/schamas/photo.schema";
 
-const roles = ["client", "admin", "company"] as const;
+const roles = ["client", "admin", "team"] as const;
 
 export type Role = (typeof roles)[number];
 

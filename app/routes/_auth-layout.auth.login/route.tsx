@@ -4,21 +4,28 @@ import {
   json,
   LoaderFunctionArgs,
   type MetaFunction,
-  redirect,
 } from "@remix-run/node";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
 import { GoogleForm } from "~/components/google-form";
 import { AuthLink } from "~/components/auth-link";
+import { Button } from "~/components/button";
+import { useEffect, useRef } from "react";
+import { toast } from "react-toastify";
+import validator from "validator";
+import { getUser } from "~/routes/_auth-layout.auth.login/queries";
+import {
+  getDashboardUrl,
+  getUrlFromSearchParams,
+  queryStringBuilder,
+} from "~/utils/url";
 import {
   commitSession,
-  redirectIfHasToken,
+  redirectIfHaveValidToken,
   storeTokenInSession,
 } from "~/session.server";
-import { getUser } from "~/routes/_auth-layout.auth.login/queries";
-import { Button } from "~/components/button";
-import { ErrorMessage } from "~/components/error";
-import { useEffect, useRef } from "react";
+import { redirectWithToast } from "~/utils/toast/flash.session.server";
+import { parseHasOtpCookie, hasOtp, setHasOtpCookie } from "~/cookies.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
@@ -28,19 +35,46 @@ export async function action({ request }: ActionFunctionArgs) {
       const { error, data: user } = await getUser(values);
 
       if (user) {
+        const url = getUrlFromSearchParams(request.url, "redirect");
+        const redirectUrl = url ? url : getDashboardUrl(user);
+
         if (user.is2fa) {
           console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
-          return redirect("/auth/2fa");
+
+          const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
+            key: "redirect",
+            value: redirectUrl,
+          });
+
+          const hasOtpCookie = await parseHasOtpCookie(request);
+          hasOtpCookie["hasOtp"] = true;
+
+          // console.log({ hasOtpCookie: hasOtpCookie, _2faRedirectUrl });
+
+          return redirectWithToast(
+            _2faRedirectUrl,
+            {
+              text: "OTP is valid for only 2 min!",
+              type: "warning",
+            },
+            {
+              headers: {
+                "Set-Cookie": await setHasOtpCookie(hasOtpCookie),
+              },
+            },
+          );
         }
-        const url = new URL(request.url);
-        const redirectUrl = url.searchParams.get("redirect") || "/";
         const session = await storeTokenInSession(user);
 
-        return redirect(redirectUrl, {
-          headers: {
-            "Set-Cookie": await commitSession(session),
+        return redirectWithToast(
+          redirectUrl,
+          { text: "Login successful", type: "success" },
+          {
+            headers: {
+              "Set-Cookie": await commitSession(session),
+            },
           },
-        });
+        );
       } else {
         return json({ error }, { status: error[0]?.statusCode });
       }
@@ -55,12 +89,14 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  return await redirectIfHasToken(request);
+  await redirectIfHaveValidToken(request, "You are already logged in!");
+
+  return null;
 }
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Login" },
+    { title: "Login | Yino" },
     { name: "description", content: "Login to your yino account" },
   ];
 };
@@ -69,17 +105,26 @@ export default function RouteComponent() {
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
   const emailRef = useRef<HTMLInputElement>(null);
-  const state = actionData?.error ? "error" : "idle";
-  const isDefaultLoginSubmitting =
+  const error = actionData?.error;
+  const previousErrorRef = useRef<typeof error | null>(null);
+  const isSubmitting =
     navigation.state === "submitting" &&
     navigation.formData?.get("_action") === "default-login";
 
   useEffect(() => {
-    if (state === "error" && !isDefaultLoginSubmitting) {
+    const hasNewError = error && error !== previousErrorRef.current;
+
+    if (error || !isSubmitting) {
       emailRef.current?.focus();
       emailRef.current?.select();
     }
-  }, [isDefaultLoginSubmitting, state]);
+
+    if (hasNewError) {
+      toast(error[0].message, { type: "error", autoClose: 2000 });
+    }
+
+    previousErrorRef.current = error;
+  }, [error, isSubmitting]);
 
   return (
     <>
@@ -106,22 +151,16 @@ export default function RouteComponent() {
         </Label>
 
         <Button
-          disabled={isDefaultLoginSubmitting}
+          disabled={isSubmitting}
           name={"_action"}
           aria-label={"register account"}
           type={"submit"}
           value={"default-login"}
           className={"shrink-0 bg-blue capitalize text-white"}
         >
-          {isDefaultLoginSubmitting ? "Login in..." : "Login"}
+          {isSubmitting ? "Login in..." : "Login"}
         </Button>
       </Form>
-
-      <ErrorMessage
-        autoClose={true}
-        showError={state === "error" && !isDefaultLoginSubmitting}
-        message={actionData?.error[0].message}
-      />
 
       <GoogleForm
         buttonName={"_action"}

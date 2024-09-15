@@ -58,7 +58,6 @@ export default function App() {
     if (flash?.toast) {
       toast(flash.toast.text, {
         type: flash.toast.type,
-        autoClose: 15000,
       });
     }
   }, [flash]);

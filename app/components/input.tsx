@@ -1,19 +1,60 @@
-import toast from "react-toastify";
-import { InputHTMLAttributes, useState, forwardRef, ForwardedRef } from "react";
+import { toast } from "react-toastify";
+import {
+  InputHTMLAttributes,
+  useState,
+  forwardRef,
+  ForwardedRef,
+  useEffect,
+  useRef,
+  useImperativeHandle,
+} from "react";
 import { Eye, EyeSlash } from "~/components/icons";
+import { useNavigation } from "@remix-run/react";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
+  validate?: {
+    message?: string;
+    isValid: boolean;
+  };
+}
+
+export interface InputRef {
+  focus: () => void;
+  select: () => void;
 }
 
 export const Input = forwardRef(function Input(
-  { className, ...props }: Props,
-  ref: ForwardedRef<HTMLInputElement>,
+  { className, validate, ...props }: Props,
+  ref: ForwardedRef<InputRef>,
 ) {
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => {
+    return {
+      focus() {
+        inputRef.current?.focus();
+      },
+      select() {
+        inputRef.current?.select();
+      },
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!validate?.isValid && !isSubmitting) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+      toast(validate?.message, { type: "error" });
+    }
+  }, [validate?.message, validate?.isValid, isSubmitting]);
+
   return (
     <input
       {...props}
-      ref={ref}
+      ref={inputRef}
       className={`w-full rounded-lg border border-french-gray px-4 py-4 transition duration-200 focus:border-payne-gray focus:shadow focus:outline-none ${className}`}
     />
   );

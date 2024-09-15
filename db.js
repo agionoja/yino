@@ -22,7 +22,7 @@ export default {
         console.error(`Database connection attempt ${retries} failed`);
         if (retries >= maxRetries) {
           // Fallback to local db in dev.
-          if (isOnline && env === "development") {
+          if ((isOnline && env === "development") || options?.forceLocal) {
             try {
               console.log(
                 "Failed to connect to the online db. Switching to local db",

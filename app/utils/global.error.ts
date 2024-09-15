@@ -40,7 +40,6 @@ function handleDevError(err: DevProdArgs[]): AppError[] {
 
 function handleProdError(err: DevProdArgs[]): ProdError[] {
   return err.map((e) => {
-    console.log(e);
     return e instanceof AppError && e.isOperational
       ? {
           message: e.message,
@@ -49,7 +48,7 @@ function handleProdError(err: DevProdArgs[]): ProdError[] {
           path: e?.path,
         }
       : {
-          message: "Something went very wrong💥💥",
+          message: "Something went very wrong 💥🧨🧨🧨🧨🧨💥",
           statusCode: 500,
           status: "error",
         };
@@ -69,6 +68,7 @@ function handleDbDuplicateError(err: MongoServerError) {
 
 function handleDbValidationError(err: MongoServerError) {
   return Object.keys(err.errors).map((key) => {
+    console.log({ key: key });
     return new AppError(err.errors[key].message, 400, key);
   });
 
@@ -92,10 +92,9 @@ export function handleDbCastError(err: CastError) {
 export default function globalErrorHandler(err: DevProdArgs) {
   if (appConfig.nodeEnv === "production") {
     const errorCopy = clonedeep(err);
-    let errorArray;
+    let errorArray = [];
 
     if ((err as MongoServerError).code === 11000) {
-      console.log("This is a duplicate key error 🧨🧨🧨🧨🧨🧨🧨🧨🧨🧨");
       errorArray = [...handleDbDuplicateError(errorCopy as MongoServerError)];
     } else if (err.name === "ValidationError") {
       errorArray = [...handleDbValidationError(errorCopy as MongoServerError)];
@@ -113,3 +112,18 @@ export default function globalErrorHandler(err: DevProdArgs) {
     return handleDevError([err]);
   }
 }
+
+export const getFieldError = (
+  name: string,
+  errorArray: (AppError[] | ProdError[]) | undefined,
+) => {
+  const error = errorArray?.find((e) => e.path === name);
+  return error
+    ? {
+        message: error.message,
+        isValid: false,
+      }
+    : {
+        isValid: true,
+      };
+};

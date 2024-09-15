@@ -70,7 +70,7 @@ app.use(morgan("tiny"));
 app.all("*", remixHandler);
 
 (async () => {
-  await db.connect({ maxRetries: 5, localDb: true });
+  await db.connect({ maxRetries: 5, localDb: true, forceLocal: true });
 
   httpServer.listen(appConfig.port, () => {
     console.log(

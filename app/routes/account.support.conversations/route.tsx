@@ -5,15 +5,14 @@ import { toast } from "react-toastify";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await requireUser(request);
-  console.log({ user });
 
-  await restrictTo(user, request, "admin");
+  await restrictTo(user, request, "admin", "client");
   return null;
 }
 
 export default function Conversation() {
   const notify = () => {
-    toast.error("Wow so easy!");
+    toast("Wow so easy!");
   };
 
   return (

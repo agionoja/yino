@@ -13,7 +13,7 @@ export const cookieDefaultOptions = {
   secrets: appConfig.sessionSecret,
   domain:
     appConfig.nodeEnv === "production"
-      ? appConfig.localHost
+      ? appConfig.onlineHost
       : appConfig.localHost,
 } as const;
 

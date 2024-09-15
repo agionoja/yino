@@ -12,7 +12,6 @@ import { AuthLink } from "~/components/auth-link";
 import { Button } from "~/components/button";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
-import validator from "validator";
 import { getUser } from "~/routes/_auth-layout.auth.login/queries";
 import {
   getDashboardUrl,
@@ -25,7 +24,7 @@ import {
   storeTokenInSession,
 } from "~/session.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
-import { parseHasOtpCookie, hasOtp, setHasOtpCookie } from "~/cookies.server";
+import { parseHasOtpCookie, setHasOtpCookie } from "~/cookies.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());

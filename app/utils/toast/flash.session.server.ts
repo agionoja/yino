@@ -1,11 +1,12 @@
 import { createCookieSessionStorage, redirect, Session } from "@remix-run/node";
-import { cookieDefaultOptions } from "~/cookies";
+import { cookieDefaultOptions } from "~/cookies.server";
 import {
   FlashSessionValue,
   flashSessionValuesSchema,
   ToastMessage,
 } from "~/utils/toast/schema";
 import { destroySession } from "~/session.server";
+import { getPathname, queryStringBuilder } from "~/utils/url";
 
 const FLASH_SESSION = "__flash";
 
@@ -95,18 +96,34 @@ export async function redirectWithToastAndDestroyExistingSession(
   });
 }
 
-export async function redirectWithErrorAndEncodeUrl(
+export async function redirectWithToastErrorEncodeUrlAndDestroySession(
   message: string,
   session: Session,
   request: Request,
-  url = "/auth/login",
+  url: string,
 ) {
-  const urlToEncode = new URL(request.url).pathname;
-  const encodedUrl = `${url}?redirect=${encodeURIComponent(urlToEncode)}`;
+  const encodedUrl = queryStringBuilder(url, {
+    key: "redirect",
+    value: getPathname(request),
+  });
 
-  return redirectWithToastAndDestroyExistingSession(
+  return await redirectWithToastAndDestroyExistingSession(
     encodedUrl,
-    { type: "error", text: message },
+    { text: message, type: "error" },
     session,
   );
 }
+
+export async function redirectWithToastAndEncodeUrl(
+  request: Request,
+  toast: ToastMessage,
+  url: string,
+) {
+  const encodedUrl = queryStringBuilder(url, {
+    key: "redirect",
+    value: getPathname(request),
+  });
+  return redirectWithToast(encodedUrl, toast);
+}
+
+// todoL fix

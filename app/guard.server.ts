@@ -1,23 +1,25 @@
-import { getTokenSession } from "~/session.server";
+import { getTokenFromSession, getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
 import User, { IUser, Role } from "~/models/user.model";
 import globalErrorHandler from "~/utils/global.error";
 import {
-  redirectWithErrorAndEncodeUrl,
+  redirectWithToastErrorEncodeUrlAndDestroySession,
   redirectWithErrorToast,
 } from "~/utils/toast/flash.session.server";
 import appConfig from "../app.config";
+import { getRefererUrl } from "~/utils/url";
 
 export async function requireUser(request: Request) {
   const session = await getTokenSession(request);
-  const token = session.get("token");
+  const token = await getTokenFromSession(session);
   let decoded;
 
   if (!token) {
-    throw await redirectWithErrorAndEncodeUrl(
+    throw await redirectWithToastErrorEncodeUrlAndDestroySession(
       "Login to gain access.",
       session,
       request,
+      "/auth/login",
     );
   }
 
@@ -25,10 +27,11 @@ export async function requireUser(request: Request) {
     decoded = await jwt.verify(token);
   } catch (err) {
     const error = globalErrorHandler(err as Error);
-    throw await redirectWithErrorAndEncodeUrl(
+    throw await redirectWithToastErrorEncodeUrlAndDestroySession(
       error[0].message,
       session,
       request,
+      "/auth/login",
     );
   }
 
@@ -37,7 +40,7 @@ export async function requireUser(request: Request) {
     .exec();
 
   if (!user) {
-    throw await redirectWithErrorAndEncodeUrl(
+    throw await redirectWithToastErrorEncodeUrlAndDestroySession(
       "User no longer exists",
       session,
       request,
@@ -51,10 +54,11 @@ export async function requireUser(request: Request) {
   );
 
   if (passwordChanged) {
-    throw await redirectWithErrorAndEncodeUrl(
+    throw await redirectWithToastErrorEncodeUrlAndDestroySession(
       "You recently changed password. Login again",
       session,
       request,
+      "/auth/login",
     );
   }
 
@@ -67,14 +71,12 @@ export async function restrictTo(
   ...roles: Role[]
 ) {
   if (!roles.includes(user.role)) {
-    const referer = request.headers.get("referer");
+    const referer = getRefererUrl(request);
     const redirectLink =
-      referer?.includes(appConfig.localHost) || // host eg localhost:3000
+      referer?.includes(appConfig.localHost) ||
       referer?.includes(appConfig.onlineHost)
         ? referer
         : "/";
-
-    // console.log({ redirectLink });
     throw await redirectWithErrorToast(redirectLink, "You are not authorized");
   }
 }

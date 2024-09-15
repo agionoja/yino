@@ -1,18 +1,15 @@
-import { createCookieSessionStorage, json, redirect } from "@remix-run/node";
+import { createCookieSessionStorage, Session } from "@remix-run/node";
 import appConfig from "../app.config";
 import jwt from "~/utils/jwt";
-import { IUser } from "~/models/user.model";
-import { cookieDefaultOptions } from "~/cookies";
+import User, { IUser } from "~/models/user.model";
+import { cookieDefaultOptions } from "~/cookies.server";
+import { redirectWithToast } from "~/utils/toast/flash.session.server";
 
 type SessionData = {
   token: string;
 };
 
-type SessionFlashData = {
-  error: string;
-};
-
-const session = createCookieSessionStorage<SessionData, SessionFlashData>({
+const session = createCookieSessionStorage<SessionData>({
   cookie: {
     name: "__session",
     maxAge: Number(appConfig.sessionExpires),
@@ -29,20 +26,35 @@ export async function storeTokenInSession(user: Pick<IUser, "_id">) {
   return session;
 }
 
+export async function getTokenFromSession(session: Session) {
+  return String(session.get("token"));
+}
+
 export async function getTokenSession(request: Request) {
   return await getSession(request.headers.get("Cookie"));
 }
 
-export async function redirectIfHasToken(request: Request, url: string = "/") {
+export async function redirectIfHaveValidToken(
+  request: Request,
+  message = "You are already logged in!",
+) {
   const session = await getTokenSession(request);
+  const token = await getTokenFromSession(session);
+  let decoded;
 
-  if (session.has("token")) throw redirect(url);
+  try {
+    decoded = await jwt.verify(token);
+  } catch (error) {
+    return;
+  }
 
-  const data = { error: session.get("error") };
+  const user = await User.findById(decoded?.id).select("_id").lean().exec();
 
-  return json(data, {
-    headers: {
-      "Set-Cookie": await commitSession(session),
-    },
-  });
+  if (session.has("token") && user) {
+    const url = request.headers.get("referer") || "/";
+    throw await redirectWithToast(url, {
+      text: message,
+      type: "info",
+    });
+  }
 }

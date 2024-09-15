@@ -1,12 +1,29 @@
-import { Form, useActionData, useNavigation } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
 import { Button } from "~/components/button";
 import { Input } from "~/components/input";
-import { ActionFunctionArgs, json, LoaderFunctionArgs } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  json,
+  LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import React, { useEffect, useRef, useState } from "react";
 import { validateOtp } from "~/routes/_auth-layout.auth.2fa/queries";
-import { redirectIfHasToken, storeTokenInSession } from "~/session.server";
+import {
+  commitSession,
+  redirectIfHaveValidToken,
+  storeTokenInSession,
+} from "~/session.server";
 import { AuthLink } from "~/components/auth-link";
-import { ErrorMessage } from "~/components/error";
+import { getDashboardUrl, getUrlFromSearchParams } from "~/utils/url";
+import { toast } from "react-toastify";
+import { parseHasOtpCookie } from "~/cookies.server";
+import { redirectWithToast } from "~/utils/toast/flash.session.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
@@ -15,7 +32,20 @@ export async function action({ request }: ActionFunctionArgs) {
   const { error, data: user } = await validateOtp(otp);
 
   if (user) {
-    await storeTokenInSession(user);
+    const session = await storeTokenInSession(user);
+
+    const url = getUrlFromSearchParams(request.url, "redirect");
+    const redirectUrl = url ? url : getDashboardUrl(user);
+
+    return redirectWithToast(
+      redirectUrl,
+      { text: "2FA successful", type: "success" },
+      {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      },
+    );
   } else {
     return json(
       { error },
@@ -26,16 +56,47 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 }
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  await redirectIfHaveValidToken(request);
+
+  const hasOtp = await parseHasOtpCookie(request);
+
+  return json({ hasOtp: hasOtp.hasOtp });
+}
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "2FA | Yino" },
+    { name: "description", content: "Two Factor Verification" },
+  ];
+};
+
 export default function RouteComponent() {
   const navigation = useNavigation();
-  const actionData = useActionData<typeof action>(); // Get action data, including errors
+  const actionData = useActionData<typeof action>();
+  const { hasOtp } = useLoaderData<typeof loader>();
   const inputRef = useRef<HTMLInputElement>(null);
+  const hasShownToast = useRef(false);
   const [inputValue, setInputValue] = useState("");
   const isSubmitting = navigation.state === "submitting";
-  const errorMessage = actionData?.error ? actionData.error[0].message : null;
-  const errorPath = actionData?.error ? actionData.error[0].path : null;
+  const error = actionData?.error;
+  const previousErrorRef = useRef<typeof error | null>(null);
 
-  const state = actionData?.error ? "error" : "idle";
+  useEffect(() => {
+    const hasNewError = error && error !== previousErrorRef.current;
+    if (!isSubmitting && hasNewError) {
+      toast(error[0].message, { type: "error" });
+    }
+
+    previousErrorRef.current = error;
+  }, [error, isSubmitting]);
+
+  useEffect(() => {
+    if (hasOtp && !hasShownToast.current) {
+      toast("Check your email for your OTP", { type: "info" });
+      hasShownToast.current = true;
+    }
+  }, [hasOtp, navigation.state]);
 
   useEffect(() => {
     if (!isSubmitting) {
@@ -43,6 +104,7 @@ export default function RouteComponent() {
       inputRef.current?.select();
     }
   }, [isSubmitting]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (/^\d*$/.test(value) && value.length <= 6) {
@@ -55,14 +117,6 @@ export default function RouteComponent() {
   const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.setCustomValidity("");
   };
-
-  // If the error path matches "otp", you can focus on the input field
-  useEffect(() => {
-    if (errorPath === "otp" && inputRef.current) {
-      inputRef.current.focus();
-      inputRef.current.select();
-    }
-  }, [errorPath]);
 
   return (
     <>
@@ -90,13 +144,6 @@ export default function RouteComponent() {
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>
       </Form>
-
-      {errorMessage && (
-        <ErrorMessage
-          showError={state === "error" && !isSubmitting}
-          message={errorMessage}
-        />
-      )}
 
       <AuthLink to={"/auth/login"}>Back to login</AuthLink>
     </>

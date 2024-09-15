@@ -1,7 +1,7 @@
 import * as process from "node:process";
 
 const appConfig = {
-  localHost: `${process.env.LOCAL_HOST}:${process.env.PORT}`,
+  localHost: `${process.env.LOCAL_HOST}`,
   onlineHost: process.env.ONLINE_HOST || "",
   corsOrigin: JSON.parse(process.env.CORS_ORIGIN || []),
   databaseUrl: process.env.DATABASE_URL || "empty",

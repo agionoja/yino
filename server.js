@@ -11,12 +11,19 @@ import db from "./db.js";
 
 crone.schedule("5 * * * *", async () => {
   try {
-    const res = await (
-      await fetch("https://yino.onrender.com/api/spin", {
-        method: "GET",
-      })
-    ).json();
-    console.log(res);
+    const formData = new FormData();
+    formData.append("_action", "default-login");
+    formData.append("name", process.env.CRONE_SPINNER_USERNAME);
+    formData.append("password", process.env.CRONE_SPINNER_PASSWORD);
+
+    const res = await fetch("https://yino.onrender.com/auth/login", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+    console.log({ statusText: res.statusText });
   } catch (err) {
     console.error(`There was an error spinning the server: ${err}`);
   }
@@ -70,7 +77,7 @@ app.use(morgan("tiny"));
 app.all("*", remixHandler);
 
 (async () => {
-  await db.connect({ maxRetries: 5, localDb: true });
+  await db.connect({ maxRetries: 5, localDb: true, forceLocal: true });
 
   httpServer.listen(appConfig.port, () => {
     console.log(

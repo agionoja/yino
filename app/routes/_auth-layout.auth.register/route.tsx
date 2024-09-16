@@ -33,8 +33,10 @@ export async function action({ request }: ActionFunctionArgs) {
           getDashboardUrl(user),
           { text: "Registration successful", type: "success" },
           {
+            status: 201,
             headers: {
               "Set-cookie": await commitSession(session),
+              "Cache-Control": "no-cache",
             },
           },
         );

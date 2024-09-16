@@ -5,6 +5,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useNavigation,
 } from "@remix-run/react";
 import React, { useEffect } from "react";
 import { SocketProvider } from "~/contexts/socketContext";
@@ -24,6 +25,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const navigation = useNavigation();
+  const busy =
+    navigation.state === "submitting" || navigation.state === "loading";
+
+  console.log(busy);
   return (
     <html lang="en">
       <head>

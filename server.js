@@ -9,25 +9,25 @@ import socket from "./socket/socket.js";
 import appConfig from "./app.config.js";
 import db from "./db.js";
 
-crone.schedule("5 * * * *", async () => {
-  try {
-    const formData = new FormData();
-    formData.append("_action", "default-login");
-    formData.append("name", process.env.CRONE_SPINNER_USERNAME);
-    formData.append("password", process.env.CRONE_SPINNER_PASSWORD);
-
-    const res = await fetch("https://yino.onrender.com/auth/login", {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-    console.log({ statusText: res.statusText });
-  } catch (err) {
-    console.error(`There was an error spinning the server: ${err}`);
-  }
-});
+// crone.schedule("5 * * * *", async () => {
+//   try {
+//     const formData = new FormData();
+//     formData.append("_action", "default-login");
+//     formData.append("name", process.env.CRONE_SPINNER_USERNAME);
+//     formData.append("password", process.env.CRONE_SPINNER_PASSWORD);
+//
+//     const res = await fetch("https://yino.onrender.com/auth/login", {
+//       method: "POST",
+//       body: formData,
+//       headers: {
+//         "Content-Type": "application/x-www-form-urlencoded",
+//       },
+//     });
+//     console.log({ statusText: res.statusText });
+//   } catch (err) {
+//     console.error(`There was an error spinning the server: ${err}`);
+//   }
+// });
 
 const viteDevServer =
   process.env.NODE_ENV === "production"

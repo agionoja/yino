@@ -1,4 +1,9 @@
-import { createCookieSessionStorage, redirect, Session } from "@remix-run/node";
+import {
+  createCookieSessionStorage,
+  redirect,
+  replace,
+  Session,
+} from "@remix-run/node";
 import { cookieDefaultOptions } from "~/cookies.server";
 import {
   FlashSessionValue,
@@ -51,15 +56,32 @@ export async function flashMessage(
   return newHeaders;
 }
 
-export async function redirectWithFlash(
-  url: string,
-  flash: FlashSessionValue,
-  init?: ResponseInit,
-) {
+type FlashArgs = {
+  url: string;
+  flash: FlashSessionValue;
+  init?: ResponseInit;
+};
+
+export async function redirectWithFlash({ url, flash, init }: FlashArgs) {
   return redirect(url, {
     ...init,
     headers: await flashMessage(flash, init?.headers),
   });
+}
+
+export async function replaceWithFlash({ url, flash, init }: FlashArgs) {
+  return replace(url, {
+    ...init,
+    headers: await flashMessage(flash, init?.headers),
+  });
+}
+
+export async function replaceWithToast(
+  url: string,
+  toast: ToastMessage,
+  init?: ResponseInit,
+) {
+  return replaceWithFlash({ url, flash: { toast }, init });
 }
 
 export async function redirectWithToast(
@@ -67,7 +89,7 @@ export async function redirectWithToast(
   toast: ToastMessage,
   init?: ResponseInit,
 ) {
-  return redirectWithFlash(url, { toast }, init);
+  return redirectWithFlash({ url, flash: { toast }, init });
 }
 
 export async function redirectWithErrorToast(

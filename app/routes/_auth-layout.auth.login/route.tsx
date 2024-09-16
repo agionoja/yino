@@ -4,6 +4,7 @@ import {
   json,
   LoaderFunctionArgs,
   type MetaFunction,
+  redirect,
 } from "@remix-run/node";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
@@ -20,6 +21,7 @@ import {
 } from "~/utils/url";
 import {
   commitSession,
+  getTokenSession,
   redirectIfHaveValidToken,
   storeTokenInSession,
 } from "~/session.server";
@@ -57,8 +59,10 @@ export async function action({ request }: ActionFunctionArgs) {
               type: "warning",
             },
             {
+              status: 200,
               headers: {
                 "Set-Cookie": await setHasOtpCookie(hasOtpCookie),
+                "Cache-Control": "no-cache",
               },
             },
           );
@@ -71,6 +75,7 @@ export async function action({ request }: ActionFunctionArgs) {
           {
             headers: {
               "Set-Cookie": await commitSession(session),
+              "Cache-Control": "no-cache",
             },
           },
         );
@@ -90,7 +95,17 @@ export async function action({ request }: ActionFunctionArgs) {
 export async function loader({ request }: LoaderFunctionArgs) {
   await redirectIfHaveValidToken(request, "You are already logged in!");
 
-  return null;
+  // const session = await getTokenSession(request);
+  //
+  // if (session.has("token")) {
+  //   return redirect("/");
+  // }
+
+  return json(null, {
+    headers: {
+      "Cache-Control": "no-store", // Ensures the loader is run fresh each time
+    },
+  });
 }
 
 export const meta: MetaFunction = () => {

@@ -3,7 +3,11 @@ import appConfig from "../app.config";
 import jwt from "~/utils/jwt";
 import User, { IUser } from "~/models/user.model";
 import { cookieDefaultOptions } from "~/cookies.server";
-import { redirectWithToast } from "~/utils/toast/flash.session.server";
+import {
+  redirectWithToast,
+  replaceWithToast,
+} from "~/utils/toast/flash.session.server";
+import { getDashboardUrl } from "~/utils/url";
 
 type SessionData = {
   token: string;
@@ -48,11 +52,12 @@ export async function redirectIfHaveValidToken(
     return;
   }
 
-  const user = await User.findById(decoded?.id).select("_id").lean().exec();
+  const user = await User.findById(decoded?.id).select("role").lean().exec();
 
   if (session.has("token") && user) {
-    const url = request.headers.get("referer") || "/";
-    throw await redirectWithToast(url, {
+    const url = getDashboardUrl(user);
+
+    throw await replaceWithToast(url, {
       text: message,
       type: "info",
     });

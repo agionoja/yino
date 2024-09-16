@@ -41,8 +41,10 @@ export async function action({ request }: ActionFunctionArgs) {
       redirectUrl,
       { text: "2FA successful", type: "success" },
       {
+        status: 200,
         headers: {
           "Set-Cookie": await commitSession(session),
+          "Cache-Control": "no-cache",
         },
       },
     );

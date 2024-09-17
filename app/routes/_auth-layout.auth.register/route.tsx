@@ -13,62 +13,54 @@ import { AuthLink } from "~/components/auth-link";
 import { createUser } from "~/routes/_auth-layout.auth.register/queries";
 import {
   commitSession,
-  redirectIfHaveValidToken,
+  redirectIfHaveValidSessionToken,
   storeTokenInSession,
 } from "~/session.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
 import { getDashboardUrl } from "~/utils/url";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { _action, ...values } = Object.fromEntries(await request.formData());
+  const { ...values } = Object.fromEntries(await request.formData());
 
-  switch (_action) {
-    case "default-register": {
-      const { error, data: user } = await createUser(values);
+  const { error, data: user } = await createUser(values);
 
-      if (user) {
-        const session = await storeTokenInSession(user);
+  if (user) {
+    const session = await storeTokenInSession(user);
 
-        return redirectWithToast(
-          getDashboardUrl(user),
-          { text: "Registration successful", type: "success" },
-          {
-            status: 201,
-            headers: {
-              "Set-cookie": await commitSession(session),
-              "Cache-Control": "no-cache",
-            },
-          },
-        );
-      } else {
-        return json({ error }, { status: error[0]?.statusCode });
-      }
-    }
-
-    case "google-register": {
-      return null;
-    }
+    return redirectWithToast(
+      getDashboardUrl(user),
+      { text: "Registered successfully", type: "success" },
+      {
+        status: 201,
+        headers: {
+          "Set-cookie": await commitSession(session),
+        },
+      },
+    );
+  } else {
+    return json({ error }, { status: error[0]?.statusCode });
   }
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveValidToken(request, "You already have an account!");
-
+  await redirectIfHaveValidSessionToken(
+    request,
+    "You already have an account!",
+  );
   return null;
 }
+
 export const meta: MetaFunction = () => {
   return [
-    { title: "Register Account" },
+    { title: "Register | Yino" },
     { name: "description", content: "Register your yino account" },
   ];
 };
 
-export default function RouteComponent() {
+export default function Register() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
-  const isSubmitting =
-    navigation.state === "submitting" &&
-    navigation.formData?.get("_action") === "default-register";
+  const isSubmitting = navigation.state === "submitting";
 
   const getFieldError = (name: string) => {
     const error = actionData?.error?.find((e) => e.path === name);
@@ -146,10 +138,8 @@ export default function RouteComponent() {
           </span>
           <Button
             disabled={isSubmitting}
-            name={"_action"}
             aria-label={"register account"}
             type={"submit"}
-            value={"default-register"}
             className={"shrink-0 bg-blue capitalize text-white"}
           >
             {isSubmitting ? "registering..." : "register"}
@@ -157,13 +147,10 @@ export default function RouteComponent() {
         </div>
       </Form>
 
-      {/*<ErrorMessage*/}
-      {/*  autoClose={true}*/}
-      {/*  showError={state === "error" && !isDefaultRegisterSubmitting}*/}
-      {/*  message={actionData?.error[0]?.message}*/}
-      {/*/>*/}
-
-      <GoogleForm isRegister={true} />
+      <GoogleForm
+        action={"/auth/google-auth?action=register"}
+        isRegister={true}
+      />
 
       <div className={"flex justify-center"}>
         <span>

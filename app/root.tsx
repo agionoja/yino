@@ -8,7 +8,7 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import React, { useEffect } from "react";
-import { SocketProvider } from "~/contexts/socketContext";
+import { SocketProvider } from "~/contexts/socket-context";
 import useSocketIo from "~/hooks/useSocketIo";
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { Bounce, toast, ToastContainer } from "react-toastify";

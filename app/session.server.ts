@@ -3,10 +3,7 @@ import appConfig from "../app.config";
 import jwt from "~/utils/jwt";
 import User, { IUser } from "~/models/user.model";
 import { cookieDefaultOptions } from "~/cookies.server";
-import {
-  redirectWithToast,
-  replaceWithToast,
-} from "~/utils/toast/flash.session.server";
+import { replaceWithToast } from "~/utils/toast/flash.session.server";
 import { getDashboardUrl } from "~/utils/url";
 
 type SessionData = {
@@ -38,9 +35,9 @@ export async function getTokenSession(request: Request) {
   return await getSession(request.headers.get("Cookie"));
 }
 
-export async function redirectIfHaveValidToken(
+export async function redirectIfHaveValidSessionToken(
   request: Request,
-  message = "You are already logged in!",
+  message: string,
 ) {
   const session = await getTokenSession(request);
   const token = await getTokenFromSession(session);

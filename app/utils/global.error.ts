@@ -90,7 +90,7 @@ export function handleDbCastError(err: CastError) {
   return [new AppError(`Invalid ${err.path}: ${err.value}`, 400, err.path)];
 }
 export default function globalErrorHandler(err: DevProdArgs) {
-  if (appConfig.nodeEnv === "production") {
+  if (appConfig.nodeEnv === "production" || appConfig.nodeEnv === "test") {
     const errorCopy = clonedeep(err);
     let errorArray = [];
 

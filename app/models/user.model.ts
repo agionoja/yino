@@ -120,7 +120,9 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       select: false,
       validate: {
         validator: (value) =>
-          /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,50}$/.test(value),
+          /^(?=.*[A-Z])(?=.*[!@#$%^&*()_\-+=~`<>?/.,])[A-Za-z\d!@#$%^&*()_\-+=~`<>?/.,]{8,50}$/.test(
+            value,
+          ),
         message: ({ value }) => {
           if (value.length < 8) {
             return "Password must be at least 8 characters";
@@ -131,7 +133,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
           if (!/[A-Z]/.test(value)) {
             return "Password must contain at least one uppercase letter";
           }
-          if (!/[!@#$%^&*]/.test(value)) {
+          if (!/[!@#$%^&*()_\-+=~`<>?/.,]/.test(value)) {
             return "Password must contain at least one special character";
           }
           return "Invalid password";

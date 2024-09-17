@@ -4,6 +4,7 @@ import {
   json,
   LoaderFunctionArgs,
   type MetaFunction,
+  redirect,
 } from "@remix-run/node";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
@@ -17,28 +18,48 @@ import {
   storeTokenInSession,
 } from "~/session.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
-import { getDashboardUrl } from "~/utils/url";
+import { getDashboardUrl, getUrlFromSearchParams } from "~/utils/url";
+import { parseAuthCbCookie, serializeAuthCbCookie } from "~/cookies.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { ...values } = Object.fromEntries(await request.formData());
+  const { _action, ...values } = Object.fromEntries(await request.formData());
 
-  const { error, data: user } = await createUser(values);
+  switch (_action) {
+    case "register": {
+      const { error, data: user } = await createUser(values);
 
-  if (user) {
-    const session = await storeTokenInSession(user);
+      if (user) {
+        const session = await storeTokenInSession(user);
 
-    return redirectWithToast(
-      getDashboardUrl(user),
-      { text: "Registered successfully", type: "success" },
-      {
-        status: 201,
+        return redirectWithToast(
+          getDashboardUrl(user),
+          { text: "Registered successfully", type: "success" },
+          {
+            status: 201,
+            headers: {
+              "Set-cookie": await commitSession(session),
+            },
+          },
+        );
+      } else {
+        return json({ error }, { status: error[0]?.statusCode });
+      }
+    }
+    case "google-auth": {
+      const url = getUrlFromSearchParams(request.url, "redirect");
+      const cookie = await parseAuthCbCookie(request);
+      cookie["authCallbackAction"] = "register";
+      cookie["redirectUrl"] = url || "/";
+
+      return redirect("/auth/google-auth", {
         headers: {
-          "Set-cookie": await commitSession(session),
+          "Set-Cookie": await serializeAuthCbCookie(cookie),
         },
-      },
-    );
-  } else {
-    return json({ error }, { status: error[0]?.statusCode });
+      });
+    }
+
+    default:
+      return null;
   }
 }
 
@@ -60,7 +81,9 @@ export const meta: MetaFunction = () => {
 export default function Register() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
+  const isSubmitting =
+    navigation.state === "submitting" &&
+    navigation.formData?.get("_action") === "register";
 
   const getFieldError = (name: string) => {
     const error = actionData?.error?.find((e) => e.path === name);
@@ -80,7 +103,7 @@ export default function Register() {
         <Label label={"name"}>
           <Input
             name={"name"}
-            validate={{ ...getFieldError("name") }}
+            validate={getFieldError("name")}
             type={"text"}
             placeholder={"Daniel Arinze"}
             required
@@ -91,29 +114,29 @@ export default function Register() {
         <Label label={"email"}>
           <Input
             name={"email"}
-            validate={{ ...getFieldError("email") }}
+            validate={getFieldError("email")}
             type={"email"}
             placeholder={"hello@example.com"}
             required
           />
         </Label>
 
-        <Label label={"phone number"}>
-          <Input
-            type={"tel"}
-            name={"phoneNumber"}
-            validate={{ ...getFieldError("phoneNumber") }}
-            placeholder={"08182398732"}
-            required
-            minLength={10}
-            maxLength={11}
-          />
-        </Label>
+        {/*<Label label={"phone number"}>*/}
+        {/*  <Input*/}
+        {/*    type={"tel"}*/}
+        {/*    name={"phoneNumber"}*/}
+        {/*    validate={getFieldError("phoneNumber")}*/}
+        {/*    placeholder={"08182398732"}*/}
+        {/*    required*/}
+        {/*    minLength={10}*/}
+        {/*    maxLength={11}*/}
+        {/*  />*/}
+        {/*</Label>*/}
 
         <Label label={"password"}>
           <PasswordInput
             name={"password"}
-            validate={{ ...getFieldError("password") }}
+            validate={getFieldError("password")}
             aria-label={"register password"}
             placeholder={"Your Password"}
           />
@@ -122,7 +145,7 @@ export default function Register() {
         <Label label={"confirm password"}>
           <PasswordInput
             name={"passwordConfirm"}
-            validate={{ ...getFieldError("passwordConfirm") }}
+            validate={getFieldError("passwordConfirm")}
             aria-label={"register password confirmation"}
             placeholder={"Your Password"}
           />
@@ -140,6 +163,8 @@ export default function Register() {
             disabled={isSubmitting}
             aria-label={"register account"}
             type={"submit"}
+            name={"_action"}
+            value={"register"}
             className={"shrink-0 bg-blue capitalize text-white"}
           >
             {isSubmitting ? "registering..." : "register"}
@@ -148,7 +173,8 @@ export default function Register() {
       </Form>
 
       <GoogleForm
-        action={"/auth/google-auth?action=register"}
+        btnValue={"google-auth"}
+        btnName={"_action"}
         isRegister={true}
       />
 

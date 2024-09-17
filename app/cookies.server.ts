@@ -5,8 +5,9 @@ type HasOtp = {
   hasOtp: boolean;
 };
 
-export type AuthCbAction = {
-  auth_callback_action: "register" | "login";
+export type GoogleAuthCallbackAction = {
+  authCallbackAction: "register" | "login";
+  redirectUrl: string;
 };
 
 export const cookieDefaultOptions = {
@@ -26,9 +27,12 @@ export const hasOtp = createCookie("__hasOtp", {
   maxAge: 60,
 });
 
-export const authCbAction = createCookie("__auth_callback_action", {
-  ...cookieDefaultOptions,
-});
+export const googleAuthCallbackAction = createCookie(
+  "__googleAuthCallbackAction",
+  {
+    ...cookieDefaultOptions,
+  },
+);
 
 export async function parseHasOtpCookie(request: Request) {
   const cookie = request.headers.get("Cookie");
@@ -43,13 +47,11 @@ export async function serializeHasOtpCookie(cookie: HasOtp) {
 
 export async function parseAuthCbCookie(request: Request) {
   const cookie = request.headers.get("Cookie");
-  const parsedCookie = (await authCbAction.parse(cookie)) || {
-    auth_callback_action: false,
-  };
+  const parsedCookie = (await googleAuthCallbackAction.parse(cookie)) || {};
 
-  return parsedCookie as AuthCbAction;
+  return parsedCookie as GoogleAuthCallbackAction;
 }
 
-export async function serializeAuthCbCookie(cookie: AuthCbAction) {
-  return authCbAction.serialize(cookie);
+export async function serializeAuthCbCookie(cookie: GoogleAuthCallbackAction) {
+  return googleAuthCallbackAction.serialize(cookie);
 }

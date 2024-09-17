@@ -4,13 +4,11 @@ import googleIcon from "~/assets/icons/google.svg";
 
 interface Props extends FormProps {
   isRegister: boolean;
+  btnName?: string;
+  btnValue?: string;
 }
 
-export function GoogleForm({
-  isRegister,
-
-  ...props
-}: Props) {
+export function GoogleForm({ isRegister, btnValue, btnName, ...props }: Props) {
   return (
     <>
       <div className="my-4 flex items-center px-6 md:px-10">
@@ -23,6 +21,8 @@ export function GoogleForm({
 
       <Form {...props} method={"POST"}>
         <Button
+          name={btnName}
+          value={btnValue}
           aria-label={"register with google"}
           type={"submit"}
           className={"bg-anti-flash-white !text-gray-500"}

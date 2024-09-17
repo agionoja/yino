@@ -5,14 +5,14 @@ export async function createUser(formData: {
   [k: string]: FormDataEntryValue;
 }) {
   return await asyncOperationHandler(async () => {
-    const { name, email, password, passwordConfirm, phoneNumber } = formData;
+    const { name, email, password, passwordConfirm } = formData;
 
     return await User.create({
       name,
       email,
       password,
       passwordConfirm,
-      phoneNumber,
+      // phoneNumber,
     });
   });
 }

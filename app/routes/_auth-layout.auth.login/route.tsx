@@ -4,6 +4,7 @@ import {
   json,
   LoaderFunctionArgs,
   type MetaFunction,
+  redirect,
 } from "@remix-run/node";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
@@ -24,54 +25,80 @@ import {
   storeTokenInSession,
 } from "~/session.server";
 import { replaceWithToast } from "~/utils/toast/flash.session.server";
-import { parseHasOtpCookie, serializeHasOtpCookie } from "~/cookies.server";
+import {
+  parseAuthCbCookie,
+  parseHasOtpCookie,
+  serializeAuthCbCookie,
+  serializeHasOtpCookie,
+} from "~/cookies.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { ...values } = Object.fromEntries(await request.formData());
-  const { error, data: user } = await getUser(values);
+  const { _action, ...values } = Object.fromEntries(await request.formData());
 
-  if (user) {
-    const url = getUrlFromSearchParams(request.url, "redirect");
-    const redirectUrl = url ? url : getDashboardUrl(user);
+  switch (_action) {
+    case "login": {
+      const { error, data: user } = await getUser(values);
 
-    if (user.is2fa) {
-      console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
+      if (user) {
+        const url = getUrlFromSearchParams(request.url, "redirect");
+        const redirectUrl = url ? url : getDashboardUrl(user);
 
-      const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
-        key: "redirect",
-        value: redirectUrl,
-      });
+        if (user.is2fa) {
+          console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
 
-      const hasOtpCookie = await parseHasOtpCookie(request);
-      hasOtpCookie["hasOtp"] = true;
+          const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
+            key: "redirect",
+            value: redirectUrl,
+          });
 
-      return replaceWithToast(
-        _2faRedirectUrl,
-        {
-          text: "OTP is valid for only 2 min!",
-          type: "warning",
-        },
-        {
-          status: 200,
-          headers: {
-            "Set-Cookie": await serializeHasOtpCookie(hasOtpCookie),
+          const hasOtpCookie = await parseHasOtpCookie(request);
+          hasOtpCookie["hasOtp"] = true;
+
+          return replaceWithToast(
+            _2faRedirectUrl,
+            {
+              text: "OTP is valid for only 2 min!",
+              type: "warning",
+            },
+            {
+              status: 200,
+              headers: {
+                "Set-Cookie": await serializeHasOtpCookie(hasOtpCookie),
+              },
+            },
+          );
+        }
+        const session = await storeTokenInSession(user);
+
+        return replaceWithToast(
+          redirectUrl,
+          { text: "Logged in successfully", type: "success" },
+          {
+            headers: {
+              "Set-Cookie": await commitSession(session),
+            },
           },
-        },
-      );
+        );
+      } else {
+        return json({ error }, { status: error[0]?.statusCode });
+      }
     }
-    const session = await storeTokenInSession(user);
 
-    return replaceWithToast(
-      redirectUrl,
-      { text: "Logged in successfully", type: "success" },
-      {
+    case "google-auth": {
+      const url = getUrlFromSearchParams(request.url, "redirect");
+      const cookie = await parseAuthCbCookie(request);
+      cookie["authCallbackAction"] = "login";
+      cookie["redirectUrl"] = url || "/";
+
+      return redirect("/auth/google-auth", {
         headers: {
-          "Set-Cookie": await commitSession(session),
+          "Set-Cookie": await serializeAuthCbCookie(cookie),
         },
-      },
-    );
-  } else {
-    return json({ error }, { status: error[0]?.statusCode });
+      });
+    }
+
+    default:
+      return null;
   }
 }
 
@@ -93,7 +120,9 @@ export default function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
   const error = actionData?.error;
   const previousErrorRef = useRef<typeof error | null>(null);
-  const isSubmitting = navigation.state === "submitting";
+  const isSubmitting =
+    navigation.state === "submitting" &&
+    navigation.formData?.get("_action") === "login";
 
   useEffect(() => {
     const hasNewError = error && error !== previousErrorRef.current;
@@ -137,9 +166,9 @@ export default function Login() {
         <Button
           disabled={isSubmitting}
           name={"_action"}
+          value={"login"}
           aria-label={"register account"}
           type={"submit"}
-          value={"default-login"}
           className={"shrink-0 bg-blue capitalize text-white"}
         >
           {isSubmitting ? "Login in..." : "Login"}
@@ -147,8 +176,9 @@ export default function Login() {
       </Form>
 
       <GoogleForm
-        action={"/auth/google-auth?action=login"}
         method={"POST"}
+        btnName={"_action"}
+        btnValue={"google-auth"}
         isRegister={false}
       />
 

@@ -4,7 +4,6 @@ import {
   json,
   LoaderFunctionArgs,
   type MetaFunction,
-  redirect,
 } from "@remix-run/node";
 import { Input, PasswordInput } from "~/components/input";
 import { Label } from "~/components/label";
@@ -21,91 +20,64 @@ import {
 } from "~/utils/url";
 import {
   commitSession,
-  getTokenSession,
-  redirectIfHaveValidToken,
+  redirectIfHaveValidSessionToken,
   storeTokenInSession,
 } from "~/session.server";
-import { redirectWithToast } from "~/utils/toast/flash.session.server";
-import { parseHasOtpCookie, setHasOtpCookie } from "~/cookies.server";
+import { replaceWithToast } from "~/utils/toast/flash.session.server";
+import { parseHasOtpCookie, serializeHasOtpCookie } from "~/cookies.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { _action, ...values } = Object.fromEntries(await request.formData());
+  const { ...values } = Object.fromEntries(await request.formData());
+  const { error, data: user } = await getUser(values);
 
-  switch (_action) {
-    case "default-login": {
-      const { error, data: user } = await getUser(values);
+  if (user) {
+    const url = getUrlFromSearchParams(request.url, "redirect");
+    const redirectUrl = url ? url : getDashboardUrl(user);
 
-      if (user) {
-        const url = getUrlFromSearchParams(request.url, "redirect");
-        const redirectUrl = url ? url : getDashboardUrl(user);
+    if (user.is2fa) {
+      console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
 
-        if (user.is2fa) {
-          console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
+      const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
+        key: "redirect",
+        value: redirectUrl,
+      });
 
-          const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
-            key: "redirect",
-            value: redirectUrl,
-          });
+      const hasOtpCookie = await parseHasOtpCookie(request);
+      hasOtpCookie["hasOtp"] = true;
 
-          const hasOtpCookie = await parseHasOtpCookie(request);
-          hasOtpCookie["hasOtp"] = true;
-
-          // console.log({ hasOtpCookie: hasOtpCookie, _2faRedirectUrl });
-
-          return redirectWithToast(
-            _2faRedirectUrl,
-            {
-              text: "OTP is valid for only 2 min!",
-              type: "warning",
-            },
-            {
-              status: 200,
-              headers: {
-                "Set-Cookie": await setHasOtpCookie(hasOtpCookie),
-                "Cache-Control": "no-cache",
-              },
-            },
-          );
-        }
-        const session = await storeTokenInSession(user);
-
-        return redirectWithToast(
-          redirectUrl,
-          { text: "Login successful", type: "success" },
-          {
-            headers: {
-              "Set-Cookie": await commitSession(session),
-              "Cache-Control": "no-cache",
-            },
+      return replaceWithToast(
+        _2faRedirectUrl,
+        {
+          text: "OTP is valid for only 2 min!",
+          type: "warning",
+        },
+        {
+          status: 200,
+          headers: {
+            "Set-Cookie": await serializeHasOtpCookie(hasOtpCookie),
           },
-        );
-      } else {
-        return json({ error }, { status: error[0]?.statusCode });
-      }
+        },
+      );
     }
+    const session = await storeTokenInSession(user);
 
-    case "google-login": {
-      return null;
-    }
-    default:
-      return null;
+    return replaceWithToast(
+      redirectUrl,
+      { text: "Logged in successfully", type: "success" },
+      {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+      },
+    );
+  } else {
+    return json({ error }, { status: error[0]?.statusCode });
   }
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveValidToken(request, "You are already logged in!");
-
-  // const session = await getTokenSession(request);
-  //
-  // if (session.has("token")) {
-  //   return redirect("/");
-  // }
-
-  return json(null, {
-    headers: {
-      "Cache-Control": "no-store", // Ensures the loader is run fresh each time
-    },
-  });
+  await redirectIfHaveValidSessionToken(request, "You are already logged in!");
+  return json(null);
 }
 
 export const meta: MetaFunction = () => {
@@ -115,15 +87,13 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function RouteComponent() {
+export default function Login() {
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
   const emailRef = useRef<HTMLInputElement>(null);
   const error = actionData?.error;
   const previousErrorRef = useRef<typeof error | null>(null);
-  const isSubmitting =
-    navigation.state === "submitting" &&
-    navigation.formData?.get("_action") === "default-login";
+  const isSubmitting = navigation.state === "submitting";
 
   useEffect(() => {
     const hasNewError = error && error !== previousErrorRef.current;
@@ -177,8 +147,8 @@ export default function RouteComponent() {
       </Form>
 
       <GoogleForm
-        buttonName={"_action"}
-        buttonValue={"google-login"}
+        action={"/auth/google-auth?action=login"}
+        method={"POST"}
         isRegister={false}
       />
 

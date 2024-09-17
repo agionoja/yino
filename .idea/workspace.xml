@@ -5,14 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.auth.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/account.client.billing/route.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/auth.google-auth/google-auth.server.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/auth.google-auth/queries.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/auth.google-auth/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/root.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/root.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/google-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/google-form.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/cookies.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/cookies.server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.model.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/route.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.login/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.login/route.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.register/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_landing._index/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_landing._index/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/logout.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/logout.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/session.server.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/tailwind.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/toast/flash.session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/toast/flash.session.server.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
@@ -25,8 +35,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="JavaScript File" />
+        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
       </list>
     </option>
@@ -102,11 +112,12 @@
       <recent name="$PROJECT_DIR$/app/assets/images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/routes" />
       <recent name="$PROJECT_DIR$/app/utils/toast" />
       <recent name="$PROJECT_DIR$/app/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.dev">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -178,7 +189,8 @@
       <workItem from="1725959867650" duration="63433000" />
       <workItem from="1726085281597" duration="102884000" />
       <workItem from="1726416063228" duration="1369000" />
-      <workItem from="1726418514841" duration="24744000" />
+      <workItem from="1726418514841" duration="68508000" />
+      <workItem from="1726576616293" duration="596000" />
     </task>
     <servers />
   </component>

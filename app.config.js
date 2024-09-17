@@ -12,6 +12,8 @@ const appConfig = {
   port: process.env.PORT || 5000,
   sessionExpires: process.env.SESSION_EXPIRES,
   sessionSecret: JSON.parse(`${process.env.SESSION_SECRET}` || []),
+  googleClientId: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
 };
 
 export default appConfig;

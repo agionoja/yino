@@ -16,7 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { validateOtp } from "~/routes/_auth-layout.auth.2fa/queries";
 import {
   commitSession,
-  redirectIfHaveValidToken,
+  redirectIfHaveValidSessionToken,
   storeTokenInSession,
 } from "~/session.server";
 import { AuthLink } from "~/components/auth-link";
@@ -44,7 +44,6 @@ export async function action({ request }: ActionFunctionArgs) {
         status: 200,
         headers: {
           "Set-Cookie": await commitSession(session),
-          "Cache-Control": "no-cache",
         },
       },
     );
@@ -59,7 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveValidToken(request);
+  await redirectIfHaveValidSessionToken(request);
 
   const hasOtp = await parseHasOtpCookie(request);
 

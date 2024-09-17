@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .auth-form {
+    @apply flex w-full flex-col gap-6;
+  }
+}

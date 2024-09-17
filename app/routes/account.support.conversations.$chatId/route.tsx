@@ -1,4 +1,4 @@
-import { useSocket } from "~/contexts/socketContext";
+import { useSocket } from "~/contexts/socket-context";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs, json } from "@remix-run/node";
@@ -113,7 +113,7 @@ export default function ChatRoute() {
             ref={inputRef}
             placeholder={"message"}
             name={"message"}
-            className={"border-2 border-blue-600 p-4"}
+            className={"border-blue-600 border-2 p-4"}
           />
         </label>
         <button type={"submit"}>Send</button>

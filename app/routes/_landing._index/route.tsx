@@ -1,5 +1,5 @@
 import { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -61,6 +61,17 @@ export default function Index() {
             Register
           </Link>
         </li>
+        <Form action={"/logout"} method={"POST"}>
+          <li>
+            <button
+              type={"submit"}
+              className="text-blue-700 underline visited:text-purple-900"
+              rel="noreferrer"
+            >
+              Logout
+            </button>
+          </li>
+        </Form>
       </ul>
     </div>
   );

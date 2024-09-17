@@ -5,6 +5,10 @@ type HasOtp = {
   hasOtp: boolean;
 };
 
+export type AuthCbAction = {
+  auth_callback_action: "register" | "login";
+};
+
 export const cookieDefaultOptions = {
   path: "/",
   sameSite: "lax",
@@ -22,6 +26,10 @@ export const hasOtp = createCookie("__hasOtp", {
   maxAge: 60,
 });
 
+export const authCbAction = createCookie("__auth_callback_action", {
+  ...cookieDefaultOptions,
+});
+
 export async function parseHasOtpCookie(request: Request) {
   const cookie = request.headers.get("Cookie");
   const parsedCookie = (await hasOtp.parse(cookie)) || { hasOtp: false };
@@ -29,6 +37,19 @@ export async function parseHasOtpCookie(request: Request) {
   return parsedCookie as HasOtp;
 }
 
-export async function setHasOtpCookie(cookie: HasOtp) {
+export async function serializeHasOtpCookie(cookie: HasOtp) {
   return hasOtp.serialize(cookie);
+}
+
+export async function parseAuthCbCookie(request: Request) {
+  const cookie = request.headers.get("Cookie");
+  const parsedCookie = (await authCbAction.parse(cookie)) || {
+    auth_callback_action: false,
+  };
+
+  return parsedCookie as AuthCbAction;
+}
+
+export async function serializeAuthCbCookie(cookie: AuthCbAction) {
+  return authCbAction.serialize(cookie);
 }

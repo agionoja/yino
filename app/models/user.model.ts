@@ -37,6 +37,7 @@ export interface IUser {
   isActive: boolean;
   role: Role;
   is2fa: boolean;
+  googleId?: string;
   profilePhoto?: IPhoto;
   username?: string;
   address?: Address;
@@ -80,6 +81,12 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       unique: true,
       sparse: true,
     },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      index: 1,
+    },
     email: {
       type: String,
       unique: true,
@@ -99,15 +106,46 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     isActive: {
       type: Boolean,
       default: true,
+      select: false,
     },
     password: {
       type: String,
-      required: [true, "password is required"],
+      required: [
+        function () {
+          return !this.googleId;
+        },
+        "Password is required",
+      ],
+      trim: true,
       select: false,
+      validate: {
+        validator: (value) =>
+          /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,50}$/.test(value),
+        message: ({ value }) => {
+          if (value.length < 8) {
+            return "Password must be at least 8 characters";
+          }
+          if (value.length > 50) {
+            return "Password must be at most 50 characters";
+          }
+          if (!/[A-Z]/.test(value)) {
+            return "Password must contain at least one uppercase letter";
+          }
+          if (!/[!@#$%^&*]/.test(value)) {
+            return "Password must contain at least one special character";
+          }
+          return "Invalid password";
+        },
+      },
     },
     passwordConfirm: {
       type: String,
-      required: [true, "password confirmation is required"],
+      required: [
+        function () {
+          return !this.googleId;
+        },
+        "password confirmation is required",
+      ],
       validate: {
         validator: function (value: string) {
           const self = this as IUserWithGet;
@@ -121,11 +159,13 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
         message: "passwords do not match",
       },
     },
-    phoneNumber: String,
+    phoneNumber: {
+      type: String,
+    },
+    isVerified: Boolean,
     address: String,
     otp: String,
     otpExpires: Date,
-    isVerified: Boolean,
     verificationToken: String,
     verificationTokenExpires: Date,
     profilePhoto: photoSchema,
@@ -137,7 +177,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
 );
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified("password") || this.isNew) {
+  if (
+    (!this.googleId && this.isModified("password")) ||
+    (!this.googleId && this.isNew)
+  ) {
     this.password = await scrypt.hashPassword(this.password);
     this.passwordConfirm = undefined;
   }

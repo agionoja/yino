@@ -1,11 +1,12 @@
 import { createCookie } from "@remix-run/node";
 import appConfig from "../app.config";
+import { Types } from "mongoose";
 
-type HasOtp = {
-  hasOtp: boolean;
+type OtpCookie = {
+  _id?: Types.ObjectId;
 };
 
-export type GoogleAuthCallbackAction = {
+export type GoogleAuthCallbackActionCookie = {
   authCallbackAction: "register" | "login";
   redirectUrl: string;
 };
@@ -18,13 +19,13 @@ export const cookieDefaultOptions = {
   secrets: appConfig.sessionSecret,
   domain:
     appConfig.nodeEnv === "production"
-      ? appConfig.onlineHost
+      ? appConfig.localHost
       : appConfig.localHost,
 } as const;
 
-export const hasOtp = createCookie("__hasOtp", {
+export const hasOtp = createCookie("__otp", {
   ...cookieDefaultOptions,
-  maxAge: 60,
+  maxAge: 60 * 30,
 });
 
 export const googleAuthCallbackAction = createCookie(
@@ -34,14 +35,14 @@ export const googleAuthCallbackAction = createCookie(
   },
 );
 
-export async function parseHasOtpCookie(request: Request) {
+export async function parseOtpCookie(request: Request) {
   const cookie = request.headers.get("Cookie");
-  const parsedCookie = (await hasOtp.parse(cookie)) || { hasOtp: false };
+  const parsedCookie = (await hasOtp.parse(cookie)) || {};
 
-  return parsedCookie as HasOtp;
+  return parsedCookie as OtpCookie;
 }
 
-export async function serializeHasOtpCookie(cookie: HasOtp) {
+export async function serializeOtpCookie(cookie: OtpCookie) {
   return hasOtp.serialize(cookie);
 }
 
@@ -49,9 +50,11 @@ export async function parseAuthCbCookie(request: Request) {
   const cookie = request.headers.get("Cookie");
   const parsedCookie = (await googleAuthCallbackAction.parse(cookie)) || {};
 
-  return parsedCookie as GoogleAuthCallbackAction;
+  return parsedCookie as GoogleAuthCallbackActionCookie;
 }
 
-export async function serializeAuthCbCookie(cookie: GoogleAuthCallbackAction) {
+export async function serializeAuthCbCookie(
+  cookie: GoogleAuthCallbackActionCookie,
+) {
   return googleAuthCallbackAction.serialize(cookie);
 }

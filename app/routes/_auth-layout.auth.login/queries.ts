@@ -11,6 +11,11 @@ export async function getUser(formData: { [key: string]: FormDataEntryValue }) {
     }
 
     const user = await User.findOne({ email }).select("+password").exec();
+
+    if (user && user.googleId) {
+      throw new AppError("Continue with with google", 400);
+    }
+
     if (
       !user ||
       !(await user.comparePassword(password as string, user.password))

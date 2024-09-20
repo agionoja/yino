@@ -109,7 +109,7 @@ export const googleAuth = new GoogleAuth({
   clientId: `${appConfig.googleClientId}`,
   redirectUrl: `${appConfig.nodeEnv === "production" ? appConfig.onlineHost : `http://${appConfig.localHost}:${appConfig.port}`}/auth/google-auth/callback`,
   responseType: "code",
-  scope: "openid email profile",
+  scope: "email profile",
   accessType: "offline",
   grantType: "authorization_code",
   clientSecret: `${appConfig.googleClientSecret}`,

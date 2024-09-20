@@ -10,17 +10,18 @@ type UserInfo = {
 
 export function findOrCreateUser({ id, name, email, verified }: UserInfo) {
   return asyncOperationHandler(async () => {
-    let user = await User.findOne({ email }).lean().exec();
+    const user = await User.findOne({ email }).lean().exec();
 
-    if (!user) {
-      user = await User.create({
+    if (user) return { user, isNew: false };
+
+    return {
+      user: await User.create({
         googleId: id,
         name,
         email,
         isVerified: verified,
-      });
-    }
-
-    return user;
+      }),
+      isNew: true,
+    };
   });
 }

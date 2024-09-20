@@ -56,6 +56,7 @@ interface IUserMethods {
   comparePassword(plainPassword: string, password: string): Promise<boolean>;
   passwordChangedAfterJwt(jwtIat: number, passwordChangedAt?: Date): boolean;
   generateAndSaveOtp(): Promise<string>;
+  destroyAndOtp(): Promise<void>;
   generateAndSaveToken(
     fieldName: "passwordResetToken" | "verificationToken",
   ): Promise<string>;
@@ -227,6 +228,11 @@ userSchema.methods.generateAndSaveToken = async function (fieldName) {
   return token;
 };
 
+userSchema.methods.destroyAndOtp = async function () {
+  this.otpExpires = undefined;
+  this.otp = undefined;
+  await this.save({ validateBeforeSave: false });
+};
 userSchema.methods.compareToken = function (fieldName, token) {
   switch (fieldName) {
     case "verificationToken": {

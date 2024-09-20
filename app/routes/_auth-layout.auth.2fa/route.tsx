@@ -11,9 +11,10 @@ import {
   json,
   LoaderFunctionArgs,
   type MetaFunction,
+  redirect,
 } from "@remix-run/node";
 import React, { useEffect, useRef, useState } from "react";
-import { validateOtp } from "~/routes/_auth-layout.auth.2fa/queries";
+import { resendOtp, validateOtp } from "~/routes/_auth-layout.auth.2fa/queries";
 import {
   commitSession,
   redirectIfHaveValidSessionToken,
@@ -22,66 +23,114 @@ import {
 import { AuthLink } from "~/components/auth-link";
 import { getDashboardUrl, getUrlFromSearchParams } from "~/utils/url";
 import { toast } from "react-toastify";
-import { parseHasOtpCookie } from "~/cookies.server";
-import { redirectWithToast } from "~/utils/toast/flash.session.server";
+import { parseOtpCookie } from "~/cookies.server";
+import {
+  redirectWithErrorToast,
+  redirectWithToast,
+} from "~/utils/toast/flash.session.server";
 
 export async function action({ request }: ActionFunctionArgs) {
-  const formData = await request.formData();
-  const otp = formData.get("otp");
+  const { _action, ...values } = Object.fromEntries(await request.formData());
 
-  const { error, data: user } = await validateOtp(otp);
+  switch (_action) {
+    case "otp": {
+      const { error, data: user } = await validateOtp(values.otp);
 
-  if (user) {
-    const session = await storeTokenInSession(user);
+      if (user) {
+        const session = await storeTokenInSession(user);
 
-    const url = getUrlFromSearchParams(request.url, "redirect");
-    const redirectUrl = url ? url : getDashboardUrl(user);
+        const url = getUrlFromSearchParams(request.url, "redirect");
+        const redirectUrl = url ? url : getDashboardUrl(user);
 
-    return redirectWithToast(
-      redirectUrl,
-      { text: "2FA successful", type: "success" },
-      {
-        status: 200,
-        headers: {
-          "Set-Cookie": await commitSession(session),
-        },
-      },
-    );
-  } else {
-    return json(
-      { error },
-      {
-        status: error[0]?.statusCode,
-      },
-    );
+        return await redirectWithToast(
+          redirectUrl,
+          { text: "Welcome back!", type: "success" },
+          {
+            headers: {
+              "Set-Cookie": await commitSession(session),
+            },
+          },
+        );
+      } else {
+        return json(
+          { error },
+          {
+            status: error[0]?.statusCode,
+          },
+        );
+      }
+    }
+
+    case "resend": {
+      const otpCookie = await parseOtpCookie(request);
+      const { error, data } = await resendOtp(otpCookie?._id);
+
+      if (error) {
+        console.log(error);
+        return redirectWithErrorToast(
+          "/auth/2fa",
+          "There was an error resending the OTP",
+        );
+      }
+
+      if (!data?.otp) {
+        // This means that the user id was not saved in the cookie or the user tempered with it
+        return redirectWithToast("/auth/login", {
+          text: "please allow cookie to continue",
+          type: "warning",
+        });
+      }
+
+      console.log(otpCookie, { otp: data?.otp });
+
+      return redirectWithToast("/auth/2fa", {
+        text: "Check your email for your OTP",
+        type: "success",
+      });
+    }
   }
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveValidSessionToken(request);
+  await redirectIfHaveValidSessionToken(request, "You are already logged in!");
 
-  const hasOtp = await parseHasOtpCookie(request);
+  const otpCookie = await parseOtpCookie(request);
 
-  return json({ hasOtp: hasOtp.hasOtp });
+  if (!otpCookie._id) {
+    return redirect(
+      "/auth/login",
+      // "You have to login in first",
+    );
+  }
+
+  return json({ userId: otpCookie?._id });
 }
 
 export const meta: MetaFunction = () => {
   return [
     { title: "2FA | Yino" },
     { name: "description", content: "Two Factor Verification" },
+    { httpEquiv: "refresh", content: "1800 url=/auth/login" },
   ];
 };
 
-export default function RouteComponent() {
+export default function _2FA() {
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
-  const { hasOtp } = useLoaderData<typeof loader>();
+  const { userId = undefined } = useLoaderData<typeof loader>();
   const inputRef = useRef<HTMLInputElement>(null);
+  const previousErrorRef = useRef<typeof error | null>(null);
   const hasShownToast = useRef(false);
   const [inputValue, setInputValue] = useState("");
-  const isSubmitting = navigation.state === "submitting";
+  const [counter, setCounter] = useState(30);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const isSubmitting =
+    navigation.state === "submitting" &&
+    navigation.formData?.get("_action") === "otp";
+  const isResendingOtp =
+    navigation.state === "submitting" &&
+    navigation.formData?.get("_action") === "resend";
   const error = actionData?.error;
-  const previousErrorRef = useRef<typeof error | null>(null);
 
   useEffect(() => {
     const hasNewError = error && error !== previousErrorRef.current;
@@ -93,11 +142,11 @@ export default function RouteComponent() {
   }, [error, isSubmitting]);
 
   useEffect(() => {
-    if (hasOtp && !hasShownToast.current) {
+    if (!hasShownToast.current) {
       toast("Check your email for your OTP", { type: "info" });
       hasShownToast.current = true;
     }
-  }, [hasOtp, navigation.state]);
+  }, [userId, navigation.state]);
 
   useEffect(() => {
     if (!isSubmitting) {
@@ -105,6 +154,26 @@ export default function RouteComponent() {
       inputRef.current?.select();
     }
   }, [isSubmitting]);
+
+  // Countdown logic for disabling resend button
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    if (isDisabled && counter > 0) {
+      timer = setTimeout(() => setCounter((prev) => prev - 1), 1000);
+    } else if (counter === 0) {
+      setIsDisabled(false);
+      setCounter(30);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [counter, isDisabled]);
+
+  useEffect(() => {
+    if (isResendingOtp) {
+      setIsDisabled(true);
+    }
+  }, [isResendingOtp]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -138,12 +207,26 @@ export default function RouteComponent() {
           onInvalid={handleInvalid}
         />
         <Button
+          name={"_action"}
+          value={"otp"}
           aria-label={"submit otp"}
           disabled={isSubmitting}
           className={"bg-blue"}
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </Button>
+      </Form>
+
+      <Form className={"w-full"} method={"POST"}>
+        <button
+          disabled={isDisabled || isResendingOtp}
+          name={"_action"}
+          value={"resend"}
+          className={"ml-auto block w-fit text-sm text-gray-500"}
+          type={"submit"}
+        >
+          {isDisabled ? `Resend in (${counter})` : "Resend"}
+        </button>
       </Form>
 
       <AuthLink to={"/auth/login"}>Back to login</AuthLink>

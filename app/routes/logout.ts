@@ -12,7 +12,7 @@ export async function action({ request }: ActionFunctionArgs) {
   return session.has("token")
     ? await redirectWithToast(
         "/auth/login",
-        { text: "Logged out successfully", type: "success" },
+        { text: "Goodbye ✋✋✋", type: "success" },
         {
           headers: {
             "Set-Cookie": await destroySession(session),

@@ -6,6 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/route.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,9 +156,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.dev" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.build" />
-        <item itemvalue="npm.dev" />
         <item itemvalue="npm.test" />
         <item itemvalue="npm.lint" />
       </list>
@@ -186,6 +190,7 @@
       <workItem from="1726576616293" duration="31476000" />
       <workItem from="1726733087692" duration="9457000" />
       <workItem from="1726752209705" duration="11363000" />
+      <workItem from="1726825939894" duration="4101000" />
     </task>
     <servers />
   </component>

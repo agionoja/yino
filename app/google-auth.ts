@@ -107,7 +107,7 @@ export default class GoogleAuth {
 
 export const googleAuth = new GoogleAuth({
   clientId: `${appConfig.googleClientId}`,
-  redirectUrl: `${appConfig.nodeEnv === "production" ? appConfig.onlineHost : `http://${appConfig.localHost}:${appConfig.port}`}/auth/google-auth/callback`,
+  redirectUrl: `${appConfig.nodeEnv === "production" ? `https://${appConfig.onlineHost}` : `http://${appConfig.localHost}:${appConfig.port}`}/auth/google-auth/callback`,
   responseType: "code",
   scope: "email profile",
   accessType: "offline",

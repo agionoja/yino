@@ -6,7 +6,7 @@ import { Button } from "~/components/button";
 import { AuthLink } from "~/components/auth-link";
 
 export function action({ request }: ActionFunctionArgs) {
-  return null;
+  // const em;
 }
 
 export const meta: MetaFunction = () => {

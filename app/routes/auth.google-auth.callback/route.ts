@@ -4,8 +4,16 @@ import {
   redirectIfHaveValidSessionToken,
   storeTokenInSession,
 } from "~/session.server";
-import { getDashboardUrl, getUrlFromSearchParams } from "~/utils/url";
-import { parseAuthCbCookie } from "~/cookies.server";
+import {
+  getDashboardUrl,
+  getUrlFromSearchParams,
+  queryStringBuilder,
+} from "~/utils/url";
+import {
+  parseAuthCbCookie,
+  parseOtpCookie,
+  serializeOtpCookie,
+} from "~/cookies.server";
 import { googleAuth } from "~/google-auth";
 import {
   redirectWithErrorToast,
@@ -33,14 +41,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
       : "There was an error creating your account. Please try again.";
 
   if (error) {
-    console.log(error);
+    console.log({ error: error });
     return redirectWithErrorToast(
       state === "login" ? "/auth/login" : "/auth/register",
       errMsg(state === "login"),
     );
   }
 
-  const { error: userError, data: userData } = await findOrCreateUser({
+  const { error: userError, data: user } = await findOrCreateUser({
     id: data?.id,
     name: data?.name,
     email: data?.email,
@@ -48,13 +56,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 
   if (userError) {
+    console.log({ userError });
     return redirectWithErrorToast(
       state === "login" ? "/auth/login" : "/auth/register",
       errMsg(state === "login"),
     );
   }
 
-  const dashboardUrl = getDashboardUrl(userData?.user);
+  const dashboardUrl = getDashboardUrl(user);
 
   const userRedirectUrl = redirectUrl
     ? redirectUrl !== "/"
@@ -62,8 +71,34 @@ export async function loader({ request }: LoaderFunctionArgs) {
       : dashboardUrl
     : dashboardUrl;
 
-  const session = await storeTokenInSession(userData?.user);
-  const successMessage = userData?.isNew ? "Welcome to Yino!" : "Welcome back!";
+  if (user?.is2fa) {
+    const otpCookie = await parseOtpCookie(request);
+    otpCookie["_id"] = user.id;
+
+    const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
+      key: "redirect",
+      value: redirectUrl,
+    });
+
+    const otp = await user.generateAndSaveOtp();
+    console.log({ otp });
+
+    return redirectWithToast(
+      _2faRedirectUrl,
+      {
+        text: "OTP is valid for only 2 min!",
+        type: "warning",
+      },
+      {
+        headers: {
+          "Set-Cookie": await serializeOtpCookie(otpCookie),
+        },
+      },
+    );
+  }
+
+  const session = await storeTokenInSession(user);
+  const successMessage = user?.isNew ? "Welcome to Yino!" : "Welcome back!";
 
   return await redirectWithToast(
     userRedirectUrl,

@@ -5,7 +5,7 @@ interface Props extends LinkProps {}
 export function AuthLink({ className, children, to, ...props }: Props) {
   return (
     <Link
-      className={`text-center text-gray-500 underline ${className}`}
+      className={`mx-auto w-fit text-center text-gray-500 underline ${className}`}
       to={to}
       {...props}
     >

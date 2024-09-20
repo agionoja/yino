@@ -31,11 +31,11 @@ export async function action({ request }: ActionFunctionArgs) {
       if (user) {
         const session = await storeTokenInSession(user);
 
-        return redirectWithToast(
+        console.log({ session });
+        return await redirectWithToast(
           getDashboardUrl(user),
-          { text: "Registered successfully", type: "success" },
+          { text: "Welcome to Yino!", type: "success" },
           {
-            status: 201,
             headers: {
               "Set-cookie": await commitSession(session),
             },

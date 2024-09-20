@@ -28,7 +28,7 @@ export async function storeTokenInSession(user: Pick<IUser, "_id">) {
 }
 
 export async function getTokenFromSession(session: Session) {
-  return String(session.get("token"));
+  return session.get("token");
 }
 
 export async function getTokenSession(request: Request) {

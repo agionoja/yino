@@ -24,12 +24,12 @@ import {
   redirectIfHaveValidSessionToken,
   storeTokenInSession,
 } from "~/session.server";
-import { replaceWithToast } from "~/utils/toast/flash.session.server";
+import { redirectWithToast } from "~/utils/toast/flash.session.server";
 import {
   parseAuthCbCookie,
-  parseHasOtpCookie,
+  parseOtpCookie,
   serializeAuthCbCookie,
-  serializeHasOtpCookie,
+  serializeOtpCookie,
 } from "~/cookies.server";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -45,34 +45,32 @@ export async function action({ request }: ActionFunctionArgs) {
 
         if (user.is2fa) {
           console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
-
           const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
             key: "redirect",
             value: redirectUrl,
           });
 
-          const hasOtpCookie = await parseHasOtpCookie(request);
-          hasOtpCookie["hasOtp"] = true;
+          const otpCookie = await parseOtpCookie(request);
+          otpCookie["_id"] = user.id;
 
-          return replaceWithToast(
+          return await redirectWithToast(
             _2faRedirectUrl,
             {
               text: "OTP is valid for only 2 min!",
               type: "warning",
             },
             {
-              status: 200,
               headers: {
-                "Set-Cookie": await serializeHasOtpCookie(hasOtpCookie),
+                "Set-Cookie": await serializeOtpCookie(otpCookie),
               },
             },
           );
         }
         const session = await storeTokenInSession(user);
 
-        return replaceWithToast(
+        return await redirectWithToast(
           redirectUrl,
-          { text: "Logged in successfully", type: "success" },
+          { text: "Welcome back!", type: "success" },
           {
             headers: {
               "Set-Cookie": await commitSession(session),

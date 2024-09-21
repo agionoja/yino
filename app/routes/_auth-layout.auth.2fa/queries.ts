@@ -1,17 +1,17 @@
-import { createHash } from "node:crypto";
 import asyncOperationHandler from "~/utils/async.operation";
 import User from "~/models/user.model";
 import { AppError } from "~/utils/app.error";
 import { Types } from "mongoose";
+import { createHashSha256 } from "~/utils/hash";
 
-export function validateOtp(otp: FormDataEntryValue | null) {
+export function validateOtp(otp: FormDataEntryValue | undefined) {
   return asyncOperationHandler(async () => {
     if (!otp) {
       throw new AppError("Otp is required to authenticate your login", 401);
     }
 
     const user = await User.findOne({
-      otp: createHash("sha256").update(String(otp)).digest("hex"),
+      otp: createHashSha256(String(otp)),
       otpExpires: { $gt: new Date() },
     }).exec();
 

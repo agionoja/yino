@@ -44,7 +44,7 @@ export const Input = forwardRef(function Input(
   }, []);
 
   useEffect(() => {
-    if (!validate?.isValid && !isSubmitting) {
+    if (validate && !validate?.isValid && !isSubmitting) {
       inputRef.current?.focus();
       inputRef.current?.select();
       toast(validate?.message, { type: "error" });
@@ -65,6 +65,8 @@ export const PasswordInput = forwardRef(function PasswordInput(
   ref: ForwardedRef<HTMLInputElement>,
 ) {
   const [showPassword, setShowPassword] = useState(false);
+
+  console.log({ showPassword });
 
   const handleClick = () => setShowPassword((prevState) => !prevState);
   return (

@@ -3,7 +3,7 @@ import User from "~/models/user.model";
 import { AppError } from "~/utils/app.error";
 import appConfig from "../../../app.config";
 
-export async function getUser(email: FormDataEntryValue | null) {
+export async function sendPasswordResetToken(email: FormDataEntryValue | null) {
   return asyncOperationHandler(async () => {
     if (!email) {
       throw new AppError("Email is required to reset your password", 400);
@@ -12,22 +12,24 @@ export async function getUser(email: FormDataEntryValue | null) {
     const user = await User.findOne({ email }).exec();
 
     if (!user) {
-      throw new AppError("Email does not exit", 404);
+      throw new AppError("User does not exit", 404);
     }
 
     if (user.googleId) {
       throw new AppError(
-        "You registered with google. Chat gpt provide a standard response for such cases",
+        "You signed up using Google. Please use Google to sign in.",
         400,
       );
     }
 
-    const resetToken = user.generateAndSaveToken("passwordResetToken");
+    const resetToken = await user.generateAndSaveToken("passwordResetToken");
+
+    // TODO send this to the user email
     const passwordResetURL =
       appConfig.nodeEnv === "production"
-        ? ""
-        : `http://localhost:${appConfig.port}/auth/resetPassword/${resetToken}`;
+        ? `https://${appConfig.onlineHost}/auth/reset-password/${resetToken}`
+        : `http://localhost:${appConfig.port}/auth/reset-Password/${resetToken}`;
 
-    return user;
+    return { ok: true, passwordResetURL };
   });
 }

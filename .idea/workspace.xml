@@ -5,11 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/utils/hash.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/input.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/input.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.2fa/queries.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/queries.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.forgot-password/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.reset-password.$token/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.reset-password.$token/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth-layout.auth.reset-password.$token/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth-layout.auth.reset-password.$token/route.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,8 +24,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
-        <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -103,7 +107,7 @@
       <recent name="$PROJECT_DIR$/app/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.dev">
+  <component name="RunManager" selected="npm.test">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -156,10 +160,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.test" />
         <item itemvalue="npm.dev" />
         <item itemvalue="npm.start" />
         <item itemvalue="npm.build" />
-        <item itemvalue="npm.test" />
         <item itemvalue="npm.lint" />
       </list>
     </recent_temporary>
@@ -190,7 +194,7 @@
       <workItem from="1726576616293" duration="31476000" />
       <workItem from="1726733087692" duration="9457000" />
       <workItem from="1726752209705" duration="11363000" />
-      <workItem from="1726825939894" duration="4101000" />
+      <workItem from="1726825939894" duration="20813000" />
     </task>
     <servers />
   </component>

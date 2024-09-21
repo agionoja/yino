@@ -1,10 +1,11 @@
-import { createHash, randomBytes } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import { promisify } from "node:util";
 import { model, Model, Query, Schema, Types } from "mongoose";
 import validator from "validator";
 import scrypt from "~/utils/scrypt";
 import createTimeStamp from "~/utils/timestamp";
 import photoSchema, { IPhoto } from "~/models/schamas/photo.schema";
+import { createHashSha256 } from "~/utils/hash";
 
 const roles = ["client", "admin", "team"] as const;
 
@@ -121,7 +122,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       select: false,
       validate: {
         validator: (value) =>
-          /^(?=.*[A-Z])(?=.*[!@#$%^&*()_\-+=~`<>?/.,])[A-Za-z\d!@#$%^&*()_\-+=~`<>?/.,]{8,50}$/.test(
+          /^(?=.*[A-Z])(?=.*[!@#$%^&*()_\-+=~`<>?/.,])[A-Za-z\d!@#$%^&*()_;\-+=~`<>?/.,]{8,50}$/.test(
             value,
           ),
         message: ({ value }) => {
@@ -217,7 +218,7 @@ userSchema.methods.passwordChangedAfterJwt = function (
 userSchema.methods.generateAndSaveToken = async function (fieldName) {
   const token = (await promisify(randomBytes)(32)).toString("hex");
 
-  this[fieldName] = hash(token);
+  this[fieldName] = createHashSha256(token);
   if (fieldName === "verificationToken") {
     this.verificationTokenExpires = new Date(createTimeStamp({ m: 10 }));
   } else if (fieldName === "passwordResetToken") {
@@ -236,13 +237,13 @@ userSchema.methods.destroyAndOtp = async function () {
 userSchema.methods.compareToken = function (fieldName, token) {
   switch (fieldName) {
     case "verificationToken": {
-      return hash(token) === this.verificationToken;
+      return createHashSha256(token) === this.verificationToken;
     }
     case "passwordResetToken": {
-      return hash(token) === this.passwordResetToken;
+      return createHashSha256(token) === this.passwordResetToken;
     }
     case "otp": {
-      return hash(token) === this.otp;
+      return createHashSha256(token) === this.otp;
     }
     default: {
       return false;
@@ -253,7 +254,7 @@ userSchema.methods.compareToken = function (fieldName, token) {
 userSchema.methods.generateAndSaveOtp = async function () {
   const otp = generateOTP(6);
 
-  this.otp = hash(otp);
+  this.otp = createHashSha256(otp);
   this.otpExpires = new Date(createTimeStamp({ m: 2 }));
   await this.save({ validateBeforeSave: false });
 
@@ -264,12 +265,11 @@ const User = model<IUser, UserModel>("User", userSchema);
 
 export default User;
 
-function hash(payload: string) {
-  return createHash("sha256").update(payload).digest("hex");
-}
-
 userSchema.static("findUserByOtp", function findUserByOtp(otp: string) {
-  return User.findOne({ otp: hash(otp), otpExpires: { $gt: new Date() } });
+  return User.findOne({
+    otp: createHashSha256(otp),
+    otpExpires: { $gt: new Date() },
+  });
 });
 
 function generateOTP(length: number) {

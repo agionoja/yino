@@ -48,6 +48,8 @@ export async function requireUser(request: Request) {
     );
   }
 
+  // TODO: fix the bug the security bug when a user change password, their session should be invalidated
+
   const passwordChanged = user.passwordChangedAfterJwt(
     decoded.iat || 0,
     user?.passwordChangedAt,

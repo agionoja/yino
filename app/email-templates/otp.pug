@@ -1,0 +1,10 @@
+extends baseEmail
+
+block content
+  p Hi #{ firstName },
+  p As part of our security measures, please use the One-Time Password (OTP) below to complete your sign-in process for your Yino account:
+  p
+    strong #{ otp }
+  p If you did not attempt to sign in, contact our support team.
+  p Thank you for being part of Yino!
+  p Best regards,

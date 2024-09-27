@@ -11,15 +11,23 @@ import { Label } from "~/components/label";
 import { Button } from "~/components/button";
 import { GoogleForm } from "~/components/google-form";
 import { AuthLink } from "~/components/auth-link";
-import { createUser } from "~/routes/_auth-layout.auth.register/queries";
+import { createUser } from "~/routes/_auth.auth.register/queries";
 import {
   commitSession,
   redirectIfHaveValidSessionToken,
   storeTokenInSession,
 } from "~/session.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
-import { getDashboardUrl, getUrlFromSearchParams } from "~/utils/url";
+import {
+  getBaseUrl,
+  getDashboardUrl,
+  getUrlFromSearchParams,
+} from "~/utils/url";
 import { parseAuthCbCookie, serializeAuthCbCookie } from "~/cookies.server";
+import Email from "~/utils/email";
+import asyncOperationHandler from "~/utils/async.operation";
+import { logDevError } from "~/utils/dev.console";
+import { getFieldError } from "~/utils/getFieldError";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
@@ -29,9 +37,16 @@ export async function action({ request }: ActionFunctionArgs) {
       const { error, data: user } = await createUser(values);
 
       if (user) {
+        const emailResult = await asyncOperationHandler(async () => {
+          await new Email(user).sendWelcome(`${getBaseUrl(request)}/`);
+        });
+
+        if (emailResult.error) {
+          logDevError(emailResult.error);
+        }
+
         const session = await storeTokenInSession(user);
 
-        console.log({ session });
         return await redirectWithToast(
           getDashboardUrl(user),
           { text: "Welcome to Yino!", type: "success" },
@@ -81,21 +96,10 @@ export const meta: MetaFunction = () => {
 export default function Register() {
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
+  const error = actionData?.error;
   const isSubmitting =
     navigation.state === "submitting" &&
     navigation.formData?.get("_action") === "register";
-
-  const getFieldError = (name: string) => {
-    const error = actionData?.error?.find((e) => e.path === name);
-    return error
-      ? {
-          message: error.message,
-          isValid: false,
-        }
-      : {
-          isValid: true,
-        };
-  };
 
   return (
     <>
@@ -103,7 +107,7 @@ export default function Register() {
         <Label label={"name"}>
           <Input
             name={"name"}
-            validate={getFieldError("name")}
+            validate={getFieldError("name", error)}
             type={"text"}
             placeholder={"Daniel Arinze"}
             required
@@ -114,7 +118,7 @@ export default function Register() {
         <Label label={"email"}>
           <Input
             name={"email"}
-            validate={getFieldError("email")}
+            validate={getFieldError("email", error)}
             type={"email"}
             placeholder={"hello@example.com"}
             required
@@ -136,7 +140,7 @@ export default function Register() {
         <Label label={"password"}>
           <PasswordInput
             name={"password"}
-            validate={getFieldError("password")}
+            validate={getFieldError("password", error)}
             aria-label={"register password"}
             placeholder={"Your Password"}
           />

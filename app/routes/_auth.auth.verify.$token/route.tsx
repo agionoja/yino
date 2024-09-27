@@ -13,17 +13,17 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function RouteComponent() {
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
-
-  return (
-    <>
-      <Form>
-        <Button className={"bg-blue"} disabled={isSubmitting}>
-          {isSubmitting ? "Verifying..." : "Verify account"}
-        </Button>
-      </Form>
-    </>
-  );
-}
+// export default function RouteComponent() {
+//   const navigation = useNavigation();
+//   const isSubmitting = navigation.state === "submitting";
+//
+//   return (
+//     <>
+//       <Form>
+//         <Button className={"bg-blue"} disabled={isSubmitting}>
+//           {isSubmitting ? "Verifying..." : "Verify account"}
+//         </Button>
+//       </Form>
+//     </>
+//   );
+// }

@@ -66,8 +66,6 @@ export const PasswordInput = forwardRef(function PasswordInput(
 ) {
   const [showPassword, setShowPassword] = useState(false);
 
-  console.log({ showPassword });
-
   const handleClick = () => setShowPassword((prevState) => !prevState);
   return (
     <div className={"relative w-full"}>

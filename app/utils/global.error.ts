@@ -48,7 +48,7 @@ function handleProdError(err: DevProdArgs[]): ProdError[] {
           path: e?.path,
         }
       : {
-          message: "Something went very wrong 💥🧨🧨🧨🧨🧨💥",
+          message: "Something went very wrong",
           statusCode: 500,
           status: "error",
         };

@@ -14,7 +14,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import React, { useEffect, useRef, useState } from "react";
-import { resendOtp, validateOtp } from "~/routes/_auth-layout.auth.2fa/queries";
+import { resendOtp, validateOtp } from "~/routes/_auth.auth.2fa/queries";
 import {
   commitSession,
   redirectIfHaveValidSessionToken,
@@ -28,6 +28,7 @@ import {
   redirectWithErrorToast,
   redirectWithToast,
 } from "~/utils/toast/flash.session.server";
+import { logDevError } from "~/utils/dev.console";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
@@ -63,27 +64,17 @@ export async function action({ request }: ActionFunctionArgs) {
 
     case "resend": {
       const otpCookie = await parseOtpCookie(request);
-      const { error, data } = await resendOtp(otpCookie?._id);
+      const { error } = await resendOtp(otpCookie?._id);
 
       if (error) {
-        console.log(error);
-        return redirectWithErrorToast(
+        logDevError(error);
+        return await redirectWithErrorToast(
           "/auth/2fa",
           "There was an error resending the OTP",
         );
       }
 
-      if (!data?.otp) {
-        // This means that the user id was not saved in the cookie or the user tempered with it
-        return redirectWithToast("/auth/login", {
-          text: "please allow cookie to continue",
-          type: "warning",
-        });
-      }
-
-      console.log(otpCookie, { otp: data?.otp });
-
-      return redirectWithToast("/auth/2fa", {
+      return await redirectWithToast("/auth/2fa", {
         text: "Check your email for your OTP",
         type: "success",
       });

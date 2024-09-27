@@ -40,6 +40,7 @@ function handleDevError(err: DevProdArgs[]): AppError[] {
 
 function handleProdError(err: DevProdArgs[]): ProdError[] {
   return err.map((e) => {
+    console.log({ debuggingError: e });
     return e instanceof AppError && e.isOperational
       ? {
           message: e.message,
@@ -68,7 +69,7 @@ function handleDbDuplicateError(err: MongoServerError) {
 
 function handleDbValidationError(err: MongoServerError) {
   return Object.keys(err.errors).map((key) => {
-    console.log({ key: key });
+    // console.log({ key: key });
     return new AppError(err.errors[key].message, 400, key);
   });
 

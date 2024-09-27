@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/email-templates/_style.pug" beforeDir="false" afterPath="$PROJECT_DIR$/public/email-templates/_style.pug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/email-templates/baseEmail.pug" beforeDir="false" afterPath="$PROJECT_DIR$/public/email-templates/baseEmail.pug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/email-templates/otp.pug" beforeDir="false" afterPath="$PROJECT_DIR$/public/email-templates/otp.pug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/email-templates/resetPassword.pug" beforeDir="false" afterPath="$PROJECT_DIR$/public/email-templates/resetPassword.pug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/email-templates/verificationEmail.pug" beforeDir="false" afterPath="$PROJECT_DIR$/public/email-templates/verificationEmail.pug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/email-templates/welcome.pug" beforeDir="false" afterPath="$PROJECT_DIR$/public/email-templates/welcome.pug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/email.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/email.ts" afterDir="false" />
-    </list>
+    <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -200,7 +191,7 @@
       <workItem from="1727280022162" duration="6841000" />
       <workItem from="1727357823035" duration="11234000" />
       <workItem from="1727430334675" duration="5281000" />
-      <workItem from="1727441536209" duration="4163000" />
+      <workItem from="1727441536209" duration="4513000" />
     </task>
     <servers />
   </component>

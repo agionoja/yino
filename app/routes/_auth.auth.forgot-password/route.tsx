@@ -20,7 +20,7 @@ export async function action({ request }: ActionFunctionArgs) {
   );
 
   if (error) {
-    logDevError({ error });
+    console.log({ error });
     return json({ error }, { status: error[0].statusCode });
   }
 

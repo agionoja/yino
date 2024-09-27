@@ -40,7 +40,7 @@ function handleDevError(err: DevProdArgs[]): AppError[] {
 
 function handleProdError(err: DevProdArgs[]): ProdError[] {
   return err.map((e) => {
-    console.log({ debuggingError: e });
+    // console.log({ debuggingError: e });
     return e instanceof AppError && e.isOperational
       ? {
           message: e.message,

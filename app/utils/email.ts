@@ -30,7 +30,7 @@ export default class Email {
     data?: Record<string, string | number>,
   ) {
     const html = pug.renderFile(
-      `${join(__dirname, "../email-templates", `${template}.pug`)}`,
+      `${join(__dirname, "../../public/email-templates", `${template}.pug`)}`,
       { ...data, firstName: this.name },
     );
 

@@ -31,7 +31,6 @@ const scrypt = {
 
       cryptoScrypt(password, salt, 64, (err, derivedKey) => {
         if (err) return reject(err);
-
         return resolve(derivedKey.toString("hex") === key);
       });
     });

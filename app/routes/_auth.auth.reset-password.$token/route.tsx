@@ -4,13 +4,11 @@ import { PasswordInput } from "~/components/input";
 import { Button } from "~/components/button";
 import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { AuthLink } from "~/components/auth-link";
-import { resetPassword } from "~/routes/_auth-layout.auth.reset-password.$token/queries";
-import {
-  redirectWithErrorToast,
-  redirectWithToast,
-} from "~/utils/toast/flash.session.server";
+import { resetPassword } from "~/routes/_auth.auth.reset-password.$token/queries";
+import { redirectWithToast } from "~/utils/toast/flash.session.server";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import { getFieldError } from "~/utils/getFieldError";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const { ...values } = Object.fromEntries(await request.formData());
@@ -18,11 +16,6 @@ export async function action({ request, params }: ActionFunctionArgs) {
   const { error } = await resetPassword(values, params.token);
 
   if (error) {
-    // return await redirectWithErrorToast(
-    //   `/auth/reset-password/${params.token}`,
-    //   error[0].message,
-    // );
-
     return json(
       { error },
       {
@@ -44,17 +37,12 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export default function RouteComponent() {
+export default function ResetPassword() {
   const navigation = useNavigation();
   const actionData = useActionData<typeof action>();
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const isSubmitting = navigation.state === "submitting";
   const errors = actionData?.error;
-
-  const getFieldError = (name: string) => {
-    const err = errors?.find((err) => err.path === name);
-    return err ? { message: err.message, isValid: false } : { isValid: true };
-  };
 
   useEffect(() => {
     errors?.forEach((e) => {
@@ -79,7 +67,7 @@ export default function RouteComponent() {
             ref={inputRef}
             name={"password"}
             minLength={8}
-            validate={getFieldError("password")}
+            validate={getFieldError("password", errors)}
             placeholder={"Enter your new password"}
             required
           />
@@ -89,7 +77,7 @@ export default function RouteComponent() {
           <PasswordInput
             name={"passwordConfirm"}
             minLength={8}
-            validate={getFieldError("passwordConfirm")}
+            validate={getFieldError("passwordConfirm", errors)}
             placeholder={"Confirm your new password"}
             required
           />

@@ -4,27 +4,30 @@ import { Label } from "~/components/label";
 import { Input } from "~/components/input";
 import { Button } from "~/components/button";
 import { AuthLink } from "~/components/auth-link";
-import { sendPasswordResetToken } from "~/routes/_auth-layout.auth.forgot-password/queries";
+import { sendPasswordResetToken } from "~/routes/_auth.auth.forgot-password/queries";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import { getBaseUrl } from "~/utils/url";
+import { logDevError } from "~/utils/dev.console";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
-  const { error, data } = await sendPasswordResetToken(formData.get("email"));
+
+  const { error } = await sendPasswordResetToken(
+    formData.get("email"),
+    getBaseUrl(request),
+  );
 
   if (error) {
+    logDevError({ error });
     return json({ error }, { status: error[0].statusCode });
   }
 
-  // TODO: make sure to remove this redirect after you set up email
-
-  if (data?.ok) {
-    return await redirectWithToast(data.passwordResetURL, {
-      text: "Check your email for your password reset link",
-      type: "info",
-    });
-  }
+  return await redirectWithToast("/auth/forgot-password", {
+    text: "Check your email for your password reset link",
+    type: "info",
+  });
 }
 
 export const meta: MetaFunction = () => {

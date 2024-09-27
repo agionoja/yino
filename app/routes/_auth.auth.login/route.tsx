@@ -13,7 +13,7 @@ import { AuthLink } from "~/components/auth-link";
 import { Button } from "~/components/button";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
-import { getUser } from "~/routes/_auth-layout.auth.login/queries";
+import { getUser } from "~/routes/_auth.auth.login/queries";
 import {
   getDashboardUrl,
   getUrlFromSearchParams,
@@ -31,6 +31,10 @@ import {
   serializeAuthCbCookie,
   serializeOtpCookie,
 } from "~/cookies.server";
+import asyncOperationHandler from "~/utils/async.operation";
+import Email from "~/utils/email";
+import appConfig from "../../../app.config";
+import { logDevError, logDevInfo } from "~/utils/dev.console";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
@@ -44,7 +48,21 @@ export async function action({ request }: ActionFunctionArgs) {
         const redirectUrl = url ? url : getDashboardUrl(user);
 
         if (user.is2fa) {
-          console.log({ otp: await user.generateAndSaveOtp() }); // TODO: remove this when you implement email functionality
+          const otp = await user.generateAndSaveOtp();
+
+          const { error: otpError } = await asyncOperationHandler(async () => {
+            await new Email(user).sendOtp(otp);
+          });
+
+          if (otpError) {
+            await user.destroyOtpAndSAve();
+            logDevError(otpError);
+          }
+
+          if (appConfig.nodeEnv !== "production") {
+            logDevInfo({ otp });
+          }
+
           const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
             key: "redirect",
             value: redirectUrl,
@@ -150,7 +168,17 @@ export default function Login() {
           />
         </Label>
 
-        <Label label={"Password"}>
+        <Label
+          label={"Password"}
+          extraElement={
+            <AuthLink
+              to={"/auth/forgot-password"}
+              className={"text-sm text-blue no-underline"}
+            >
+              Forgot Password?
+            </AuthLink>
+          }
+        >
           <PasswordInput
             name={"password"}
             aria-label={"register password"}

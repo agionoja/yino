@@ -29,10 +29,16 @@ export async function resetPassword(
       throw new AppError("Password reset token is invalid or has expired", 401);
     }
 
-    if (await scrypt.comparePassword(String(password), user.password)) {
+    const comparePassword = await scrypt.comparePassword(
+      String(password),
+      user.password,
+    );
+
+    if (comparePassword) {
       throw new AppError(
         "The new password cannot be the same as the old password.",
         400,
+        "password",
       );
     }
 

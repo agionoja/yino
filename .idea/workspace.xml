@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/components/icons.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/icons.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/components/input.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/input.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_landing._index/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_landing._index/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_landing/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_landing/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/tailwind.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
-    </list>
+    <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -200,7 +191,7 @@
       <workItem from="1727280022162" duration="6841000" />
       <workItem from="1727357823035" duration="11234000" />
       <workItem from="1727430334675" duration="5281000" />
-      <workItem from="1727441536209" duration="2414000" />
+      <workItem from="1727441536209" duration="2765000" />
     </task>
     <servers />
   </component>

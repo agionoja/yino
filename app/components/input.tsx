@@ -55,7 +55,7 @@ export const Input = forwardRef(function Input(
     <input
       {...props}
       ref={inputRef}
-      className={`w-full rounded-lg border border-french-gray px-4 py-4 transition duration-200 focus:border-payne-gray focus:shadow focus:outline-none ${className}`}
+      className={`w-full rounded-lg border border-french-gray bg-gray-100 px-4 py-4 transition duration-200 focus:border-payne-gray focus:shadow focus:outline-none ${className}`}
     />
   );
 });

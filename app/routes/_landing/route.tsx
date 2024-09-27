@@ -1,4 +1,5 @@
 import { Outlet } from "@remix-run/react";
+import Footer from "~/components/footer";
 
 export default function Landing() {
   return (
@@ -7,7 +8,7 @@ export default function Landing() {
         <nav></nav>
       </header>
       <main>{<Outlet />}</main>
-      <footer></footer>
+      <Footer />
     </div>
   );
 }

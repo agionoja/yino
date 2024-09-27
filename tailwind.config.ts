@@ -10,6 +10,10 @@ export default {
         "payne-gray": "#4b5768",
         "french-gray": "#d0d5dd",
         "anti-flash-white": "#e4e7eb",
+        "dark-jungle-green": "#1E1E1E",
+      },
+      fontFamily: {
+        inter: `"Inter", system-ui;`,
       },
     },
   },

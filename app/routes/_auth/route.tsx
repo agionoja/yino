@@ -13,7 +13,7 @@ export default function AuthLayout() {
     >
       <div
         className={
-          "flex w-full flex-col gap-6 px-4 md:w-[70%] md:px-0 lg:w-[35%] 2xl:w-[30%]"
+          "flex w-full flex-col gap-6 px-4 md:w-[70%] md:rounded-lg md:p-6 md:shadow lg:w-[35%] 2xl:w-[30%]"
         }
       >
         <Outlet />

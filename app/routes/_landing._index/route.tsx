@@ -3,8 +3,8 @@ import { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "Yino" },
+    { name: "description", content: "Welcome to Yino!" },
   ];
 };
 

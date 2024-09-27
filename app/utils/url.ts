@@ -33,3 +33,8 @@ export function queryStringBuilder(
 
   return `${url}?${queryParam}`;
 }
+
+export function getBaseUrl(request: Request): string {
+  const { protocol, host } = new URL(request.url);
+  return `${protocol}//${host}`;
+}

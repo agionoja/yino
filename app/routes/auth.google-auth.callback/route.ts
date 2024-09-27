@@ -20,6 +20,10 @@ import {
   redirectWithToast,
 } from "~/utils/toast/flash.session.server";
 import { findOrCreateUser } from "~/routes/auth.google-auth.callback/queries";
+import asyncOperationHandler from "~/utils/async.operation";
+import Email from "~/utils/email";
+import appConfig from "../../../app.config";
+import { logDevInfo } from "~/utils/dev.console";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { authCallbackAction, redirectUrl } = await parseAuthCbCookie(request);
@@ -81,7 +85,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
     });
 
     const otp = await user.generateAndSaveOtp();
-    console.log({ otp });
+
+    const otpResult = await asyncOperationHandler(async () => {
+      await new Email(user).sendOtp(otp);
+    });
+
+    if (otpResult.error) {
+      console.error(otpResult.error);
+    }
+
+    if (appConfig.nodeEnv !== "production") {
+      logDevInfo({ otp });
+    }
 
     return redirectWithToast(
       _2faRedirectUrl,

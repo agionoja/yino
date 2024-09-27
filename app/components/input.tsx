@@ -44,7 +44,7 @@ export const Input = forwardRef(function Input(
   }, []);
 
   useEffect(() => {
-    if (!validate?.isValid && !isSubmitting) {
+    if (validate && !validate?.isValid && !isSubmitting) {
       inputRef.current?.focus();
       inputRef.current?.select();
       toast(validate?.message, { type: "error" });

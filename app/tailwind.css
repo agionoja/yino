@@ -7,3 +7,8 @@
     @apply flex w-full flex-col gap-6;
   }
 }
+
+.bg {
+  background-color: rgba(205, 236, 248, 0.95);
+  color: rgba(244, 245, 247, 0.98);
+}

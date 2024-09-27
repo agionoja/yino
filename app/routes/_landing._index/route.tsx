@@ -1,5 +1,5 @@
 import { MetaFunction } from "@remix-run/node";
-import { Form, Link } from "@remix-run/react";
+// import { Form, Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div className="p-4 font-sans">
-      <h1 className="text-3xl">Welcome to Remix</h1>
+      {/* <h1 className="text-3xl">Welcome to Remix</h1>
       <ul className="mt-4 list-disc space-y-2 pl-6">
         <li>
           <a
@@ -72,7 +72,7 @@ export default function Index() {
             </button>
           </li>
         </Form>
-      </ul>
+      </ul> */}
     </div>
   );
 }

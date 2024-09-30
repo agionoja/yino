@@ -2,6 +2,10 @@ import jsonwebtoken from "jsonwebtoken";
 import appConfig from "../../app.config";
 import { Types } from "mongoose";
 
+interface Decoded extends jsonwebtoken.JwtPayload {
+  _id: Types.ObjectId;
+}
+
 function isJwtPayload(decoded: any): decoded is jsonwebtoken.JwtPayload {
   return (
     typeof decoded === "object" &&
@@ -13,10 +17,10 @@ function isJwtPayload(decoded: any): decoded is jsonwebtoken.JwtPayload {
 }
 
 const jwt = {
-  sign: ({ id }: { id: Types.ObjectId }): Promise<string> => {
+  sign: ({ _id }: { _id: Types.ObjectId }): Promise<string> => {
     return new Promise((resolve, reject) => {
       jsonwebtoken.sign(
-        { id },
+        { _id },
         appConfig.jwtSecret,
         { expiresIn: appConfig.jwtExpires },
         (err, token) => {
@@ -28,7 +32,7 @@ const jwt = {
     });
   },
 
-  verify: (token: string): Promise<jsonwebtoken.JwtPayload> => {
+  verify: (token: string): Promise<Decoded> => {
     return new Promise((resolve, reject) => {
       jsonwebtoken.verify(token, appConfig.jwtSecret, (err, decoded) => {
         if (err) return reject(err);
@@ -36,7 +40,7 @@ const jwt = {
         if (!isJwtPayload(decoded)) {
           return reject(new Error("Invalid JWT token"));
         }
-        return resolve(decoded);
+        return resolve(decoded as Decoded);
       });
     });
   },

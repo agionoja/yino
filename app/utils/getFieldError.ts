@@ -3,7 +3,10 @@ interface ErrorField {
   message?: string;
 }
 
-export function getFieldError<T extends ErrorField>(name: string, err?: T[]) {
+export function getFieldError<T extends ErrorField>(
+  name: string,
+  err?: T[] | null,
+) {
   const error = err?.find((e) => e.path === name);
   // console.log({ error: error });
   return error

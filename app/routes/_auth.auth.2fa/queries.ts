@@ -22,7 +22,6 @@ export function validateOtp(otp: FormDataEntryValue | undefined) {
     }
 
     await user.destroyOtpAndSAve();
-
     return user;
   });
 }

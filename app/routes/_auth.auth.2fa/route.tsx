@@ -17,7 +17,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { resendOtp, validateOtp } from "~/routes/_auth.auth.2fa/queries";
 import {
   commitSession,
-  redirectIfHaveValidSessionToken,
+  redirectIfHaveSession,
   storeTokenInSession,
 } from "~/session.server";
 import { AuthLink } from "~/components/auth-link";
@@ -83,7 +83,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveValidSessionToken(request, "You are already logged in!");
+  await redirectIfHaveSession(request, "You are already logged in!");
 
   const otpCookie = await parseOtpCookie(request);
 

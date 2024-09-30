@@ -5,7 +5,6 @@ import { Input } from "~/components/input";
 import { Button } from "~/components/button";
 import { AuthLink } from "~/components/auth-link";
 import { sendPasswordResetToken } from "~/routes/_auth.auth.forgot-password/queries";
-import { redirectWithToast } from "~/utils/toast/flash.session.server";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { getBaseUrl } from "~/utils/url";
@@ -21,13 +20,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (error) {
     logDevError({ error });
-    return json({ error }, { status: error[0].statusCode });
+    return json({ error, ok: false }, { status: error[0].statusCode });
   }
 
-  return await redirectWithToast("/auth/forgot-password", {
-    text: "Check your email for your password reset link",
-    type: "info",
-  });
+  return json({ ok: true, error: null });
 }
 
 export const meta: MetaFunction = () => {
@@ -46,20 +42,27 @@ export default function ForgotPassword() {
   const actionData = useActionData<typeof action>();
   const inputRef = useRef<HTMLInputElement>(null);
   const error = actionData?.error;
+  const ok = actionData?.ok;
   const isSubmitting = navigation.state === "submitting";
 
   useEffect(() => {
-    if (!isSubmitting) {
+    if (!isSubmitting && !ok) {
       inputRef.current?.focus();
       inputRef.current?.select();
     }
-  }, [isSubmitting]);
+  }, [isSubmitting, ok]);
 
   useEffect(() => {
     if (error) {
       toast.error(error[0].message);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (ok) {
+      toast.success("Check your email for your password reset link");
+    }
+  }, [ok]);
 
   return (
     <>

@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import {
   commitSession,
-  redirectIfHaveValidSessionToken,
+  redirectIfHaveSession,
   storeTokenInSession,
 } from "~/session.server";
 import {
@@ -22,14 +22,13 @@ import {
 import { findOrCreateUser } from "~/routes/auth.google-auth.callback/queries";
 import asyncOperationHandler from "~/utils/async.operation";
 import Email from "~/utils/email";
-import appConfig from "../../../app.config";
 import { logDevInfo } from "~/utils/dev.console";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { authCallbackAction, redirectUrl } = await parseAuthCbCookie(request);
   const state = authCallbackAction;
 
-  await redirectIfHaveValidSessionToken(
+  await redirectIfHaveSession(
     request,
     state === "login"
       ? "You are already logged in!"
@@ -45,7 +44,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
       : "There was an error creating your account. Please try again.";
 
   if (error) {
-    console.log({ error: error });
     return redirectWithErrorToast(
       state === "login" ? "/auth/login" : "/auth/register",
       errMsg(state === "login"),
@@ -60,7 +58,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 
   if (userError) {
-    console.log({ userError });
+    // console.log({ userError });
     return redirectWithErrorToast(
       state === "login" ? "/auth/login" : "/auth/register",
       errMsg(state === "login"),
@@ -78,31 +76,29 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (user?.is2fa) {
     const otpCookie = await parseOtpCookie(request);
     otpCookie["_id"] = user.id;
+    const otp = await user.generateAndSaveOtp();
+
+    await asyncOperationHandler(async () => {
+      try {
+        await new Email(user).sendOtp(otp);
+      } catch (e) {
+        await user.destroyOtpAndSAve();
+        throw e;
+      }
+    });
 
     const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
       key: "redirect",
       value: redirectUrl,
     });
 
-    const otp = await user.generateAndSaveOtp();
-
-    const otpResult = await asyncOperationHandler(async () => {
-      await new Email(user).sendOtp(otp);
-    });
-
-    if (otpResult.error) {
-      console.error(otpResult.error);
-    }
-
-    if (appConfig.nodeEnv !== "production") {
-      logDevInfo({ otp });
-    }
+    logDevInfo({ otp });
 
     return redirectWithToast(
       _2faRedirectUrl,
       {
         text: "OTP is valid for only 2 min!",
-        type: "warning",
+        type: "info",
       },
       {
         headers: {

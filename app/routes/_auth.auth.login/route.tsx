@@ -21,7 +21,7 @@ import {
 } from "~/utils/url";
 import {
   commitSession,
-  redirectIfHaveValidSessionToken,
+  redirectIfHaveSession,
   storeTokenInSession,
 } from "~/session.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
@@ -119,7 +119,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveValidSessionToken(request, "You are already logged in!");
+  await redirectIfHaveSession(request, "You are already logged in!");
   return json(null);
 }
 

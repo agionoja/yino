@@ -33,7 +33,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export const meta: MetaFunction = () => {
   return [
     { title: "Reset Password" },
-    { name: "description", content: "Reset your yino account password" },
+    { name: "description", content: "Reset your yino _account password" },
   ];
 };
 

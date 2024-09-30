@@ -82,14 +82,14 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveSession(request, "You already have an account!");
+  await redirectIfHaveSession(request, "You already have an _account!");
   return null;
 }
 
 export const meta: MetaFunction = () => {
   return [
     { title: "Register | Yino" },
-    { name: "description", content: "Register your yino account" },
+    { name: "description", content: "Register your yino _account" },
   ];
 };
 
@@ -165,7 +165,7 @@ export default function Register() {
           </span>
           <Button
             disabled={isSubmitting}
-            aria-label={"register account"}
+            aria-label={"register _account"}
             type={"submit"}
             name={"_action"}
             value={"register"}

@@ -30,7 +30,7 @@ export default function ChatRoute() {
   const inputRef = useRef<HTMLInputElement>(null);
   const activityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [activity, setActivity] = useState("");
-  const [welcome, setWelcome] = useState("");
+  const [welcome, setWelcome] = useState<{ welcome: string } | null>(null);
   const [connectedMsg, setConnectedMsg] = useState("");
   const [messages, setMessages] = useState(loaderData?.messages || []);
   const isSubmitting = fetcher.state === "submitting";
@@ -95,7 +95,7 @@ export default function ChatRoute() {
 
   return (
     <>
-      <h1>{welcome}</h1>
+      <h1>{welcome?.welcome}</h1>
       <h2>{connectedMsg}</h2>
       <fetcher.Form
         ref={formRef}

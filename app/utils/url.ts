@@ -2,11 +2,11 @@ import { IUser } from "~/models/user.model";
 
 export function getDashboardUrl(user: Pick<IUser, "role">) {
   return user.role === "client"
-    ? "/account/client/dashboard"
+    ? "/account/dashboard/client"
     : user.role === "admin"
-      ? "/account/admin/dashboard"
+      ? "/account/dashboard/admin"
       : user.role === "team"
-        ? "/account/team/dashboard"
+        ? "/account/dashboard/team"
         : "/";
 }
 

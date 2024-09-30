@@ -32,7 +32,7 @@ export const meta: MetaFunction = () => {
     {
       name: "description",
       content:
-        "Forget your yino account password? Enter your email for a reset link",
+        "Forget your yino _account password? Enter your email for a reset link",
     },
   ];
 };

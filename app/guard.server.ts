@@ -11,7 +11,7 @@ import { getRefererUrl } from "~/utils/url";
 
 export async function requireUser(request: Request) {
   const session = await getTokenSession(request);
-  const token = await getTokenFromSession(session);
+  const token = await getTokenFromSession(request);
   let decoded;
 
   if (!token) {
@@ -34,8 +34,7 @@ export async function requireUser(request: Request) {
       "/auth/login",
     );
   }
-
-  const user = await User.findById(decoded.id)
+  const user = await User.findById(decoded._id)
     .select("+passwordChangedAt")
     .exec();
 

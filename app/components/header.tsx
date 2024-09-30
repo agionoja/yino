@@ -1,7 +1,7 @@
 import { Link, NavLink } from "@remix-run/react";
 import logo from "app/assets/images/logo.png";
 
-const NavLinks = [
+const navLinks = [
   {
     id: "1",
     name: "Home",
@@ -31,8 +31,8 @@ export default function Header() {
         <Link to={"/"}>
           <img src={logo} alt="logo" className="h-16" />
         </Link>
-        <nav className="absolute top-24  flex w-full flex-col items-center justify-center gap-3 bg-white md:bg-transparent p-6 md:flex-row md:gap-10">
-          {NavLinks.map((id, i) => (
+        <nav className="absolute top-24 flex w-full flex-col items-center justify-center gap-3 bg-white p-6 md:flex-row md:gap-10 md:bg-transparent">
+          {navLinks.map((id, i) => (
             <div key={i}>
               <NavLink to={id.path}>
                 <ul>

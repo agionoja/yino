@@ -14,7 +14,7 @@ import { AuthLink } from "~/components/auth-link";
 import { createUser } from "~/routes/_auth.auth.register/queries";
 import {
   commitSession,
-  redirectIfHaveValidSessionToken,
+  redirectIfHaveSession,
   storeTokenInSession,
 } from "~/session.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
@@ -38,7 +38,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
       if (user) {
         const emailResult = await asyncOperationHandler(async () => {
-          await new Email(user).sendWelcome(`${getBaseUrl(request)}/`);
+          await new Email(user).sendWelcome(
+            // Todo: add verification token
+            `${getBaseUrl(request)}/auth/verify`,
+          );
         });
 
         if (emailResult.error) {
@@ -79,10 +82,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveValidSessionToken(
-    request,
-    "You already have an account!",
-  );
+  await redirectIfHaveSession(request, "You already have an account!");
   return null;
 }
 

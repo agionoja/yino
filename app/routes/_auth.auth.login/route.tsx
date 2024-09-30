@@ -126,7 +126,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export const meta: MetaFunction = () => {
   return [
     { title: "Login | Yino" },
-    { name: "description", content: "Login to your yino account" },
+    { name: "description", content: "Login to your yino _account" },
   ];
 };
 
@@ -193,11 +193,11 @@ export default function Login() {
           disabled={isSubmitting}
           name={"_action"}
           value={"login"}
-          aria-label={"register account"}
+          aria-label={"register _account"}
           type={"submit"}
           className={"shrink-0 bg-blue capitalize text-white"}
         >
-          {isSubmitting ? "Login in..." : "Login"}
+          {isSubmitting ? "Logging in..." : "Login"}
         </Button>
       </Form>
 

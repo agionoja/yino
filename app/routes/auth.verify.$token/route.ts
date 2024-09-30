@@ -16,6 +16,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const redirectUrl = getDashboardUrl(user);
   return await redirectWithToast(redirectUrl, {
     type: "success",
-    text: "Your account has been successfully verified!",
+    text: "Your _account has been successfully verified!",
   });
 }

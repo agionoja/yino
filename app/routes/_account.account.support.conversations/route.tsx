@@ -19,7 +19,10 @@ export default function Conversation() {
     <>
       <h1>This is the conversation route</h1>
       <button onClick={notify}>click</button>
-      <Outlet />
+
+      <div className={"bg-dotted-pattern"}>
+        <Outlet />
+      </div>
     </>
   );
 }

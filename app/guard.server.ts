@@ -63,7 +63,7 @@ export async function requireUser(request: Request) {
     );
   }
 
-  return user;
+  return user as IUser;
 }
 
 export async function restrictTo(

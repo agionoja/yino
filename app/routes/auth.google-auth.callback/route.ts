@@ -32,7 +32,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     request,
     state === "login"
       ? "You are already logged in!"
-      : "You already have an account!",
+      : "You already have an _account!",
   );
 
   const googleAuthCode = getUrlFromSearchParams(request.url, "code");
@@ -41,7 +41,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const errMsg = (isLogin: boolean) =>
     isLogin
       ? "Unable to log you in. Please try again."
-      : "There was an error creating your account. Please try again.";
+      : "There was an error creating your _account. Please try again.";
 
   if (error) {
     return redirectWithErrorToast(

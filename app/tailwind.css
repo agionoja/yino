@@ -4,8 +4,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  .nav-link.active {
+    @apply bg-jet;
+  }
+
+  /*.nav-link.pending {*/
+  /*  color: red;*/
+  /*}*/
+
+  /*.nav-link.transitioning {*/
+  /*  background-color: #4cd964;*/
+  /*}*/
+}
+
 @layer components {
   .auth-form {
     @apply flex w-full flex-col gap-6;
+  }
+
+  .nav-list {
+    @apply flex flex-col gap-5;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-4 rounded-sm p-3 transition duration-200 ease-linear;
   }
 }

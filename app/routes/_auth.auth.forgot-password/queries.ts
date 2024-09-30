@@ -2,6 +2,7 @@ import asyncOperationHandler from "~/utils/async.operation";
 import User from "~/models/user.model";
 import { AppError } from "~/utils/app.error";
 import Email from "~/utils/email";
+import { logDevInfo } from "~/utils/dev.console";
 
 export async function sendPasswordResetToken(
   email: FormDataEntryValue | null,
@@ -27,7 +28,14 @@ export async function sendPasswordResetToken(
 
     const resetToken = await user.generateAndSaveToken("passwordResetToken");
     const passwordResetURL = `${baseUrl}/auth/reset-password/${resetToken}`;
+    logDevInfo({ passwordResetURL });
 
-    await new Email(user).sendPasswordReset(passwordResetURL);
+    try {
+      await new Email(user).sendPasswordReset(passwordResetURL);
+    } catch (e) {
+      user.passwordResetToken = undefined;
+      user.verificationTokenExpires = undefined;
+      throw e;
+    }
   });
 }

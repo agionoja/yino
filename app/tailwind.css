@@ -23,3 +23,15 @@
   background-clip: content-box;
   object-fit: cover;
 }
+
+
+.why-bg {
+  background-image: url('./assets/landing/Texture.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-clip: content-box;
+  object-fit: cover;
+  background-color: #103262;
+  background-blend-mode: overlay;
+}

@@ -43,12 +43,14 @@ const serviceData = [
 
 export default function Services() {
   return (
-    <section className="text-text-gray font-inter">
+    <section className="text-text-gray lg:px-20 p-4">
       <div className="mb-5 flex flex-col items-center">
         <span className="mb-2 rounded-3xl bg-gradient-to-r from-anti-flash-white via-blue to-anti-flash-white px-8 py-0.5 text-center font-medium text-white">
           Services
         </span>
-        <h2 className="text-2xl font-bold text-black">Our Expertise</h2>
+        <h2 className="mb-4 text-4xl font-semibold text-black">
+          Our Expertise
+        </h2>
         <p className="text-center lg:flex lg:flex-col">
           Explore our comprehensive range of services designed to empower your
           business with expert
@@ -63,7 +65,7 @@ export default function Services() {
           {serviceData.slice(0, 2).map((item) => (
             <div key={item.id}>
               <div className="flex h-[226px] flex-col items-start gap-6 rounded-lg border border-gray-400 p-6 shadow-sm shadow-white lg:w-[596px]">
-                <div className="flex items-center justify-center rounded-full bg-slate-200 p-2">
+                <div className="bg-imgage-bg flex items-center justify-center rounded-full p-2">
                   <img
                     src={item.icon}
                     alt="icon"
@@ -81,7 +83,7 @@ export default function Services() {
           {serviceData.slice(2).map((item) => (
             <div key={item.id} className="flex items-center">
               <div className="flex h-[226px] flex-col items-start gap-6 rounded-lg border border-gray-400 p-4 shadow-sm shadow-white lg:w-[389.33px]">
-                <div className="flex items-center justify-center rounded-full bg-slate-200 p-2">
+                <div className="bg-imgage-bg flex items-center justify-center rounded-full p-2">
                   <img
                     src={item.icon}
                     alt="icon"

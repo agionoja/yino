@@ -4,7 +4,7 @@ import logo from "../assets/images/logo.png";
 export default function Footer() {
   return (
     <>
-      <footer className="flex flex-col justify-between gap-32 bg-dark-jungle-green px-8 py-12 font-inter text-white md:px-20">
+      <footer className="flex flex-col justify-between gap-32 bg-dark-jungle-green px-4 py-12 font-inter text-white lg:px-20">
         <div className="flex flex-col items-start gap-3 lg:flex-row">
           <img src={logo} alt="logo" className="h-16" />
           <div className="flex basis-full flex-col items-start justify-start gap-9 text-[14px] md:flex-row lg:gap-36">

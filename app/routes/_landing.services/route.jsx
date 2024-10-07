@@ -52,7 +52,7 @@ export default function Services() {
         <p className="text-center lg:flex lg:flex-col">
           Explore our comprehensive range of services designed to empower your
           business with expert
-          <span>
+          <span className="pl-2">
             training, innovative development, and tailored solutions to drive
             your success.
           </span>

@@ -1,8 +1,8 @@
 import { Outlet } from "@remix-run/react";
 import { json, LoaderFunctionArgs } from "@remix-run/node";
 import { getTokenSession } from "~/session.server";
-import Header from "~/components/header";
 import Footer from "~/components/footer";
+import Container from "~/components/container";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const session = await getTokenSession(request);
@@ -16,7 +16,7 @@ export default function Landing() {
 
   return (
     <div>
-      <Header />
+      <Container />
       <main>{<Outlet />}</main>
       <Footer />
     </div>

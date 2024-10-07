@@ -4,22 +4,24 @@ import logo from "../assets/images/logo.png";
 export default function Footer() {
   return (
     <>
-      <footer className="flex flex-col justify-between gap-32 bg-dark-jungle-green px-20 py-12 font-inter text-white">
-        <div className="flex flex-col items-start gap-3 md:flex-row">
+      <footer className="flex flex-col justify-between gap-32 bg-dark-jungle-green px-8 py-12 font-inter text-white md:px-20">
+        <div className="flex flex-col items-start gap-3 lg:flex-row">
           <img src={logo} alt="logo" className="h-16" />
-          <div className="flex basis-full flex-col items-start justify-between gap-9 text-[14px] md:flex-row">
+          <div className="flex basis-full flex-col items-start justify-start gap-9 text-[14px] md:flex-row lg:gap-36">
             <div>
               <h6 className="pb-3 text-lg font-semibold uppercase text-neutral-500">
                 Info
               </h6>
               <ul className="flex flex-col justify-evenly gap-2">
-                <Link to={""}></Link>
-                <li>About us</li>
-                <Link to={"#"}></Link>
-                <li>For customers</li>
-                <Link to={"#"}></Link>
-                <li>Contacts</li>
-                <Link to={"#"}></Link>
+                <Link to={"about"}>
+                  <li>About us</li>
+                </Link>
+                <Link to={"services"}>
+                  <li>For customers</li>
+                </Link>
+                <Link to={"contact"}>
+                  <li>Contacts</li>
+                </Link>
               </ul>
             </div>
             <div>
@@ -46,7 +48,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between text-[16px] text-neutral-500">
           <div>© 2024 — Copyright </div>
           <div>Privacy</div>
         </div>

@@ -9,3 +9,17 @@
     @apply flex w-full flex-col gap-6;
   }
 }
+
+
+.px {
+  padding-inline: 5rem;
+}
+
+.header-bg {
+  background-image: url('./assets/images/bgImg.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-clip: content-box;
+  object-fit: cover;
+}

@@ -43,7 +43,7 @@ const serviceData = [
 
 export default function Services() {
   return (
-    <section className="text-text-gray lg:px-20 p-4">
+    <section className="p-4 text-text-gray lg:px-20">
       <div className="mb-5 flex flex-col items-center">
         <span className="mb-2 rounded-3xl bg-gradient-to-r from-anti-flash-white via-blue to-anti-flash-white px-8 py-0.5 text-center font-medium text-white">
           Services
@@ -64,8 +64,8 @@ export default function Services() {
         <div className="flex flex-col items-center gap-4 lg:flex-row">
           {serviceData.slice(0, 2).map((item) => (
             <div key={item.id}>
-              <div className="flex h-[226px] flex-col items-start gap-6 rounded-lg border border-gray-400 p-6 shadow-sm shadow-white lg:w-[596px]">
-                <div className="bg-imgage-bg flex items-center justify-center rounded-full p-2">
+              <div className="flex h-[226px] flex-col items-start gap-6 rounded-lg border border-anti-flash-white p-6 shadow-sm shadow-white lg:w-[596px]">
+                <div className="flex items-center justify-center rounded-full bg-imgage-bg p-2">
                   <img
                     src={item.icon}
                     alt="icon"
@@ -82,8 +82,8 @@ export default function Services() {
         <div className="flex flex-col items-center gap-4 lg:flex-row">
           {serviceData.slice(2).map((item) => (
             <div key={item.id} className="flex items-center">
-              <div className="flex h-[226px] flex-col items-start gap-6 rounded-lg border border-gray-400 p-4 shadow-sm shadow-white lg:w-[389.33px]">
-                <div className="bg-imgage-bg flex items-center justify-center rounded-full p-2">
+              <div className="flex h-[226px] flex-col items-start gap-6 rounded-lg border border-anti-flash-white p-4 shadow-sm shadow-white lg:w-[389.33px]">
+                <div className="flex items-center justify-center rounded-full bg-imgage-bg p-2">
                   <img
                     src={item.icon}
                     alt="icon"

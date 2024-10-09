@@ -45,7 +45,7 @@ export default function Work() {
         </p>
       </div>
       <div className="flex flex-col items-center gap-6">
-        <div className="mb-4 flex flex-col items-center gap-4 lg:flex-row">
+        <div className="mb-4 flex flex-col items-center  gap-4 lg:flex-row">
           {data.map((item) => (
             <div key={item.id}>
               <div className="flex h-[276px] w-[389px] flex-col items-center">
@@ -57,7 +57,7 @@ export default function Work() {
                   />
                 </div>
 
-                <div className="rounded-lg border border-gray-300 bg-white p-4 shadow-lg">
+                <div className="rounded-lg border border-gray-300 bg-white p-4 mb-4 shadow-lg">
                   <h3 className="text-[16px] font-medium text-black">
                     {item.title}
                   </h3>

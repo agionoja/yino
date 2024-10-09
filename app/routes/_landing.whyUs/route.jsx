@@ -36,7 +36,7 @@ export default function WhyUs() {
   return (
     <section className="why-bg rounded-lg text-white">
       <div className="mb-5 flex flex-col items-center pt-8">
-        <span className="from-dark-blue to-dark-blue mb-2 rounded-3xl bg-gradient-to-r via-blue px-8 py-0.5 text-center font-medium text-white">
+        <span className="from-dark-blue to-dark-blue mb-3 rounded-3xl bg-gradient-to-r via-blue px-8 py-0.5 text-center font-medium text-white">
           Choose Us
         </span>
         <h2 className="mb-4 text-4xl font-semibold">Why Yino Technology?</h2>

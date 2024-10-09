@@ -5,9 +5,9 @@ export default function Footer() {
   return (
     <>
       <footer className="flex flex-col justify-between gap-32 bg-dark-jungle-green px-4 py-12 font-inter text-white lg:px-20">
-        <div className="flex flex-col items-start gap-3 lg:flex-row">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
           <img src={logo} alt="logo" className="h-16" />
-          <div className="flex basis-full flex-col items-start justify-start gap-9 text-[14px] md:flex-row lg:gap-36">
+          <div className="flex basis-full flex-col items-center justify-start gap-9 text-[14px] lg:flex-row lg:items-start lg:gap-36">
             <div>
               <h6 className="pb-3 text-lg font-semibold uppercase text-neutral-500">
                 Info
@@ -35,7 +35,7 @@ export default function Footer() {
                 </a>
               </ul>
             </div>
-            <div>
+            <div className="flex flex-col items-center text-center ">
               <h6 className="pb-3 text-lg font-semibold uppercase text-neutral-500">
                 Find us
               </h6>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink } from "@remix-run/react";
 import logo from "app/assets/images/logo.png";
 import { Hamburger, Close } from "./icons";
+
 const navLinks = [
   {
     id: "1",
@@ -11,17 +12,17 @@ const navLinks = [
   {
     id: "2",
     name: "About",
-    path: "about",
+    path: "/about",
   },
   {
     id: "3",
     name: "Services",
-    path: "services",
+    path: "/services",
   },
   {
     id: "4",
     name: "Contact",
-    path: "contact",
+    path: "/contact",
   },
 ];
 
@@ -44,16 +45,21 @@ export default function Header() {
       >
         {navLinks.map((link) => (
           <div key={link.id}>
-            <NavLink to={link.path}>
-              <ul>
-                <li className="hover:text-blue">{link.name}</li>
-              </ul>
+            <NavLink
+              to={link.path}
+              className={({ isActive }) =>
+                isActive
+                  ? "font-bold"
+                  : "text-dark-jungle-green hover:text-blue"
+              }
+            >
+              {link.name}
             </NavLink>
           </div>
         ))}
         <div className="mt-6 flex items-center gap-3 lg:hidden">
           <Link to={"#"}>
-            <button className="px-3 py-1 text-center text-[14px] text-dark-jungle-green hover:rounded-[4px] hover:text-blue ">
+            <button className="px-3 py-1 text-center text-[14px] text-dark-jungle-green hover:rounded-[4px] hover:text-blue">
               Sign In
             </button>
           </Link>
@@ -66,7 +72,7 @@ export default function Header() {
       </nav>
       <div className="hidden items-center justify-between gap-3 text-nowrap lg:flex">
         <Link to={"#"}>
-          <button className="px-3 py-1 text-center text-[14px] text-dark-jungle-green hover:rounded-[4px] hover:text-blue ">
+          <button className="px-3 py-1 text-center text-[14px] text-dark-jungle-green hover:rounded-[4px] hover:text-blue">
             Sign In
           </button>
         </Link>

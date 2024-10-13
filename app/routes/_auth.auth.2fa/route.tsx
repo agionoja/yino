@@ -15,13 +15,9 @@ import {
 } from "@remix-run/node";
 import React, { useEffect, useRef, useState } from "react";
 import { resendOtp, validateOtp } from "~/routes/_auth.auth.2fa/queries";
-import {
-  commitSession,
-  redirectIfHaveSession,
-  storeTokenInSession,
-} from "~/session.server";
+import { createUserSession, redirectIfHaveSession } from "~/session.server";
 import { AuthLink } from "~/components/auth-link";
-import { getDashboardUrl, getUrlFromSearchParams } from "~/utils/url";
+import { getUrlFromSearchParams } from "~/utils/url";
 import { toast } from "react-toastify";
 import { parseOtpCookie } from "~/cookies.server";
 import {
@@ -29,6 +25,7 @@ import {
   redirectWithToast,
 } from "~/utils/toast/flash.session.server";
 import { logDevError } from "~/utils/dev.console";
+import { ROUTES } from "~/routes";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
@@ -38,20 +35,14 @@ export async function action({ request }: ActionFunctionArgs) {
       const { error, data: user } = await validateOtp(values.otp);
 
       if (user) {
-        const session = await storeTokenInSession(user);
-
         const url = getUrlFromSearchParams(request.url, "redirect");
-        const redirectUrl = url ? url : getDashboardUrl(user);
+        const redirectTo = url ? url : ROUTES.DASHBOARD;
 
-        return await redirectWithToast(
-          redirectUrl,
-          { text: "Welcome back!", type: "success" },
-          {
-            headers: {
-              "Set-Cookie": await commitSession(session),
-            },
-          },
-        );
+        return await createUserSession({
+          user,
+          redirectTo,
+          message: "Welcome back!",
+        });
       } else {
         return json(
           { error },
@@ -83,15 +74,12 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveSession(request, "You are already logged in!");
+  await redirectIfHaveSession(request);
 
   const otpCookie = await parseOtpCookie(request);
 
   if (!otpCookie._id) {
-    return redirect(
-      "/auth/login",
-      // "You have to login in first",
-    );
+    return redirect("/auth/login");
   }
 
   return json({ userId: otpCookie?._id });

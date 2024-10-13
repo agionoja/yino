@@ -1,9 +1,7 @@
-import { IUser } from "~/models/user.model";
+import { UserClass } from "~/models/user.model";
 import { ReactNode, useContext, createContext } from "react";
 
-type User =
-  | Pick<IUser, "email" | "name" | "phoneNumber" | "_id" | "role" | "address">
-  | undefined;
+type User = { role: UserClass["roles"] } | undefined;
 
 type ProvideProps = {
   user: User;

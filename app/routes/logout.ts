@@ -8,7 +8,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   return session.has("token")
     ? await redirectWithToast(
         "/auth/login",
-        { text: "Goodbye ✋✋✋", type: "success" },
+        { text: "Goodbye", type: "success" },
         {
           headers: {
             "Set-Cookie": await destroySession(session),

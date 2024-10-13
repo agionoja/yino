@@ -9,8 +9,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const message = formData.get("message") || "";
 
   const chat = await Chat.create({
-    receiver: "66b3f0d6706a8659c984d86a",
-    sender: "66b3ef8534e20466aa43cfc5",
+    receiverId: "66b3f0d6706a8659c984d86a",
+    senderId: "66b3ef8534e20466aa43cfc5",
     message,
   });
 

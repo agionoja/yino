@@ -19,20 +19,20 @@ export default function Account() {
   const loaderData = useLoaderData<typeof loader>();
 
   return (
-    <div className={"flex min-h-screen w-full"}>
+    <div className={"flex h-screen w-full overflow-hidden"}>
       <AccountHeader
         role={loaderData.role}
         email={loaderData.email}
         name={loaderData.name}
-        profilePhoto={loaderData.photo}
+        // profilePhoto={loaderData.photo}
       />
-      <main className={"bg-alice-blue min-h-full w-full"}>
-        <div className={"bg-eerie-black w-full px-8 py-3"}>
+      <main className={"w-full bg-alice-blue"}>
+        <div className={"w-full bg-off-black px-8 py-3"}>
           <button className={"ml-auto block"}>
             <Notification size={25} color={"#ffffff"} />
           </button>
         </div>
-        <div className="w-full p-8">
+        <div className="h-full w-full p-7">
           <Outlet />
         </div>
       </main>

@@ -15,7 +15,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const { error, data: user } = await sendVerification(token, baseUrl);
 
   if (error || !user) {
-    logDevInfo({ referer: request.referrer, redirectUrl });
+    logDevInfo(error);
 
     if (error && error[0].path === "isVerified") {
       return await redirectWithToast(redirectUrl, {

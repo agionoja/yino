@@ -3,6 +3,7 @@ import User from "~/models/user.model";
 import Email from "~/utils/email";
 import asyncOperationHandler from "~/utils/async.operation";
 import { AppError } from "~/utils/app.error";
+import { logDevInfo } from "~/utils/dev.console";
 
 export function sendVerification(token: string | undefined, baseUrl: string) {
   return asyncOperationHandler(async () => {
@@ -19,6 +20,8 @@ export function sendVerification(token: string | undefined, baseUrl: string) {
       const verificationCode =
         await user.generateAndSaveToken("verificationToken");
       const verificationUrl = `${baseUrl}/auth/verify/${verificationCode}`;
+
+      logDevInfo({ baseUrl: baseUrl });
 
       try {
         await new Email(user).sendVerification(verificationUrl);

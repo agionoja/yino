@@ -21,7 +21,7 @@ export function validateOtp(otp: FormDataEntryValue | undefined) {
       throw new AppError("OTP is invalid or has expired", 401);
     }
 
-    await user.destroyOtpAndSAve();
+    await user.destroyOtpAndSave();
     return user;
   });
 }

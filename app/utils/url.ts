@@ -1,15 +1,3 @@
-import { IUser } from "~/models/user.model";
-
-export function getDashboardUrl(user: Pick<IUser, "role">) {
-  return user.role === "client"
-    ? "/account/dashboard/client"
-    : user.role === "admin"
-      ? "/account/dashboard/admin"
-      : user.role === "team"
-        ? "/account/dashboard/team"
-        : "/";
-}
-
 export function getUrlFromSearchParams(url: string, searchParam: string) {
   const fUrl = new URL(url);
   return fUrl.searchParams.get(searchParam);
@@ -20,7 +8,9 @@ export function getRefererUrl(request: Request) {
 }
 
 export function getPathname(request: Request) {
-  return new URL(request.url).pathname;
+  const url = new URL(request.url);
+  console.log({ url });
+  return url.pathname;
 }
 
 export function queryStringBuilder(

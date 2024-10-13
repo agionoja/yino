@@ -1,5 +1,4 @@
 import { NavItem } from "~/routes/_account/nav-item";
-import { Role } from "~/models/user.model";
 import {
   Analytics,
   Chat,
@@ -10,58 +9,59 @@ import {
   Team,
   Wallet,
 } from "~/components/icons";
+import { ROUTES } from "~/routes";
 
-export function AdminNavList({ role }: { role: Role }) {
+export function AdminNavList() {
   return (
     <ul className={"nav-list"}>
       <li>
-        <NavItem to={`account/dashboard/${role}`}>
+        <NavItem to={ROUTES.DASHBOARD}>
           <Dashboard size={25} />
           <span>Dashboard</span>
         </NavItem>
       </li>
       <li>
-        <NavItem to={`account/clients`}>
+        <NavItem to={ROUTES.CLIENTS}>
           <Client size={25} />
           <span>Clients</span>
         </NavItem>
       </li>
       <li>
-        <NavItem to={`account/projects/${role}`}>
+        <NavItem to={ROUTES.PROJECTS}>
           <Project size={25} />
           <span>Projects</span>
         </NavItem>
       </li>
 
       <li>
-        <NavItem to={`account/conversations`}>
+        <NavItem to={ROUTES.CONVERSATIONS}>
           <Chat size={25} />
           <span>Chats</span>
         </NavItem>
       </li>
 
       <li>
-        <NavItem to={`account/tasks`}>
+        <NavItem to={ROUTES.TASKS}>
           <Tasks size={25} />
           <span>Tasks</span>
         </NavItem>
       </li>
 
       <li>
-        <NavItem to={`account/team-management`}>
+        <NavItem to={ROUTES.TEAM_MANAGEMENT}>
           <Team size={25} />
           <span>Team Management</span>
         </NavItem>
       </li>
 
       <li>
-        <NavItem to={`account/analytics`}>
+        <NavItem to={ROUTES.ANALYTICS}>
           <Analytics size={25} />
           <span>Analytics</span>
         </NavItem>
       </li>
       <li>
-        <NavItem to={`account/billing/${role}`}>
+        <NavItem to={ROUTES.BILLING}>
           <Wallet size={25} />
           <span>Billing</span>
         </NavItem>

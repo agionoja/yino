@@ -3,6 +3,8 @@ import { FaEyeSlash, FaRegEye, FaTasks, FaUsers } from "react-icons/fa";
 import {
   IoAnalytics,
   IoChatboxOutline,
+  IoCheckmarkDoneOutline,
+  IoCheckmarkOutline,
   IoClose,
   IoMenuSharp,
   IoWalletOutline,
@@ -24,10 +26,10 @@ interface Props extends React.SVGAttributes<SVGAElement> {
   size?: number;
 }
 
-export function Eye(props: Props): JSX.Element {
+export function Eye(props: Props) {
   return <FaRegEye {...props} />;
 }
-export function EyeSlash(props: Props): JSX.Element {
+export function EyeSlash(props: Props) {
   return <FaEyeSlash {...props} />;
 }
 
@@ -104,4 +106,12 @@ export function Notification(props: Props) {
 
 export function Chat(props: Props) {
   return <IoChatboxOutline {...props} />;
+}
+
+export function DoubleDoneCheck(props: Props) {
+  return <IoCheckmarkDoneOutline {...props} />;
+}
+
+export function SingleDoneCheck(props: Props) {
+  return <IoCheckmarkOutline {...props} />;
 }

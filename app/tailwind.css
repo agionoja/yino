@@ -6,16 +6,8 @@
 
 @layer base {
   .nav-link.active {
-    @apply bg-jet;
+    @apply bg-dark-brown;
   }
-
-  /*.nav-link.pending {*/
-  /*  color: red;*/
-  /*}*/
-
-  /*.nav-link.transitioning {*/
-  /*  background-color: #4cd964;*/
-  /*}*/
 }
 
 @layer components {
@@ -24,10 +16,10 @@
   }
 
   .nav-list {
-    @apply flex flex-col gap-5;
+    @apply flex flex-col gap-2;
   }
 
   .nav-link {
-    @apply flex items-center gap-4 rounded-sm p-3 transition duration-200 ease-linear;
+    @apply flex items-center gap-4 rounded-sm p-3 transition duration-200 ease-linear hover:bg-light-brown;
   }
 }

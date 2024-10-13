@@ -1,9 +1,9 @@
 import nodemailer from "nodemailer";
 import pug from "pug";
 import __dirname from "~/utils/__dirname";
-import { IUser } from "~/models/user.model";
 import appConfig from "../../app.config";
 import { join } from "node:path";
+import { UserType } from "~/types";
 
 export default class Email {
   to: string;
@@ -12,7 +12,7 @@ export default class Email {
   isVerified: boolean | undefined;
   private transporter: nodemailer.Transporter;
 
-  constructor(user: Pick<IUser, "name" | "email" | "isVerified">) {
+  constructor(user: Pick<UserType, "name" | "email" | "isVerified">) {
     this.to = user.email;
     this.name = user.name.split(" ")[0];
     this.from = `Yino <${appConfig.emailUsername}>`;

@@ -9,6 +9,7 @@ import { redirectWithToast } from "~/utils/toast/flash.session.server";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { getFieldError } from "~/utils/getFieldError";
+import { ROUTES } from "~/routes";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   const { ...values } = Object.fromEntries(await request.formData());
@@ -24,7 +25,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
     );
   }
 
-  return await redirectWithToast("/auth/login", {
+  return await redirectWithToast(ROUTES.LOGIN, {
     text: "Login with your new password",
     type: "success",
   });

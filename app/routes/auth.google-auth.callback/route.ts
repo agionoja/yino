@@ -1,14 +1,6 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
-import {
-  commitSession,
-  redirectIfHaveSession,
-  storeTokenInSession,
-} from "~/session.server";
-import {
-  getDashboardUrl,
-  getUrlFromSearchParams,
-  queryStringBuilder,
-} from "~/utils/url";
+import { createUserSession, redirectIfHaveSession } from "~/session.server";
+import { getUrlFromSearchParams, queryStringBuilder } from "~/utils/url";
 import {
   parseAuthCbCookie,
   parseOtpCookie,
@@ -22,18 +14,14 @@ import {
 import { findOrCreateUser } from "~/routes/auth.google-auth.callback/queries";
 import asyncOperationHandler from "~/utils/async.operation";
 import Email from "~/utils/email";
-import { logDevInfo } from "~/utils/dev.console";
+import { logDevError, logDevInfo } from "~/utils/dev.console";
+import { ROUTES } from "~/routes";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const { authCallbackAction, redirectUrl } = await parseAuthCbCookie(request);
   const state = authCallbackAction;
 
-  await redirectIfHaveSession(
-    request,
-    state === "login"
-      ? "You are already logged in!"
-      : "You already have an _account!",
-  );
+  await redirectIfHaveSession(request);
 
   const googleAuthCode = getUrlFromSearchParams(request.url, "code");
 
@@ -41,11 +29,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const errMsg = (isLogin: boolean) =>
     isLogin
       ? "Unable to log you in. Please try again."
-      : "There was an error creating your _account. Please try again.";
+      : "There was an error creating your account. Please try again.";
 
   if (error) {
+    logDevError({ error });
     return redirectWithErrorToast(
-      state === "login" ? "/auth/login" : "/auth/register",
+      state === "login" ? ROUTES.LOGIN : ROUTES.REGISTER,
       errMsg(state === "login"),
     );
   }
@@ -58,20 +47,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
   });
 
   if (userError) {
-    // console.log({ userError });
+    logDevError(userError);
     return redirectWithErrorToast(
-      state === "login" ? "/auth/login" : "/auth/register",
+      state === "login" ? ROUTES.LOGIN : ROUTES.REGISTER,
       errMsg(state === "login"),
     );
   }
 
-  const dashboardUrl = getDashboardUrl(user);
-
-  const userRedirectUrl = redirectUrl
-    ? redirectUrl !== "/"
-      ? redirectUrl
-      : dashboardUrl
-    : dashboardUrl;
+  const redirectTo = redirectUrl ? redirectUrl : ROUTES.DASHBOARD;
 
   if (user?.is2fa) {
     const otpCookie = await parseOtpCookie(request);
@@ -82,12 +65,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
       try {
         await new Email(user).sendOtp(otp);
       } catch (e) {
-        await user.destroyOtpAndSAve();
+        await user.destroyOtpAndSave();
         throw e;
       }
     });
 
-    const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
+    const _2faRedirectUrl = queryStringBuilder(ROUTES["2FA"], {
       key: "redirect",
       value: redirectUrl,
     });
@@ -107,20 +90,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
       },
     );
   }
-
-  const session = await storeTokenInSession(user);
   const successMessage = user?.isNew ? "Welcome to Yino!" : "Welcome back!";
 
-  return await redirectWithToast(
-    userRedirectUrl,
-    {
-      text: successMessage,
-      type: "success",
-    },
-    {
-      headers: {
-        "Set-Cookie": await commitSession(session),
-      },
-    },
-  );
+  return await createUserSession({
+    user,
+    redirectTo,
+    message: successMessage,
+  });
 }

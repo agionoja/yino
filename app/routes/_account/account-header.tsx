@@ -1,43 +1,38 @@
 import { Link } from "@remix-run/react";
-import { IUser } from "~/models/user.model";
+import { UserClass } from "~/models/user.model";
 import logo from "~/assets/images/logo.png";
 import avatar from "~/assets/icons/avatar.svg";
 import { AdminNavList } from "~/routes/_account/admin-nav-list";
 import { ClientNavList } from "~/routes/_account/client-nav-list";
 import { NavItem } from "~/routes/_account/nav-item";
 import { Logout, Support } from "~/components/icons";
+import { ROUTES } from "~/routes";
 
-type Props = Pick<IUser, "role" | "email" | "name" | "profilePhoto">;
+type Props = Pick<UserClass, "role" | "email" | "name" | "profilePhoto">;
 
 export function AccountHeader({ role, name, email, profilePhoto }: Props) {
   return (
     <header
       className={
-        "bg-eerie-black flex min-h-full shrink-0 flex-col justify-between p-5 text-white md:w-1/3 lg:w-1/5"
+        "flex h-full shrink-0 flex-col justify-between bg-off-black p-5 text-white md:w-1/3 lg:w-1/5"
       }
     >
-      <div className={"flex flex-col gap-8"}>
+      <div className={"flex flex-col gap-7"}>
         <Link to={"/"}>
           <img src={logo} alt="Yino Logo" />
         </Link>
-        <nav>
-          {role === "admin" ? (
-            <AdminNavList role={role} />
-          ) : (
-            <ClientNavList role={role} />
-          )}
-        </nav>
+        <nav>{role === "admin" ? <AdminNavList /> : <ClientNavList />}</nav>
       </div>
 
       <ul className={"nav-list"}>
         <li>
-          <NavItem reloadDocument to={`/logout`} prefetch={"none"}>
+          <NavItem reloadDocument to={ROUTES.LOGOUT} prefetch={"none"}>
             <Logout size={25} />
             <span>Log out</span>
           </NavItem>
         </li>
         <li>
-          <NavItem to={`/account/support`}>
+          <NavItem to={ROUTES.SUPPORT}>
             <Support className={"text-blue"} size={25} />
             <span>Support</span>
           </NavItem>

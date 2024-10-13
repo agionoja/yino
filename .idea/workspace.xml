@@ -5,45 +5,66 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/assets/icons/avatar.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/assets/images/logo-black.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account.account.conversations.$chatId/route.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account.account.conversations._index/route.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account.account.conversations/route.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account/account-header.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account/admin-nav-list.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account/client-nav-list.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account/nav-item.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account/route.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/routes/_account/team-nav-list.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/route-container.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/models/conversation.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/models/group.model.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/models/schamas/file.schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/models/schamas/message.schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/_account.account.conversations/conversation-header.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/_account.account.conversations/conversation-nav-item.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/_account.account.dashboard/route.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/resources.conversations.$chatId/route.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/resources.conversations/chat.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/resources.conversations/conversation-nav-item.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/resources.conversations/conversation.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/resources.conversations/conversations-header.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/routes/resources.conversations/route.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/types.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/utils/appQuery.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/components/icons.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/icons.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/contexts/user-context.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/contexts/user-context.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/google-auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/google-auth.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/guard.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/guard.server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/chat.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/chat.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/schamas/photo.schema.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/root.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/root.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account.account.activity/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account.account.activities/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account.account.billing.$role/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account.account.billing/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account.account.conversations/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account.account.conversations/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account.account.dashboard.$role/route.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account.account.projects.$role/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account.account.projects/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account.account.support.conversations.$chatId/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account.account.support.conversations.$chatId/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account/account-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account/account-header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account/admin-nav-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account/admin-nav-list.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account/client-nav-list.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account/client-nav-list.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_account/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.2fa/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.2fa/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.2fa/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.2fa/route.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.forgot-password/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.forgot-password/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.forgot-password/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.forgot-password/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.login/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.login/queries.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.login/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.login/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.register/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.register/queries.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.register/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.register/route.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.reset-password.$token/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.reset-password.$token/queries.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.reset-password.$token/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.reset-password.$token/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_form-layout.subscribe/route.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_form-layout/route.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account._index/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.admin.dashboard/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.client.activities/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.client.billing/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.client.dashboard/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.client.projects/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.support.conversations.$chatId/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.support.conversations/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account.support/route.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account/account-header.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/account/route.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/auth.send-verification/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.send-verification/queries.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/auth.send-verification/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.send-verification/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/auth.verify.$token/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.verify.$token/route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/logout.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/logout.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/session.server.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/tailwind.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/email.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/email.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/utils/toast/flash.session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/toast/flash.session.server.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/utils/url.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/url.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,9 +75,16 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaScript File" />
-        <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
       </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="false" />
+    <option name="myAllFileTypesSelected" value="true" />
+    <option name="mySelectedFileTypes">
+      <set />
     </option>
   </component>
   <component name="Git.Settings">
@@ -87,6 +115,9 @@
       </RecentBranches>
     </option>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/node_modules/react-router-dom/dist/index.d.ts" root0="SKIP_INSPECTION" />
+  </component>
   <component name="JsbtTreeLayoutManager">
     <layout place="tools.popupnpm">
       <scroll-view-position x="0" y="0" />
@@ -100,29 +131,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev",
-    "javascript.nodejs.core.library.configured.version": "20.16.0",
-    "javascript.nodejs.core.library.typings.version": "20.16.5",
-    "last_opened_file_path": "/home/agionoja/code/yino/app/assets/icons",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.build.executor": "Run",
-    "npm.dev.executor": "Run",
-    "npm.lint.executor": "Run",
-    "npm.start.executor": "Run",
-    "npm.test.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "/home/agionoja/.nvm/versions/node/v20.16.0/lib/node_modules/prettier",
-    "settings.editor.selected.configurable": "reference.settings.grazie.pro",
-    "ts.external.directory.path": "/home/agionoja/code/yino/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.16.0&quot;,
+    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.16.5&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/agionoja/code/yino/app/assets/icons&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.build.executor&quot;: &quot;Run&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.lint.executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;npm.test.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/agionoja/.nvm/versions/node/v20.16.0/lib/node_modules/prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.grazie.pro&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/agionoja/code/yino/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/app/assets/icons" />
@@ -139,7 +170,7 @@
       <recent name="$PROJECT_DIR$/app/utils/toast" />
     </key>
   </component>
-  <component name="RunManager" selected="npm.start">
+  <component name="RunManager" selected="npm.build">
     <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -192,9 +223,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.build" />
         <item itemvalue="npm.dev" />
         <item itemvalue="npm.start" />
-        <item itemvalue="npm.build" />
         <item itemvalue="npm.test" />
         <item itemvalue="npm.lint" />
       </list>
@@ -232,7 +263,24 @@
       <workItem from="1727357823035" duration="11234000" />
       <workItem from="1727430334675" duration="5281000" />
       <workItem from="1727441536209" duration="4513000" />
-      <workItem from="1727697810513" duration="17399000" />
+      <workItem from="1727697810513" duration="31871000" />
+      <workItem from="1727776284567" duration="19516000" />
+      <workItem from="1727803894825" duration="24239000" />
+      <workItem from="1727909468253" duration="2647000" />
+      <workItem from="1727953962873" duration="1363000" />
+      <workItem from="1727970473001" duration="1366000" />
+      <workItem from="1728036846052" duration="9615000" />
+      <workItem from="1728049920650" duration="13126000" />
+      <workItem from="1728089745735" duration="14450000" />
+      <workItem from="1728151705217" duration="51020000" />
+      <workItem from="1728330857885" duration="760000" />
+      <workItem from="1728336863664" duration="4963000" />
+      <workItem from="1728466088064" duration="3150000" />
+      <workItem from="1728551829266" duration="2361000" />
+      <workItem from="1728574103083" duration="25632000" />
+      <workItem from="1728656644861" duration="20228000" />
+      <workItem from="1728777899102" duration="11975000" />
+      <workItem from="1728840138918" duration="1759000" />
     </task>
     <servers />
   </component>

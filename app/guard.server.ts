@@ -1,13 +1,15 @@
 import { getTokenFromSession, getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
-import User, { IUser, Role } from "~/models/user.model";
+import User from "~/models/user.model";
 import globalErrorHandler from "~/utils/global.error";
 import {
-  redirectWithToastErrorEncodeUrlAndDestroySession,
   redirectWithErrorToast,
+  redirectWithToastErrorEncodeUrlAndDestroySession,
 } from "~/utils/toast/flash.session.server";
 import appConfig from "../app.config";
 import { getRefererUrl } from "~/utils/url";
+import { Role, UserType } from "~/types";
+import { ROUTES } from "~/routes";
 
 export async function requireUser(request: Request) {
   const session = await getTokenSession(request);
@@ -19,7 +21,7 @@ export async function requireUser(request: Request) {
       "Login to gain access.",
       session,
       request,
-      "/auth/login",
+      ROUTES.LOGIN,
     );
   }
 
@@ -31,7 +33,7 @@ export async function requireUser(request: Request) {
       error[0].message,
       session,
       request,
-      "/auth/login",
+      ROUTES.LOGIN,
     );
   }
   const user = await User.findById(decoded._id)
@@ -43,11 +45,9 @@ export async function requireUser(request: Request) {
       "User no longer exists",
       session,
       request,
-      "/auth/register",
+      ROUTES.REGISTER,
     );
   }
-
-  // TODO: fix the bug the security bug when a user change password, their session should be invalidated
 
   const passwordChanged = user.passwordChangedAfterJwt(
     decoded.iat || 0,
@@ -59,15 +59,15 @@ export async function requireUser(request: Request) {
       "You recently changed password. Login again",
       session,
       request,
-      "/auth/login",
+      ROUTES.LOGIN,
     );
   }
 
-  return user as IUser;
+  return user as UserType | null;
 }
 
 export async function restrictTo(
-  user: Pick<IUser, "role">,
+  user: Pick<UserType, "role">,
   request: Request,
   ...roles: Role[]
 ) {

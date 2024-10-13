@@ -12,62 +12,38 @@ import { Button } from "~/components/button";
 import { GoogleForm } from "~/components/google-form";
 import { AuthLink } from "~/components/auth-link";
 import { createUser } from "~/routes/_auth.auth.register/queries";
-import {
-  commitSession,
-  redirectIfHaveSession,
-  storeTokenInSession,
-} from "~/session.server";
-import { redirectWithToast } from "~/utils/toast/flash.session.server";
-import {
-  getBaseUrl,
-  getDashboardUrl,
-  getUrlFromSearchParams,
-} from "~/utils/url";
+import { createUserSession, redirectIfHaveSession } from "~/session.server";
+import { getBaseUrl, getUrlFromSearchParams } from "~/utils/url";
 import { parseAuthCbCookie, serializeAuthCbCookie } from "~/cookies.server";
-import Email from "~/utils/email";
-import asyncOperationHandler from "~/utils/async.operation";
-import { logDevError } from "~/utils/dev.console";
 import { getFieldError } from "~/utils/getFieldError";
+import { logDevError } from "~/utils/dev.console";
+import { ROUTES } from "~/routes";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
 
   switch (_action) {
     case "register": {
-      const { error, data: user } = await createUser(values);
+      const baseUrl = getBaseUrl(request);
+      const { error, data: user } = await createUser(values, baseUrl);
 
       if (user) {
-        const emailResult = await asyncOperationHandler(async () => {
-          await new Email(user).sendWelcome(
-            // Todo: add verification token
-            `${getBaseUrl(request)}/auth/verify`,
-          );
+        return await createUserSession({
+          user,
+          redirectTo: ROUTES.DASHBOARD,
+          message: "Welcome to Yino!",
         });
-
-        if (emailResult.error) {
-          logDevError(emailResult.error);
-        }
-
-        const session = await storeTokenInSession(user);
-
-        return await redirectWithToast(
-          getDashboardUrl(user),
-          { text: "Welcome to Yino!", type: "success" },
-          {
-            headers: {
-              "Set-cookie": await commitSession(session),
-            },
-          },
-        );
       } else {
+        logDevError(error);
         return json({ error }, { status: error[0]?.statusCode });
       }
     }
     case "google-auth": {
-      const url = getUrlFromSearchParams(request.url, "redirect");
       const cookie = await parseAuthCbCookie(request);
+      const redirectTo = getUrlFromSearchParams(request.url, "redirect");
+
       cookie["authCallbackAction"] = "register";
-      cookie["redirectUrl"] = url || "/";
+      cookie["redirectUrl"] = redirectTo || "/";
 
       return redirect("/auth/google-auth", {
         headers: {
@@ -82,7 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveSession(request, "You already have an _account!");
+  await redirectIfHaveSession(request);
   return null;
 }
 
@@ -124,18 +100,6 @@ export default function Register() {
             required
           />
         </Label>
-
-        {/*<Label label={"phone number"}>*/}
-        {/*  <Input*/}
-        {/*    type={"tel"}*/}
-        {/*    name={"phoneNumber"}*/}
-        {/*    validate={getFieldError("phoneNumber")}*/}
-        {/*    placeholder={"08182398732"}*/}
-        {/*    required*/}
-        {/*    minLength={10}*/}
-        {/*    maxLength={11}*/}
-        {/*  />*/}
-        {/*</Label>*/}
 
         <Label label={"password"}>
           <PasswordInput

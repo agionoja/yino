@@ -12,6 +12,7 @@ import {
 } from "~/utils/toast/schema";
 import { destroySession } from "~/session.server";
 import { getPathname, queryStringBuilder } from "~/utils/url";
+import { ROUTES } from "~/routes";
 
 const FLASH_SESSION = "__flash";
 
@@ -124,9 +125,19 @@ export async function redirectWithToastErrorEncodeUrlAndDestroySession(
   request: Request,
   url: string,
 ) {
+  const pathname = getPathname(request);
   const encodedUrl = queryStringBuilder(url, {
     key: "redirect",
-    value: getPathname(request),
+    value:
+      pathname.includes(ROUTES.RESOURCE_CONVERSATION) ||
+      pathname.includes(ROUTES.RESOURCE_CONVERSATIONS)
+        ? ROUTES.CONVERSATIONS
+        : pathname,
+  });
+
+  console.log({
+    encodedUrl: decodeURIComponent(encodedUrl),
+    pathname: getPathname(request),
   });
 
   return await redirectWithToastAndDestroyExistingSession(

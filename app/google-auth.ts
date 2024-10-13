@@ -2,6 +2,7 @@ import appConfig from "../app.config";
 import asyncOperationHandler from "~/utils/async.operation";
 import { redirect } from "@remix-run/node";
 import { AppError } from "~/utils/app.error";
+import { ROUTES } from "~/routes";
 
 interface GoogleAuthParams {
   clientId: string;
@@ -105,9 +106,12 @@ export default class GoogleAuth {
   }
 }
 
+const onlineUrl = `https://${appConfig.onlineHost}${ROUTES.GOOGLE_AUTH_CB}`;
+const localUrl = `http://${appConfig.localHost}:${appConfig.port}${ROUTES.GOOGLE_AUTH_CB}`;
+
 export const googleAuth = new GoogleAuth({
   clientId: `${appConfig.googleClientId}`,
-  redirectUrl: `${appConfig.nodeEnv === "production" ? `https://${appConfig.onlineHost}` : `http://${appConfig.localHost}:${appConfig.port}`}/auth/google-auth/callback`,
+  redirectUrl: appConfig.nodeEnv === "production" ? onlineUrl : localUrl,
   responseType: "code",
   scope: "email profile",
   accessType: "offline",

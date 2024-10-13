@@ -1,8 +1,8 @@
 import asyncOperationHandler from "~/utils/async.operation";
-import User from "~/models/user.model";
+import { RegularUser } from "~/models/user.model";
 import { AppError } from "~/utils/app.error";
 import Email from "~/utils/email";
-import { logDevInfo } from "~/utils/dev.console";
+import { ROUTES } from "~/routes";
 
 export async function sendPasswordResetToken(
   email: FormDataEntryValue | null,
@@ -13,22 +13,14 @@ export async function sendPasswordResetToken(
       throw new AppError("Email is required to reset your password", 400);
     }
 
-    const user = await User.findOne({ email }).exec();
+    const user = await RegularUser.findOne({ email }).exec();
 
     if (!user) {
       throw new AppError("User does not exit", 404);
     }
 
-    if (user.googleId) {
-      throw new AppError(
-        "You signed up using Google. Please use Google to sign in.",
-        400,
-      );
-    }
-
     const resetToken = await user.generateAndSaveToken("passwordResetToken");
-    const passwordResetURL = `${baseUrl}/auth/reset-password/${resetToken}`;
-    logDevInfo({ passwordResetURL });
+    const passwordResetURL = `${baseUrl}${ROUTES.RESET_PASSWORD.replace(":token", resetToken)}`;
 
     try {
       await new Email(user).sendPasswordReset(passwordResetURL);

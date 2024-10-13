@@ -14,16 +14,8 @@ import { Button } from "~/components/button";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { getUser } from "~/routes/_auth.auth.login/queries";
-import {
-  getDashboardUrl,
-  getUrlFromSearchParams,
-  queryStringBuilder,
-} from "~/utils/url";
-import {
-  commitSession,
-  redirectIfHaveSession,
-  storeTokenInSession,
-} from "~/session.server";
+import { getUrlFromSearchParams, queryStringBuilder } from "~/utils/url";
+import { createUserSession, redirectIfHaveSession } from "~/session.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
 import {
   parseAuthCbCookie,
@@ -35,6 +27,7 @@ import asyncOperationHandler from "~/utils/async.operation";
 import Email from "~/utils/email";
 import appConfig from "../../../app.config";
 import { logDevError, logDevInfo } from "~/utils/dev.console";
+import { ROUTES } from "~/routes";
 
 export async function action({ request }: ActionFunctionArgs) {
   const { _action, ...values } = Object.fromEntries(await request.formData());
@@ -45,7 +38,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
       if (user) {
         const url = getUrlFromSearchParams(request.url, "redirect");
-        const redirectUrl = url ? url : getDashboardUrl(user);
+        const redirectTo = url ? url : ROUTES.DASHBOARD;
 
         if (user.is2fa) {
           const otp = await user.generateAndSaveOtp();
@@ -55,7 +48,7 @@ export async function action({ request }: ActionFunctionArgs) {
           });
 
           if (otpError) {
-            await user.destroyOtpAndSAve();
+            await user.destroyOtpAndSave();
             logDevError(otpError);
           }
 
@@ -63,9 +56,9 @@ export async function action({ request }: ActionFunctionArgs) {
             logDevInfo({ otp });
           }
 
-          const _2faRedirectUrl = queryStringBuilder("/auth/2fa", {
+          const _2faRedirectUrl = queryStringBuilder(ROUTES["2FA"], {
             key: "redirect",
-            value: redirectUrl,
+            value: redirectTo,
           });
 
           const otpCookie = await parseOtpCookie(request);
@@ -84,29 +77,25 @@ export async function action({ request }: ActionFunctionArgs) {
             },
           );
         }
-        const session = await storeTokenInSession(user);
-
-        return await redirectWithToast(
-          redirectUrl,
-          { text: "Welcome back!", type: "success" },
-          {
-            headers: {
-              "Set-Cookie": await commitSession(session),
-            },
-          },
-        );
+        return await createUserSession({
+          user,
+          redirectTo,
+          message: "Welcome back!",
+        });
       } else {
+        logDevError(error);
         return json({ error }, { status: error[0]?.statusCode });
       }
     }
 
     case "google-auth": {
-      const url = getUrlFromSearchParams(request.url, "redirect");
+      const redirectTo = getUrlFromSearchParams(request.url, "redirect");
+
       const cookie = await parseAuthCbCookie(request);
       cookie["authCallbackAction"] = "login";
-      cookie["redirectUrl"] = url || "/";
+      cookie["redirectUrl"] = redirectTo || ROUTES.DASHBOARD;
 
-      return redirect("/auth/google-auth", {
+      return redirect(ROUTES.GOOGLE_AUTH, {
         headers: {
           "Set-Cookie": await serializeAuthCbCookie(cookie),
         },
@@ -119,7 +108,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  await redirectIfHaveSession(request, "You are already logged in!");
+  await redirectIfHaveSession(request);
   return json(null);
 }
 

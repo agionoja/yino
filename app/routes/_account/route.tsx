@@ -11,7 +11,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     role: user.role,
     name: user.name.split(" ")[0],
     email: user.email,
-    photo: user.profilePhoto,
+    photo: user.photo,
   });
 }
 

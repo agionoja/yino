@@ -1,6 +1,6 @@
 import { getTokenFromSession, getTokenSession } from "~/session.server";
 import jwt from "~/utils/jwt";
-import User from "~/models/user.model";
+import UserModel from "~/models/user.model";
 import globalErrorHandler from "~/utils/global.error";
 import {
   redirectWithErrorToast,
@@ -36,7 +36,7 @@ export async function requireUser(request: Request) {
       ROUTES.LOGIN,
     );
   }
-  const user = await User.findById(decoded._id)
+  const user = await UserModel.findById(decoded._id)
     .select("+passwordChangedAt")
     .exec();
 
@@ -63,7 +63,7 @@ export async function requireUser(request: Request) {
     );
   }
 
-  return user as UserType | null;
+  return user as UserType;
 }
 
 export async function restrictTo(

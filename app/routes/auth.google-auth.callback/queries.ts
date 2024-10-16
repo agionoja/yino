@@ -1,4 +1,4 @@
-import { GoogleUser } from "~/models/user.model";
+import { GoogleUserModel } from "~/models/user.model";
 import asyncOperationHandler from "~/utils/async.operation";
 
 type UserInfo = {
@@ -10,13 +10,13 @@ type UserInfo = {
 
 export function findOrCreateUser({ id, name, email, verified }: UserInfo) {
   return asyncOperationHandler(async () => {
-    let user = await GoogleUser.findOne({ email }).exec();
+    let user = await GoogleUserModel.findOne({ email }).exec();
 
     if (user) {
       return user;
     }
 
-    user = await GoogleUser.create({
+    user = await GoogleUserModel.create({
       googleId: id,
       name,
       email,

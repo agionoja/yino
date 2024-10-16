@@ -1,4 +1,4 @@
-import { RegularUser } from "~/models/user.model";
+import { RegularUserModel } from "~/models/user.model";
 import asyncOperationHandler from "~/utils/async.operation";
 import Email from "~/utils/email";
 import { logDevError } from "~/utils/dev.console";
@@ -12,7 +12,7 @@ export async function createUser(
   return await asyncOperationHandler(async () => {
     const { name, email, password, passwordConfirm } = formData;
 
-    const user = await RegularUser.create({
+    const user = await RegularUserModel.create({
       name,
       email,
       password,

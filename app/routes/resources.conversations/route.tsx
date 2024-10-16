@@ -4,6 +4,8 @@ import ConversationNavItem from "~/routes/resources.conversations/conversation-n
 import { useFetcher } from "@remix-run/react";
 import { useEffect } from "react";
 import { ROUTES } from "~/routes";
+import AppQuery from "~/utils/appQuery";
+import ChatModel, { SingleChatModel } from "~/models/chat.model";
 
 type Props = {
   type: "support" | "regular";
@@ -11,6 +13,39 @@ type Props = {
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await requireUser(request);
+
+  // const { _action, ...values } = Object.fromEntries(await request.formData());
+  //
+  // switch (_action) {
+  //   case "support": {
+  //     console.log("support");
+  //     break;
+  //   }
+  //
+  //   case "regular":
+  //   default: {
+  //     console.log("Regular");
+  //     break;
+  //   }
+  // }
+
+  const chatQuery = new AppQuery(
+    {
+      sender: user._id,
+      receiver: user._id,
+    },
+    SingleChatModel.find(),
+  );
+
+  const conversationsQuery = new AppQuery({}, ChatModel.find());
+
+  const chats = await chatQuery
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate()
+    .lean()
+    .exec();
 
   return json(
     { user },

@@ -6,21 +6,9 @@ import {
   modelOptions,
   prop,
 } from "@typegoose/typegoose";
-import { UserClass } from "~/models/user.model";
-import { ConversationClass } from "~/models/conversation.model";
-import {
-  AudioMessage,
-  DocumentMessage,
-  MESSAGE_TYPES,
-  MessageBase,
-  TextMessage,
-} from "~/models/schamas/message.schema";
+import { User } from "~/models/user.model";
 import { GroupClass } from "~/models/group.model";
-
-const enum CHAT_TYPES {
-  SINGLE = "single",
-  GROUP = "group",
-}
+import { CHAT_TYPES } from "~/types";
 
 @modelOptions({
   schemaOptions: {
@@ -28,31 +16,20 @@ const enum CHAT_TYPES {
     timestamps: true,
   },
 })
-export class ChatBase {
+export class Chat {
   @prop({
     type: Schema.Types.ObjectId,
-    ref: () => UserClass,
-    required: [true, "A chat must have a sender"],
+    ref: () => User,
+    required: true,
+    index: 1,
   })
-  public sender!: Ref<UserClass>;
-
-  @prop({
-    type: Schema.Types.ObjectId,
-    ref: () => UserClass,
-    required: [true, "A chat must have a conversation"],
-  })
-  public conversation!: Ref<ConversationClass>;
+  public sender!: Ref<User>;
 
   @prop({
     required: true,
-    type: MessageBase,
-    discriminators: () => [
-      { type: TextMessage, value: MESSAGE_TYPES.TEXT },
-      { type: AudioMessage, value: MESSAGE_TYPES.AUDIO },
-      { type: DocumentMessage, value: MESSAGE_TYPES.DOCUMENT },
-    ],
+    type: () => String,
   })
-  public message!: MessageBase;
+  public message!: string;
 
   @prop({ type: () => Boolean })
   public isDelivered?: boolean;
@@ -64,44 +41,38 @@ export class ChatBase {
   public isRead?: boolean;
 }
 
-class GroupChatClass extends ChatBase {
-  @prop({ type: Schema.Types.ObjectId, required: true, ref: () => GroupClass })
+export class GroupChatClass extends Chat {
+  @prop({
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: () => GroupClass,
+    index: 1,
+  })
   group!: Ref<GroupClass>;
 }
 
-class SingleChatClass extends ChatBase {
-  @prop({ type: Schema.Types.ObjectId, ref: () => UserClass, required: true })
-  public receiver!: Ref<UserClass>;
+export class SingleChatClass extends Chat {
+  @prop({
+    type: Schema.Types.ObjectId,
+    ref: () => User,
+    required: true,
+    index: 1,
+  })
+  public receiver!: Ref<User>;
 }
 
-const Chat = getModelForClass(ChatBase);
+const ChatModel = getModelForClass(Chat);
 
-export const SingleChat = getDiscriminatorModelForClass(
-  Chat,
+export const SingleChatModel = getDiscriminatorModelForClass(
+  ChatModel,
   SingleChatClass,
   CHAT_TYPES.SINGLE,
 );
 
-export const GroupChat = getDiscriminatorModelForClass(
-  Chat,
+export const GroupChatModel = getDiscriminatorModelForClass(
+  ChatModel,
   GroupChatClass,
   CHAT_TYPES.GROUP,
 );
 
-// const chat = await GroupChat.create({
-//   group: "6702b4db2ed86f9b8e4115df",
-//   sender: "6702b4db2ed86f9b8e4815df",
-//   conversation: "6702b4db2ed86f9b8e4815df",
-//   receiver: "6702b4db2ed86f9b8e4854df",
-//   message: {
-//     type: "audio",
-//     audio: {
-//       url: "https://localhost:8080",
-//       publicId: "khkfhelkfjdakl",
-//     },
-//   } as AudioMessage,
-// });
-//
-// console.log(chat);
-
-export default Chat;
+export default ChatModel;

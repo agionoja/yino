@@ -1,5 +1,5 @@
 import asyncOperationHandler from "~/utils/async.operation";
-import { RegularUser } from "~/models/user.model";
+import { RegularUserModel } from "~/models/user.model";
 import { AppError } from "~/utils/app.error";
 import Email from "~/utils/email";
 import { ROUTES } from "~/routes";
@@ -13,7 +13,7 @@ export async function sendPasswordResetToken(
       throw new AppError("Email is required to reset your password", 400);
     }
 
-    const user = await RegularUser.findOne({ email }).exec();
+    const user = await RegularUserModel.findOne({ email }).exec();
 
     if (!user) {
       throw new AppError("User does not exit", 404);

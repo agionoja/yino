@@ -1,11 +1,11 @@
 import asyncOperationHandler from "~/utils/async.operation";
-import User from "~/models/user.model";
+import UserModel from "~/models/user.model";
 import { createHashSha256 } from "~/utils/hash";
 import { AppError } from "~/utils/app.error";
 
 export function verify(token: string | undefined) {
   return asyncOperationHandler(async () => {
-    const user = await User.findOne({
+    const user = await UserModel.findOne({
       verificationToken: createHashSha256(String(token)),
       verificationTokenExpires: { $gte: new Date() },
     })

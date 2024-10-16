@@ -2,7 +2,7 @@ import {
   GoogleUserClass,
   RegularUserClass,
   roles,
-  UserClass,
+  User,
 } from "~/models/user.model";
 import FileClass from "~/models/schamas/file.schema";
 import { Types } from "mongoose";
@@ -15,7 +15,12 @@ export type ClassProperties<T> = {
   [K in keyof T as T[K] extends Function ? never : K]: T[K];
 };
 
-export type UserType = ClassProperties<UserClass> & { _id: Types.ObjectId };
+export const enum CHAT_TYPES {
+  SINGLE = "single",
+  GROUP = "group",
+}
+
+export type UserType = ClassProperties<User> & { _id: Types.ObjectId };
 
 export type AppFile = ClassProperties<FileClass>;
 
@@ -26,11 +31,10 @@ export type AllClassesProps = Partial<ClassProperties<RegularUserClass>> &
   Partial<ClassProperties<GoogleUserClass>> &
   Partial<ClassProperties<GroupClass>>;
 
-export type QueryObject = {
+export type QueryObject<T> = {
   fields?: Combination;
   sort?: Combination;
   _id?: Types.ObjectId;
-  search?: AllClassesProps;
-  paginate?: { page: number; limit: number };
+  search?: Filter<T>;
   __t?: string;
-} & Filter<AllClassesProps>;
+} & Filter<T>;

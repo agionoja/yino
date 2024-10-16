@@ -1,5 +1,5 @@
 import asyncOperationHandler from "~/utils/async.operation";
-import { RegularUser } from "~/models/user.model";
+import { RegularUserModel } from "~/models/user.model";
 import { AppError } from "~/utils/app.error";
 
 export async function getUser(formData: { [key: string]: FormDataEntryValue }) {
@@ -10,7 +10,7 @@ export async function getUser(formData: { [key: string]: FormDataEntryValue }) {
       throw new AppError("Email and password are required", 400);
     }
 
-    const user = await RegularUser.findOne({ email })
+    const user = await RegularUserModel.findOne({ email })
       .select("+password")
       .exec();
 

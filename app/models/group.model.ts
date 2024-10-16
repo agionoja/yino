@@ -1,14 +1,17 @@
 import type { Ref } from "@typegoose/typegoose";
 import { prop } from "@typegoose/typegoose";
-import { UserClass } from "~/models/user.model";
+import { User } from "~/models/user.model";
 
 export class GroupClass {
+  @prop({ required: true })
+  name!: string;
+
   @prop({
     required: true,
-    ref: () => UserClass,
+    ref: () => User,
     validate: {
-      validator: (value: UserClass[]) => value.length < 50,
+      validator: (value: User[]) => value.length < 50,
     },
   })
-  public members!: Ref<UserClass>[];
+  public members!: Ref<User>[];
 }

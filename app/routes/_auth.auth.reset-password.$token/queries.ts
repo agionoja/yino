@@ -1,5 +1,5 @@
 import { AppError } from "~/utils/app.error";
-import { RegularUser } from "~/models/user.model";
+import { RegularUserModel } from "~/models/user.model";
 import asyncOperationHandler from "~/utils/async.operation";
 import { createHashSha256 } from "~/utils/hash";
 import scrypt from "~/utils/scrypt";
@@ -18,7 +18,7 @@ export async function resetPassword(
       );
     }
 
-    const user = await RegularUser.findOne({
+    const user = await RegularUserModel.findOne({
       passwordResetToken: createHashSha256(String(passwordResetToken)),
       passwordResetTokenExpires: { $gt: new Date() },
     })

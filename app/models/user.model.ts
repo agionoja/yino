@@ -8,7 +8,7 @@ import {
 } from "@typegoose/typegoose";
 import type { SubDocumentType } from "@typegoose/typegoose";
 import validator from "validator";
-import { Query } from "mongoose";
+import { Query, Schema, Types } from "mongoose";
 import type { Role } from "~/types";
 import scrypt from "~/utils/scrypt";
 import { promisify } from "node:util";
@@ -29,7 +29,10 @@ enum USERS {
     timestamps: true,
   },
 })
-export class UserClass {
+export class User {
+  @prop({ type: () => Schema.Types.ObjectId })
+  public _id!: Types.ObjectId;
+
   @prop({
     required: [true, "name is required"],
     minlength: [4, "name cannot be less than 4 chars"],
@@ -90,7 +93,7 @@ export class UserClass {
   public verificationTokenExpires?: Date;
 
   @prop({ type: () => FileClass })
-  public profilePhoto?: SubDocumentType<FileClass>;
+  public photo?: SubDocumentType<FileClass>;
 
   @prop({ type: () => Date })
   public passwordChangedAt?: Date;
@@ -112,7 +115,7 @@ export class UserClass {
   }
 
   public async generateAndSaveToken(
-    this: DocumentType<UserClass>,
+    this: DocumentType<User>,
 
     fieldName: "passwordResetToken" | "verificationToken",
   ) {
@@ -149,13 +152,13 @@ export class UserClass {
     }
   }
 
-  public async destroyOtpAndSave(this: DocumentType<UserClass>) {
+  public async destroyOtpAndSave(this: DocumentType<User>) {
     this.otpExpires = undefined;
     this.otp = undefined;
     await this.save({ validateBeforeSave: false });
   }
 
-  public async generateAndSaveOtp(this: DocumentType<UserClass>) {
+  public async generateAndSaveOtp(this: DocumentType<User>) {
     const otp = generateOTP(6);
 
     this.otp = createHashSha256(otp);
@@ -166,7 +169,7 @@ export class UserClass {
   }
 }
 
-@pre<UserClass>("save", function (next) {
+@pre<User>("save", function (next) {
   if (!this.isNew && this.isModified("password")) {
     // 1 min. is deducted because of db latency time
     this.passwordChangedAt = new Date(createTimeStamp({ m: -1 }));
@@ -184,7 +187,7 @@ export class UserClass {
     next();
   },
 )
-export class RegularUserClass extends UserClass {
+export class RegularUserClass extends User {
   @prop({
     required: true,
     validate: passwordValidator(),
@@ -214,7 +217,7 @@ export class RegularUserClass extends UserClass {
   passwordConfirm?: string;
 }
 
-export class GoogleUserClass extends UserClass {
+export class GoogleUserClass extends User {
   @prop({
     unique: true,
     sparse: true,
@@ -224,21 +227,21 @@ export class GoogleUserClass extends UserClass {
   public googleId?: string;
 }
 
-const User = getModelForClass(UserClass);
+const UserModel = getModelForClass(User);
 
-export const GoogleUser = getDiscriminatorModelForClass(
-  User,
+export const GoogleUserModel = getDiscriminatorModelForClass(
+  UserModel,
   GoogleUserClass,
   USERS.GOOGLE,
 );
 
-export const RegularUser = getDiscriminatorModelForClass(
-  User,
+export const RegularUserModel = getDiscriminatorModelForClass(
+  UserModel,
   RegularUserClass,
   USERS.REGULAR,
 );
 
-export default User;
+export default UserModel;
 function generateOTP(length: number) {
   const digits = "0123456789";
   let OTP = "";

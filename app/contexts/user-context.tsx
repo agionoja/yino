@@ -1,7 +1,7 @@
-import { UserClass } from "~/models/user.model";
+import { User } from "~/models/user.model";
 import { ReactNode, useContext, createContext } from "react";
 
-type User = { role: UserClass["roles"] } | undefined;
+type User = { role: User["roles"] } | undefined;
 
 type ProvideProps = {
   user: User;

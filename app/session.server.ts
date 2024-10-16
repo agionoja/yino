@@ -1,10 +1,9 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import appConfig from "../app.config";
 import jwt from "~/utils/jwt";
-import User from "~/models/user.model";
+import UserModel, { User } from "~/models/user.model";
 import { cookieDefaultOptions } from "~/cookies.server";
 import { redirectWithToast } from "~/utils/toast/flash.session.server";
-import { UserType } from "~/types";
 import { ROUTES } from "~/routes";
 
 type SessionData = {
@@ -27,7 +26,7 @@ export async function createUserSession({
   message,
   headers,
 }: {
-  user: Pick<UserType, "_id">;
+  user: Pick<User, "_id">;
   redirectTo: string;
   message: string;
   headers?: ResponseInit["headers"];
@@ -70,7 +69,10 @@ export async function redirectIfHaveSession(request: Request) {
     return;
   }
 
-  const user = await User.findById(decoded._id).select("role").lean().exec();
+  const user = await UserModel.findById(decoded._id)
+    .select("role")
+    .lean()
+    .exec();
 
   if (session.has("token") && user) {
     const url = ROUTES.DASHBOARD;

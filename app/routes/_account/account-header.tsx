@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { UserClass } from "~/models/user.model";
+import { User } from "~/models/user.model";
 import logo from "~/assets/images/logo.png";
 import avatar from "~/assets/icons/avatar.svg";
 import { AdminNavList } from "~/routes/_account/admin-nav-list";
@@ -8,9 +8,9 @@ import { NavItem } from "~/routes/_account/nav-item";
 import { Logout, Support } from "~/components/icons";
 import { ROUTES } from "~/routes";
 
-type Props = Pick<UserClass, "role" | "email" | "name" | "profilePhoto">;
+type Props = Pick<User, "role" | "email" | "name" | "photo">;
 
-export function AccountHeader({ role, name, email, profilePhoto }: Props) {
+export function AccountHeader({ role, name, email, photo }: Props) {
   return (
     <header
       className={
@@ -40,7 +40,7 @@ export function AccountHeader({ role, name, email, profilePhoto }: Props) {
 
         <li className={"overflow-hidden"}>
           <NavItem to={`/account/settings/personal-info`}>
-            <img src={profilePhoto ? profilePhoto.url : avatar} alt="" />
+            <img src={photo ? photo.url : avatar} alt="" />
             <div className={"flex flex-col gap-3"}>
               <span>{name}</span>
               <span className={"text-sm"}>{email}</span>

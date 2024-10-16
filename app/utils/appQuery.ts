@@ -1,12 +1,21 @@
 import { QueryWithHelpers } from "mongoose";
-import { AllClassesProps, QueryObject } from "~/types";
+import { QueryObject } from "~/types";
 import { AppError } from "~/utils/app.error";
+import UserModel from "~/models/user.model";
+
+type Paginate = { paginate: { page: number; limit: number } };
+type Query<T> = QueryWithHelpers<T[], T>;
+type AppQueryArgs<T> = { queryObject: QueryObject<T>; query: Query<T> };
+type AppQueryWithPaginationArgs<T> = {
+  queryObject: QueryObject<T> & Paginate;
+  query: Query<T>;
+};
 
 export default class AppQuery<T> {
-  private readonly queryObject: QueryObject;
-  private query: QueryWithHelpers<T[], T>;
+  protected readonly queryObject: QueryObject<T>;
+  protected query: Query<T>;
 
-  constructor(queryObject: typeof this.queryObject, query: typeof this.query) {
+  constructor({ queryObject, query }: AppQueryArgs<T>) {
     this.queryObject = queryObject;
     this.query = query;
   }
@@ -50,14 +59,7 @@ export default class AppQuery<T> {
     } else {
       this.query = this.query.select(defaultExcludedFields.join(" "));
     }
-  }
 
-  public paginate() {
-    const limit = this.queryObject.paginate?.limit || 10;
-    const page = this.queryObject.paginate?.page || 1;
-    const skip = (page - 1) * limit;
-
-    this.query = this.query.skip(skip).limit(limit);
     return this;
   }
 
@@ -69,11 +71,9 @@ export default class AppQuery<T> {
     }
 
     const searchQuery = Object.keys(search).map((field) => ({
-      [field as keyof AllClassesProps]: {
-        $regex: search[field as keyof AllClassesProps],
-        $options: "i",
-      },
-    })) as any[];
+      $regex: search[field],
+      $options: "i",
+    }));
 
     this.query = this.query.find({ $or: searchQuery });
 
@@ -88,3 +88,38 @@ export default class AppQuery<T> {
     return await this.query.exec();
   }
 }
+
+export class AppQueryWithPagination<T> extends AppQuery<T> {
+  constructor({ queryObject, query }: AppQueryWithPaginationArgs<T>) {
+    super({ queryObject, query });
+  }
+
+  public async getDocumentMetaData() {
+    const documentCount = await this.query.countDocuments();
+    return {
+      documentCount,
+      pageCount: Math.ceil(documentCount / this.queryObject.paginate.limit),
+    };
+  }
+
+  public paginate() {
+    const limit = this.queryObject.paginate?.limit || 10;
+    const page = this.queryObject.paginate?.page || 1;
+    const skip = (page - 1) * limit;
+
+    this.query = this.query.skip(skip).limit(limit);
+    return this;
+  }
+}
+
+const users = await new AppQueryWithPagination({
+  query: UserModel.find(),
+  queryObject: {
+    paginate: { page: 1, limit: 10 },
+    sort: ["-verificationToken", "-_id"],
+    search: { name: "divine" },
+    fields: ["+email", "role"],
+  },
+})
+  .lean()
+  .exec();

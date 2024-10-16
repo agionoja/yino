@@ -2,13 +2,13 @@ import { useSocket } from "~/contexts/socket-context";
 import { useEffect, useRef, useState } from "react";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ActionFunctionArgs, json } from "@remix-run/node";
-import Chat from "~/models/chat.model";
+import ChatModel from "~/models/chat.model";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const message = formData.get("message") || "";
 
-  const chat = await Chat.create({
+  const chat = await ChatModel.create({
     receiverId: "66b3f0d6706a8659c984d86a",
     senderId: "66b3ef8534e20466aa43cfc5",
     message,
@@ -18,7 +18,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export async function loader() {
-  const messages = await Chat.find().lean().exec();
+  const messages = await ChatModel.find().lean().exec();
   return json({ messages });
 }
 

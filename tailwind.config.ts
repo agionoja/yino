@@ -7,6 +7,8 @@ export default {
       backgroundImage: {
         "dotted-pattern":
           "linear-gradient(rgba(232, 244, 248, 0.95), rgba(244, 245, 247, 0.98)), url('/app/assets/images/auth-bg.png')",
+        "chat-pattern":
+          "linear-gradient(rgba(233, 241, 253, 0.9), rgba(233, 241, 253, 0.96)), url('/app/assets/images/chat-pattern.webp')",
       },
       colors: {
         blue: "#2776ea",

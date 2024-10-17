@@ -5,29 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c8f07bf-92b7-4e13-9a3c-8d60e7c7ebe9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/routes/resources.conversations/queries.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/chat-pattern.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/chat-pattern.webp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/faker.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/contexts/user-context.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/contexts/user-context.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/guard.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/guard.server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/chat.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/chat.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/conversation.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/conversation.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/group.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/group.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/user.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_account.account.support.conversations.$chatId/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account.account.support.conversations.$chatId/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_account/account-header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account/account-header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_account/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_account/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.2fa/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.2fa/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.forgot-password/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.forgot-password/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.login/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.login/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.register/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.register/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/_auth.auth.reset-password.$token/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/_auth.auth.reset-password.$token/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.google-auth.callback/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/auth.send-verification/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.send-verification/queries.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/auth.verify.$token/queries.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth.verify.$token/queries.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/resources.conversations/route.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/resources.conversations/route.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/session.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/session.server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/tailwind.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/utils/appQuery.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/appQuery.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,33 +82,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;javascript.nodejs.core.library.configured.version&quot;: &quot;20.16.0&quot;,
-    &quot;javascript.nodejs.core.library.typings.version&quot;: &quot;20.16.5&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/agionoja/code/yino/app/assets/icons&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;npm.build.executor&quot;: &quot;Run&quot;,
-    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
-    &quot;npm.lint.executor&quot;: &quot;Run&quot;,
-    &quot;npm.start.executor&quot;: &quot;Run&quot;,
-    &quot;npm.test.executor&quot;: &quot;Run&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/home/agionoja/.nvm/versions/node/v20.16.0/lib/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.grazie.pro&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/agionoja/code/yino/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "dev",
+    "javascript.nodejs.core.library.configured.version": "20.16.0",
+    "javascript.nodejs.core.library.typings.version": "20.16.5",
+    "last_opened_file_path": "/home/agionoja/code/yino/app/assets/images",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.build.executor": "Run",
+    "npm.dev.executor": "Run",
+    "npm.lint.executor": "Run",
+    "npm.start.executor": "Run",
+    "npm.test.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "/home/agionoja/.nvm/versions/node/v20.16.0/lib/node_modules/prettier",
+    "settings.editor.selected.configurable": "reference.settings.grazie.pro",
+    "ts.external.directory.path": "/home/agionoja/code/yino/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/app/assets/icons" />
       <recent name="$PROJECT_DIR$/app/assets/images" />
+      <recent name="$PROJECT_DIR$/app/assets/icons" />
       <recent name="$PROJECT_DIR$/app" />
       <recent name="$PROJECT_DIR$/app/email-templates" />
       <recent name="$PROJECT_DIR$/app/routes/account.support.conversations.$chatId" />

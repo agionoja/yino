@@ -4,8 +4,9 @@ import ConversationNavItem from "~/routes/resources.conversations/conversation-n
 import { useFetcher } from "@remix-run/react";
 import { useEffect } from "react";
 import { ROUTES } from "~/routes";
-import AppQuery from "~/utils/appQuery";
-import ChatModel, { SingleChatModel } from "~/models/chat.model";
+import { AppQueryWithPagination } from "~/utils/appQuery";
+import { RegularUserModel } from "~/models/user.model";
+import { ObjectId } from "mongodb";
 
 type Props = {
   type: "support" | "regular";
@@ -29,30 +30,32 @@ export async function loader({ request }: LoaderFunctionArgs) {
   //   }
   // }
 
-  const chatQuery = new AppQuery(
-    {
-      sender: user._id,
-      receiver: user._id,
+  const appQuery = new AppQueryWithPagination({
+    query: RegularUserModel.find(),
+    queryObject: {
+      paginate: { limit: 90, page: 1 },
+      // paginate: { limit: 50, page: 8 },
+      role: "admin",
+      fields: ["-isActive", "-role"],
+      sort: ["-name"],
+      search: { name: "Agi Onoja" },
     },
-    SingleChatModel.find(),
-  );
+  });
 
-  const conversationsQuery = new AppQuery({}, ChatModel.find());
+  // await RegularUserModel.create(userObj);
 
-  const chats = await chatQuery
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate()
-    .lean()
-    .exec();
+  appQuery.filter().sort().limitFields().search();
+  await appQuery.paginate();
+  const users = await appQuery.lean().exec();
+
+  console.log(users, appQuery.metaData);
 
   return json(
     { user },
     {
-      headers: {
-        "Cache-Control": "max-age=360",
-      },
+      // headers: {
+      //   "Cache-Control": "max-age=360",
+      // },
     },
   );
 }
@@ -93,9 +96,7 @@ export function Conversations({ type }: Props) {
           </aside>
 
           <section
-            className={
-              "shrink-0 basis-full bg-dotted-pattern bg-cover bg-no-repeat p-7"
-            }
+            className={"shrink-0 basis-full bg-chat-pattern bg-cover p-7"}
           >
             <header>
               <h2>This is a placeholder</h2>

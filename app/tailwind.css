@@ -23,3 +23,10 @@
     @apply flex items-center gap-4 rounded-sm p-3 transition duration-200 ease-linear hover:bg-light-brown;
   }
 }
+
+.x {
+  background-image: linear-gradient(
+    rgba(233, 241, 253, 0.9),
+    rgba(233, 241, 253, 0.96)
+  );
+}
